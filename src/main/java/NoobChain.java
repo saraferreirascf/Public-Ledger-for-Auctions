@@ -81,7 +81,7 @@ public class NoobChain {
 
     public static void main(String[] args) {
         //add our blocks to the blockchain ArrayList:
-        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider()); //Setup Bouncey castle as a Security Provider
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider()); //Setup Bouncy castle as a Security Provider
 
         //Create wallets:
         walletA = new Wallet();

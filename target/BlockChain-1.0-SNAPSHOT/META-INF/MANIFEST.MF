@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Archiver-Version: Plexus Archiver
-Created-By: Apache Maven 3.6.3
-Built-By: saraferreira
-Build-Jdk: 13.0.2
-Class-Path: gson-2.8.6.jar
-Main-Class: NoobChain
-
