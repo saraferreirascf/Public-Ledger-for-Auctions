@@ -31,9 +31,10 @@ public class HelloWorldServer {
 
   private Server server;
 
-  private void start() throws IOException {
+  private void start(int port_number) throws IOException {
     /* The port on which the server should run */
-    int port = 50051;
+    int port=port_number;
+    //int port = 50051;           
     server = ServerBuilder.forPort(port)
         .addService(new GreeterImpl())
         .build()
@@ -73,9 +74,20 @@ public class HelloWorldServer {
    * Main launches the server from the command line.
    */
   public static void main(String[] args) throws IOException, InterruptedException {
-    final HelloWorldServer server = new HelloWorldServer();
-    server.start();
-    server.blockUntilShutdown();
+    final HelloWorldServer server1 = new HelloWorldServer();
+    server1.start(50051);
+    
+
+    final HelloWorldServer server2 = new HelloWorldServer();
+    server2.start(50052);
+    
+
+    final HelloWorldServer server3 = new HelloWorldServer();
+    server3.start(50053);
+
+    server1.blockUntilShutdown();
+    server2.blockUntilShutdown();
+    server3.blockUntilShutdown();
   }
 
   static class GreeterImpl extends GreeterGrpc.GreeterImplBase {

@@ -10,10 +10,8 @@ GreeterGrpc$MethodHandlers.class
 Wallet.class
 HelloWorldServer.class
 HelloReply$1.class
-HelloRequest$1.class
 NoobChain.class
 GreeterGrpc$GreeterBlockingStub.class
-HelloReplyOrBuilder.class
 GreeterGrpc$3.class
 GreeterGrpc$GreeterMethodDescriptorSupplier.class
 HelloWorldProto.class
@@ -28,5 +26,4 @@ HelloReply.class
 GreeterGrpc$GreeterStub.class
 GreeterGrpc$GreeterImplBase.class
 HelloReply$Builder.class
-HelloRequestOrBuilder.class
 TransactionOutput.class
