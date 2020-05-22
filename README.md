@@ -10,5 +10,5 @@ mvn exec:java -Dexec.mainClass=HelloWorldClient
 mvn verify
 // server
 mvn exec:java -D"exec.mainClass"="Public_ledger_Server" -D"exec.args"="13333"
-// client
+// client em novo terminal
 mvn -X exec:java -D"exec.mainClass"="Public_ledger_Client" -D"exec.args"="13333"
