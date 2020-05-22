@@ -18,4 +18,16 @@ public interface NodeIDOrBuilder extends
    */
   com.google.protobuf.ByteString
       getNodeIDBytes();
+
+  /**
+   * <code>string client_name = 2;</code>
+   * @return The clientName.
+   */
+  java.lang.String getClientName();
+  /**
+   * <code>string client_name = 2;</code>
+   * @return The bytes for clientName.
+   */
+  com.google.protobuf.ByteString
+      getClientNameBytes();
 }

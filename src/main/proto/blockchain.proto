@@ -64,6 +64,7 @@ message Value {
 
 message BooleanSuccessResponse {
   bool success = 1;
+  
 }
 
 message NodeInfo {
@@ -74,4 +75,5 @@ message NodeInfoORValue {
 
 message NodeID {
   string nodeID = 1;
+  string client_name= 2;
 }

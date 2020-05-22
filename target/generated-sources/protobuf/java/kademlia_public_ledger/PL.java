@@ -61,16 +61,17 @@ public final class PL {
       "\n\020blockchain.proto\022\rpublic_ledger\"\013\n\tKey" +
       "_Value\"\005\n\003Key\"\007\n\005Value\")\n\026BooleanSuccess" +
       "Response\022\017\n\007success\030\001 \001(\010\"\n\n\010NodeInfo\"\021\n" +
-      "\017NodeInfoORValue\"\030\n\006NodeID\022\016\n\006nodeID\030\001 \001" +
-      "(\t2\246\002\n\rPublic_ledger\022F\n\004PING\022\025.public_le" +
-      "dger.NodeID\032%.public_ledger.BooleanSucce" +
-      "ssResponse\"\000\022J\n\005STORE\022\030.public_ledger.Ke" +
-      "y_Value\032%.public_ledger.BooleanSuccessRe" +
-      "sponse\"\000\022=\n\tFIND_NODE\022\025.public_ledger.No" +
-      "deID\032\027.public_ledger.NodeInfo\"\000\022B\n\nFIND_" +
-      "VALUE\022\022.public_ledger.Key\032\036.public_ledge" +
-      "r.NodeInfoORValue\"\000B!\n\026kademlia_public_l" +
-      "edgerB\002PLP\001\242\002\000b\006proto3"
+      "\017NodeInfoORValue\"-\n\006NodeID\022\016\n\006nodeID\030\001 \001" +
+      "(\t\022\023\n\013client_name\030\002 \001(\t2\246\002\n\rPublic_ledge" +
+      "r\022F\n\004PING\022\025.public_ledger.NodeID\032%.publi" +
+      "c_ledger.BooleanSuccessResponse\"\000\022J\n\005STO" +
+      "RE\022\030.public_ledger.Key_Value\032%.public_le" +
+      "dger.BooleanSuccessResponse\"\000\022=\n\tFIND_NO" +
+      "DE\022\025.public_ledger.NodeID\032\027.public_ledge" +
+      "r.NodeInfo\"\000\022B\n\nFIND_VALUE\022\022.public_ledg" +
+      "er.Key\032\036.public_ledger.NodeInfoORValue\"\000" +
+      "B!\n\026kademlia_public_ledgerB\002PLP\001\242\002\000b\006pro" +
+      "to3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -117,7 +118,7 @@ public final class PL {
     internal_static_public_ledger_NodeID_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_public_ledger_NodeID_descriptor,
-        new java.lang.String[] { "NodeID", });
+        new java.lang.String[] { "NodeID", "ClientName", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

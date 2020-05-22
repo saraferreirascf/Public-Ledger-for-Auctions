@@ -17,21 +17,24 @@ public class Public_ledger_Client {
     private static final Logger logger = Logger.getLogger(Public_ledger_Client.class.getName());
 
     private final Public_ledgerGrpc.Public_ledgerBlockingStub blockingStub;
-    private final Public_ledgerGrpc.Public_ledgerStub asyncStub;
+    public String name; 
+    //private final Public_ledgerGrpc.Public_ledgerStub asyncStub;
 
-    private Channel channel;
+    //private Channel channel;
 
     //private Random random = new Random();
     //private TestHelper testHelper;
 
      /** Construct client for accessing Public_ledger server using the existing channel. */
     public Public_ledger_Client(Channel channelBuilder) {
-        blockingStub = Public_ledgerGrpc.newBlockingStub(channel);
-        asyncStub = Public_ledgerGrpc.newStub(channel);
+        blockingStub = Public_ledgerGrpc.newBlockingStub(channelBuilder);
+        name="client";
+       // asyncStub = Public_ledgerGrpc.newStub(channelBuilder);
     }
 
     public void PING() {
-        NodeID request = NodeID.newBuilder().setNodeID("1").build();
+       // NodeID request = NodeID.newBuilder().setNodeID("1").build();
+       NodeID request = NodeID.newBuilder().setNodeID("1").setClientName(name).build();
         BooleanSuccessResponse response;
         try {
             response = blockingStub.pING(request);

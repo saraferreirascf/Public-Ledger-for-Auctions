@@ -70,6 +70,7 @@ public class Public_ledger_Server {
     @Override
     public void pING(NodeID request, StreamObserver<BooleanSuccessResponse> responseObserver) {
       responseObserver.onNext(BooleanSuccessResponse.newBuilder().setSuccess(true).build());
+      System.out.println(request.getClientName() + " has connected");
       responseObserver.onCompleted();
     }
 
