@@ -1,0 +1,77 @@
+// Copyright 2015 The gRPC Authors
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "kademlia_public_ledger";
+option java_outer_classname = "PL";
+option objc_class_prefix = "";
+
+package public_ledger;
+
+// Interface exported by the server.
+service Public_ledger {
+  // A simple gRPC.
+  //
+  // The PING RPC probes a node to see if it is online
+  //
+  rpc PING(NodeID) returns (BooleanSuccessResponse) {}
+
+  // A simple gRPC
+  //
+  // The STORE RPC instructs a node to store pair for later retrieval
+  //
+  rpc STORE(Key_Value) returns (BooleanSuccessResponse) {}
+
+  // A simple gRPC
+  //
+  // The FIND_NODE RPC takes a 160-bit ID as an argument.
+  // The recipient of the RPC returns {IP address, UDP port, NodeID}
+  // triples for k nodes it knows about closest to the target ID
+  //
+  rpc FIND_NODE(NodeID) returns (NodeInfo) {}
+
+  // A simple gRPC
+  //
+  // The FIND_VALUE behaves like FIND_NODE - returning {IP address, UDP port, NodeID}
+  // triples with one exception. If the rpc recipient has received
+  // a store rpc for the key, it just returns the stored value
+  //
+  rpc FIND_VALUE(Key) returns (NodeInfoORValue) {}
+
+}
+
+message Key_Value {
+
+}
+
+message Key {
+}
+
+message Value {
+}
+
+message BooleanSuccessResponse {
+  bool success = 1;
+}
+
+message NodeInfo {
+}
+
+message NodeInfoORValue {
+}
+
+message NodeID {
+  string nodeID = 1;
+}

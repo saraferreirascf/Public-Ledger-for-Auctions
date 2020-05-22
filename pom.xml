@@ -54,6 +54,8 @@
 
     <properties>
         <maven.compiler.release>11</maven.compiler.release>
+        <argumentA>defaultA</argumentA>
+        <argumentB>defaultB</argumentB>
     </properties>
 
 
@@ -66,6 +68,11 @@
             </extension>
         </extensions>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

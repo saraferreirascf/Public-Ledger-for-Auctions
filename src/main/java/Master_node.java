@@ -54,8 +54,9 @@ public class Master_node {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        start(50051);
-        }
+        /* old code */ //start(50051);
+
+    }
 
       static class GreeterImpl extends GreeterGrpc.GreeterImplBase {
 
