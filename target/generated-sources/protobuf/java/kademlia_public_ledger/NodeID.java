@@ -4,11 +4,11 @@
 package kademlia_public_ledger;
 
 /**
- * Protobuf type {@code public_ledger.NodeID}
+ * Protobuf type {@code NodeID}
  */
 public  final class NodeID extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:public_ledger.NodeID)
+    // @@protoc_insertion_point(message_implements:NodeID)
     NodeIDOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use NodeID.newBuilder() to construct.
@@ -16,7 +16,7 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private NodeID() {
-    nodeID_ = "";
+    nodeID_ = com.google.protobuf.ByteString.EMPTY;
     clientName_ = "";
   }
 
@@ -51,9 +51,8 @@ private static final long serialVersionUID = 0L;
             done = true;
             break;
           case 10: {
-            java.lang.String s = input.readStringRequireUtf8();
 
-            nodeID_ = s;
+            nodeID_ = input.readBytes();
             break;
           }
           case 18: {
@@ -83,51 +82,25 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return kademlia_public_ledger.PL.internal_static_public_ledger_NodeID_descriptor;
+    return kademlia_public_ledger.PL.internal_static_NodeID_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return kademlia_public_ledger.PL.internal_static_public_ledger_NodeID_fieldAccessorTable
+    return kademlia_public_ledger.PL.internal_static_NodeID_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             kademlia_public_ledger.NodeID.class, kademlia_public_ledger.NodeID.Builder.class);
   }
 
   public static final int NODEID_FIELD_NUMBER = 1;
-  private volatile java.lang.Object nodeID_;
+  private com.google.protobuf.ByteString nodeID_;
   /**
-   * <code>string nodeID = 1;</code>
+   * <code>bytes nodeID = 1;</code>
    * @return The nodeID.
    */
-  public java.lang.String getNodeID() {
-    java.lang.Object ref = nodeID_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      nodeID_ = s;
-      return s;
-    }
-  }
-  /**
-   * <code>string nodeID = 1;</code>
-   * @return The bytes for nodeID.
-   */
-  public com.google.protobuf.ByteString
-      getNodeIDBytes() {
-    java.lang.Object ref = nodeID_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      nodeID_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public com.google.protobuf.ByteString getNodeID() {
+    return nodeID_;
   }
 
   public static final int CLIENT_NAME_FIELD_NUMBER = 2;
@@ -180,8 +153,8 @@ private static final long serialVersionUID = 0L;
   @java.lang.Override
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!getNodeIDBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, nodeID_);
+    if (!nodeID_.isEmpty()) {
+      output.writeBytes(1, nodeID_);
     }
     if (!getClientNameBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, clientName_);
@@ -195,8 +168,9 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!getNodeIDBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, nodeID_);
+    if (!nodeID_.isEmpty()) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBytesSize(1, nodeID_);
     }
     if (!getClientNameBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, clientName_);
@@ -331,21 +305,21 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code public_ledger.NodeID}
+   * Protobuf type {@code NodeID}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:public_ledger.NodeID)
+      // @@protoc_insertion_point(builder_implements:NodeID)
       kademlia_public_ledger.NodeIDOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return kademlia_public_ledger.PL.internal_static_public_ledger_NodeID_descriptor;
+      return kademlia_public_ledger.PL.internal_static_NodeID_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return kademlia_public_ledger.PL.internal_static_public_ledger_NodeID_fieldAccessorTable
+      return kademlia_public_ledger.PL.internal_static_NodeID_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               kademlia_public_ledger.NodeID.class, kademlia_public_ledger.NodeID.Builder.class);
     }
@@ -368,7 +342,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public Builder clear() {
       super.clear();
-      nodeID_ = "";
+      nodeID_ = com.google.protobuf.ByteString.EMPTY;
 
       clientName_ = "";
 
@@ -378,7 +352,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return kademlia_public_ledger.PL.internal_static_public_ledger_NodeID_descriptor;
+      return kademlia_public_ledger.PL.internal_static_NodeID_descriptor;
     }
 
     @java.lang.Override
@@ -448,9 +422,8 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(kademlia_public_ledger.NodeID other) {
       if (other == kademlia_public_ledger.NodeID.getDefaultInstance()) return this;
-      if (!other.getNodeID().isEmpty()) {
-        nodeID_ = other.nodeID_;
-        onChanged();
+      if (other.getNodeID() != com.google.protobuf.ByteString.EMPTY) {
+        setNodeID(other.getNodeID());
       }
       if (!other.getClientName().isEmpty()) {
         clientName_ = other.clientName_;
@@ -485,47 +458,20 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.lang.Object nodeID_ = "";
+    private com.google.protobuf.ByteString nodeID_ = com.google.protobuf.ByteString.EMPTY;
     /**
-     * <code>string nodeID = 1;</code>
+     * <code>bytes nodeID = 1;</code>
      * @return The nodeID.
      */
-    public java.lang.String getNodeID() {
-      java.lang.Object ref = nodeID_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        nodeID_ = s;
-        return s;
-      } else {
-        return (java.lang.String) ref;
-      }
+    public com.google.protobuf.ByteString getNodeID() {
+      return nodeID_;
     }
     /**
-     * <code>string nodeID = 1;</code>
-     * @return The bytes for nodeID.
-     */
-    public com.google.protobuf.ByteString
-        getNodeIDBytes() {
-      java.lang.Object ref = nodeID_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        nodeID_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    /**
-     * <code>string nodeID = 1;</code>
+     * <code>bytes nodeID = 1;</code>
      * @param value The nodeID to set.
      * @return This builder for chaining.
      */
-    public Builder setNodeID(
-        java.lang.String value) {
+    public Builder setNodeID(com.google.protobuf.ByteString value) {
       if (value == null) {
     throw new NullPointerException();
   }
@@ -535,28 +481,12 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>string nodeID = 1;</code>
+     * <code>bytes nodeID = 1;</code>
      * @return This builder for chaining.
      */
     public Builder clearNodeID() {
       
       nodeID_ = getDefaultInstance().getNodeID();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string nodeID = 1;</code>
-     * @param value The bytes for nodeID to set.
-     * @return This builder for chaining.
-     */
-    public Builder setNodeIDBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      nodeID_ = value;
       onChanged();
       return this;
     }
@@ -649,10 +579,10 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:public_ledger.NodeID)
+    // @@protoc_insertion_point(builder_scope:NodeID)
   }
 
-  // @@protoc_insertion_point(class_scope:public_ledger.NodeID)
+  // @@protoc_insertion_point(class_scope:NodeID)
   private static final kademlia_public_ledger.NodeID DEFAULT_INSTANCE;
   static {
     DEFAULT_INSTANCE = new kademlia_public_ledger.NodeID();

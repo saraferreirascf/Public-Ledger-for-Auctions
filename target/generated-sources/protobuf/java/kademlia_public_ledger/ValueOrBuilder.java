@@ -4,6 +4,6 @@
 package kademlia_public_ledger;
 
 public interface ValueOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:public_ledger.Value)
+    // @@protoc_insertion_point(interface_extends:Value)
     com.google.protobuf.MessageOrBuilder {
 }

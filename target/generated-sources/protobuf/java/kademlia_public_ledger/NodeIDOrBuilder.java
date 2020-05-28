@@ -4,20 +4,14 @@
 package kademlia_public_ledger;
 
 public interface NodeIDOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:public_ledger.NodeID)
+    // @@protoc_insertion_point(interface_extends:NodeID)
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string nodeID = 1;</code>
+   * <code>bytes nodeID = 1;</code>
    * @return The nodeID.
    */
-  java.lang.String getNodeID();
-  /**
-   * <code>string nodeID = 1;</code>
-   * @return The bytes for nodeID.
-   */
-  com.google.protobuf.ByteString
-      getNodeIDBytes();
+  com.google.protobuf.ByteString getNodeID();
 
   /**
    * <code>string client_name = 2;</code>

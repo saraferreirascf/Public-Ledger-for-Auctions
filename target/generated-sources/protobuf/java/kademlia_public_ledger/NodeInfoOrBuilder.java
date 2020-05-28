@@ -4,6 +4,39 @@
 package kademlia_public_ledger;
 
 public interface NodeInfoOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:public_ledger.NodeInfo)
+    // @@protoc_insertion_point(interface_extends:NodeInfo)
     com.google.protobuf.MessageOrBuilder {
+
+  /**
+   * <code>.NodeID nid = 4;</code>
+   * @return Whether the nid field is set.
+   */
+  boolean hasNid();
+  /**
+   * <code>.NodeID nid = 4;</code>
+   * @return The nid.
+   */
+  kademlia_public_ledger.NodeID getNid();
+  /**
+   * <code>.NodeID nid = 4;</code>
+   */
+  kademlia_public_ledger.NodeIDOrBuilder getNidOrBuilder();
+
+  /**
+   * <code>string ip = 5;</code>
+   * @return The ip.
+   */
+  java.lang.String getIp();
+  /**
+   * <code>string ip = 5;</code>
+   * @return The bytes for ip.
+   */
+  com.google.protobuf.ByteString
+      getIpBytes();
+
+  /**
+   * <code>int32 port = 6;</code>
+   * @return The port.
+   */
+  int getPort();
 }

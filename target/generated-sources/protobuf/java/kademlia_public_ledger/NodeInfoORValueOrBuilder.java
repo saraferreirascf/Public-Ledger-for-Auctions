@@ -4,6 +4,6 @@
 package kademlia_public_ledger;
 
 public interface NodeInfoORValueOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:public_ledger.NodeInfoORValue)
+    // @@protoc_insertion_point(interface_extends:NodeInfoORValue)
     com.google.protobuf.MessageOrBuilder {
 }

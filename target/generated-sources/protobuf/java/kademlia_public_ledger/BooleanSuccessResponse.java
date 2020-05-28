@@ -4,11 +4,11 @@
 package kademlia_public_ledger;
 
 /**
- * Protobuf type {@code public_ledger.BooleanSuccessResponse}
+ * Protobuf type {@code BooleanSuccessResponse}
  */
 public  final class BooleanSuccessResponse extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:public_ledger.BooleanSuccessResponse)
+    // @@protoc_insertion_point(message_implements:BooleanSuccessResponse)
     BooleanSuccessResponseOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use BooleanSuccessResponse.newBuilder() to construct.
@@ -74,13 +74,13 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return kademlia_public_ledger.PL.internal_static_public_ledger_BooleanSuccessResponse_descriptor;
+    return kademlia_public_ledger.PL.internal_static_BooleanSuccessResponse_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return kademlia_public_ledger.PL.internal_static_public_ledger_BooleanSuccessResponse_fieldAccessorTable
+    return kademlia_public_ledger.PL.internal_static_BooleanSuccessResponse_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             kademlia_public_ledger.BooleanSuccessResponse.class, kademlia_public_ledger.BooleanSuccessResponse.Builder.class);
   }
@@ -252,21 +252,21 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code public_ledger.BooleanSuccessResponse}
+   * Protobuf type {@code BooleanSuccessResponse}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:public_ledger.BooleanSuccessResponse)
+      // @@protoc_insertion_point(builder_implements:BooleanSuccessResponse)
       kademlia_public_ledger.BooleanSuccessResponseOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return kademlia_public_ledger.PL.internal_static_public_ledger_BooleanSuccessResponse_descriptor;
+      return kademlia_public_ledger.PL.internal_static_BooleanSuccessResponse_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return kademlia_public_ledger.PL.internal_static_public_ledger_BooleanSuccessResponse_fieldAccessorTable
+      return kademlia_public_ledger.PL.internal_static_BooleanSuccessResponse_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               kademlia_public_ledger.BooleanSuccessResponse.class, kademlia_public_ledger.BooleanSuccessResponse.Builder.class);
     }
@@ -297,7 +297,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return kademlia_public_ledger.PL.internal_static_public_ledger_BooleanSuccessResponse_descriptor;
+      return kademlia_public_ledger.PL.internal_static_BooleanSuccessResponse_descriptor;
     }
 
     @java.lang.Override
@@ -440,10 +440,10 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:public_ledger.BooleanSuccessResponse)
+    // @@protoc_insertion_point(builder_scope:BooleanSuccessResponse)
   }
 
-  // @@protoc_insertion_point(class_scope:public_ledger.BooleanSuccessResponse)
+  // @@protoc_insertion_point(class_scope:BooleanSuccessResponse)
   private static final kademlia_public_ledger.BooleanSuccessResponse DEFAULT_INSTANCE;
   static {
     DEFAULT_INSTANCE = new kademlia_public_ledger.BooleanSuccessResponse();

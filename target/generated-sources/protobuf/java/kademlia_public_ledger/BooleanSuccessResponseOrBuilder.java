@@ -4,7 +4,7 @@
 package kademlia_public_ledger;
 
 public interface BooleanSuccessResponseOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:public_ledger.BooleanSuccessResponse)
+    // @@protoc_insertion_point(interface_extends:BooleanSuccessResponse)
     com.google.protobuf.MessageOrBuilder {
 
   /**

@@ -4,11 +4,11 @@
 package kademlia_public_ledger;
 
 /**
- * Protobuf type {@code public_ledger.Key_Value}
+ * Protobuf type {@code Key_Value}
  */
 public  final class Key_Value extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:public_ledger.Key_Value)
+    // @@protoc_insertion_point(message_implements:Key_Value)
     Key_ValueOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use Key_Value.newBuilder() to construct.
@@ -69,13 +69,13 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return kademlia_public_ledger.PL.internal_static_public_ledger_Key_Value_descriptor;
+    return kademlia_public_ledger.PL.internal_static_Key_Value_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return kademlia_public_ledger.PL.internal_static_public_ledger_Key_Value_fieldAccessorTable
+    return kademlia_public_ledger.PL.internal_static_Key_Value_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             kademlia_public_ledger.Key_Value.class, kademlia_public_ledger.Key_Value.Builder.class);
   }
@@ -225,21 +225,21 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code public_ledger.Key_Value}
+   * Protobuf type {@code Key_Value}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:public_ledger.Key_Value)
+      // @@protoc_insertion_point(builder_implements:Key_Value)
       kademlia_public_ledger.Key_ValueOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return kademlia_public_ledger.PL.internal_static_public_ledger_Key_Value_descriptor;
+      return kademlia_public_ledger.PL.internal_static_Key_Value_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return kademlia_public_ledger.PL.internal_static_public_ledger_Key_Value_fieldAccessorTable
+      return kademlia_public_ledger.PL.internal_static_Key_Value_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               kademlia_public_ledger.Key_Value.class, kademlia_public_ledger.Key_Value.Builder.class);
     }
@@ -268,7 +268,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return kademlia_public_ledger.PL.internal_static_public_ledger_Key_Value_descriptor;
+      return kademlia_public_ledger.PL.internal_static_Key_Value_descriptor;
     }
 
     @java.lang.Override
@@ -377,10 +377,10 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:public_ledger.Key_Value)
+    // @@protoc_insertion_point(builder_scope:Key_Value)
   }
 
-  // @@protoc_insertion_point(class_scope:public_ledger.Key_Value)
+  // @@protoc_insertion_point(class_scope:Key_Value)
   private static final kademlia_public_ledger.Key_Value DEFAULT_INSTANCE;
   static {
     DEFAULT_INSTANCE = new kademlia_public_ledger.Key_Value();

@@ -18,10 +18,8 @@ option java_package = "kademlia_public_ledger";
 option java_outer_classname = "PL";
 option objc_class_prefix = "";
 
-package public_ledger;
-
 // Interface exported by the server.
-service Public_ledger {
+service P2P {
   // A simple gRPC.
   //
   // The PING RPC probes a node to see if it is online
@@ -40,7 +38,7 @@ service Public_ledger {
   // The recipient of the RPC returns {IP address, UDP port, NodeID}
   // triples for k nodes it knows about closest to the target ID
   //
-  rpc FIND_NODE(NodeID) returns (NodeInfo) {}
+  rpc FIND_NODE(NodeID) returns (stream NodeInfo) {}
 
   // A simple gRPC
   //
@@ -50,6 +48,20 @@ service Public_ledger {
   //
   rpc FIND_VALUE(Key) returns (NodeInfoORValue) {}
 
+  // A simple gRPC
+  //
+  // The FIND_VALUE behaves like FIND_NODE - returning {IP address, UDP port, NodeID}
+  // triples with one exception. If the rpc recipient has received
+  // a store rpc for the key, it just returns the stored value
+  //
+  rpc JOIN(NodeID) returns (Kbucket) {}
+
+}
+
+message Kbucket {
+  BooleanSuccessResponse response = 2;
+  repeated NodeInfo brothers = 10;
+  int32 i = 1;
 }
 
 message Key_Value {
@@ -68,12 +80,15 @@ message BooleanSuccessResponse {
 }
 
 message NodeInfo {
+  NodeID nid = 4;
+  string ip = 5;
+  int32 port = 6;
 }
 
 message NodeInfoORValue {
 }
 
 message NodeID {
-  string nodeID = 1;
+  bytes  nodeID = 1;
   string client_name= 2;
 }
