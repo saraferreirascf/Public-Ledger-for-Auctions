@@ -56,9 +56,9 @@ public class Binary_tree {
 
     public void lookup(Key key) throws InterruptedException {
         logger.info("started lookup");
-        ArrayList<Key> listenKeys = new ArrayList<Key>();
-        ArrayList<Node> closest = new ArrayList<Node>();
-        ArrayList<Node> father = new ArrayList<Node>();
+        List<Key> listenKeys = new ArrayList<Key>();
+        List<Node> closest = new ArrayList<Node>();
+        List<Node> father = new ArrayList<Node>();
         Key idistance = new Key();
         idistance.MAX_KEY();
         KBucket ikbucket = null;
@@ -92,32 +92,45 @@ public class Binary_tree {
                 // send alpha FIND NODES
                 Node inode = father.get(i);
                 logger.info("round1(" + i + ") id:" + inode.nodeID.kToBigInt() + " port: " + inode.port);
-                client = new P2PClient(ManagedChannelBuilder.forTarget(inode.ip + ":" + inode.port).usePlaintext().build(););
+                client = new P2PClient(ManagedChannelBuilder.forTarget(inode.ip + ":" + inode.port).usePlaintext().build());
                 Iterator<NodeInfo> round1 = client.FIND_NODE(inode.toNodeID().build());
                 listenKeys.add(inode.nodeID);
                 while ( round1 != null && round1.hasNext()) {
                     NodeInfo info = round1.next();
-                    Key infokey = new Key( info.getNid().getNodeID().toByteArray());
-                    if (infokey.compareTo(idistance) < 0) {
-                        idistance = infokey;
-                        closest.add(infokey);
+                    Node infonode = new Node(info);
+                    if (infonode.nodeID.compareTo(idistance) < 0) {
+                        idistance = infonode.nodeID;
+                        closest.add(infonode);
                     }
                     // round2 send findnode to k triples
                     logger.info("round2(" + i + ") id:" + new BigInteger(info.getNid().getNodeID().toByteArray()) + " port: " + info.getPort());
-                    client = new P2PClient(ManagedChannelBuilder.forTarget(info.getIp() + ":" + inode.getPort()).usePlaintext().build());
+                    client = new P2PClient(ManagedChannelBuilder.forTarget(info.getIp() + ":" + info.getPort()).usePlaintext().build());
                     Iterator<NodeInfo> round2 = client.FIND_NODE(info.getNid());
-                    allKeys.add(info);
-                    listenKeys.add(info);
-                    int count = 0;
-                    while ( (round2 != null && round2.hasNext()) || count == alpha){
-                        NodeInfo info = round2.next();
-                        Key infoKey = new key(info.getNid().getNodeID().toByteArray());
+                    listenKeys.add(infonode.nodeID);
+                    int counter = 0;
+                    while ( (round2 != null && round2.hasNext()) || counter == alpha){
+                        NodeInfo info2 = round2.next();
+                        Node infonode2 = new Node(info2);
+                        if (infonode2.nodeID.compareTo(idistance) < 0) {
+                            idistance = infonode2.nodeID;
+                            closest.add(infonode2);
+                        }
                         for (Key ikey: listenKeys){
-                            if (infoKey.compareTo(ikey) == 0) {
-                                logger.info("round3(" + i + ") id:" + new BigInteger(info.getNid().getNodeID().toByteArray()) + " port: " + info.getPort());
-                                client = new P2PClient(ManagedChannelBuilder.forTarget(info.getIp() + ":" + inode.getPort()).usePlaintext().build(););
-                                Iterator<NodeInfo> round3 = client.FIND_NODE(info.getNid());
-                                count++;
+                            if (counter == alpha)
+                                break;
+                            if (infonode2.nodeID.compareTo(ikey) != 0) {
+                                logger.info("round3(" + i + ") id:" + new BigInteger(info2.getNid().getNodeID().toByteArray()) + " port: " + info2.getPort());
+                                client = new P2PClient(ManagedChannelBuilder.forTarget(info2.getIp() + ":" + info2.getPort()).usePlaintext().build());
+                                Iterator<NodeInfo> round3 = client.FIND_NODE(info2.getNid());
+                                counter++;
+                                while ( round3 != null && round3.hasNext()) {
+                                    NodeInfo info3 = round3.next();
+                                    Node infonode3 = new Node(info3);
+                                    if (infonode3.nodeID.compareTo(idistance) < 0) {
+                                        idistance = infonode3.nodeID;
+                                        closest.add(infonode3);
+                                    }
+                                }
                                 break;
                             }
                         }
@@ -189,7 +202,8 @@ public class Binary_tree {
             // asyncStub = Public_ledgerGrpc.newStub(channelBuilder);
         }
 
-        public void PING() {
+        public BooleanSuccessResponse PING(NodeID request) {
+            return null;
         }
 
         public void JOIN(byte[] nodeID) {
@@ -306,10 +320,10 @@ public class Binary_tree {
                     for (Node inode: ikbucket.nodes) {
                         logger.info("sending nodeID: " + inode.nodeID.kToBigInt());
                         responseObserver.onNext(inode.toNodeInfo().build());
-                        if (++ik == k)
+                        if (++ik == k.intValue())
                             break;
                     }
-                    if (ik == k)
+                    if (ik == k.intValue())
                         break;
                 }
                 responseObserver.onCompleted();
@@ -334,7 +348,8 @@ public class Binary_tree {
                 if (ikbucket.inRange(inode)) {
                     logger.info("Same range.");
                     // verifica se o node já existe no bucket
-                    if ((Node jnode = ikbucket.getNodeByID(inode.nodeID)) != null) {
+                    Node jnode = null;
+                    if ((jnode = ikbucket.getNodeByID(inode.nodeID)) != null) {
                         ikbucket.nodes.remove(jnode);
                         ikbucket.nodes.add(inode);   
                         inode.kbucket = ikbucket;                     
@@ -356,28 +371,29 @@ public class Binary_tree {
                         } else if (!ikbucket.inRange(this.iaddress)) {
                             logger.info("Node outofrange init address");
                             break;
-                        } else if (k.intValue().compareTo(maxk) < 0) {
+                        } else if (k.compareTo(maxk) < 0) {
                             logger.info("k++");
                             k = k.add(new BigInteger("1"));
                             break;
-                        } else if (k.intValue().compareTo(maxk) == 0) {
+                        } else if (k.compareTo(maxk) == 0) {
                             // if the appropriate k-bucket is full, however then the recipient pings de k-buckets least-recently seen node to decide what to do
-                            Node jnode = ikbucket.get(0);
-                            NodeID info = jnode.toNodeInfo();
-                            this.client = new P2PClient(ManagedChannelBuilder.forTarget(info.getIp() + ":" + inode.getPort()).usePlaintext().build());
+                            jnode = ikbucket.nodes.get(0);
+                            NodeInfo info = jnode.toNodeInfo().build();
+                            this.client = new P2PClient(ManagedChannelBuilder.forTarget(info.getIp() + ":" + info.getPort()).usePlaintext().build());
                             BooleanSuccessResponse response = this.client.PING(info.getNid());
                             if (response.getSuccess()) {
                                 logger.info("Ping success, add to tail");
-                                ikbucket.remove(jnode);
-                                ikbucket.add(jnode);
+                                ikbucket.nodes.remove(jnode);
+                                ikbucket.nodes.add(jnode);
                             } else {
                                 logger.info("Ping not success, inode added to tail");
-                                ikbucket.remove(jnode);
-                                ikbucket.add(inode);
+                                ikbucket.nodes.remove(jnode);
+                                ikbucket.nodes.add(inode);
                                 inode.kbucket = ikbucket; 
                             }
                             break;
-                        } 
+                        }
+                    }
                 } else {
                     logger.info("Node out od range");
                 }
@@ -418,6 +434,11 @@ public class Binary_tree {
         Node(int p) {
             this.port = p;
             generateRandom160bits(this.nodeID);
+        }
+        Node (NodeInfo info) {
+            this.port = info.getPort();
+            this.nodeID = new Key(info.getNid().getNodeID().toByteArray());
+            this.ip = info.getIp();
         }
 
         // messages parse
@@ -462,6 +483,7 @@ public class Binary_tree {
             }
         }
 
+
         private int get_Port() {
             ArrayList<String> file_content = new ArrayList<String>();
             file_content = readFile();
@@ -489,7 +511,10 @@ public class Binary_tree {
         }
 
         public Node getNodeByID(Key ikey) {
-            this.nodes.forEach((node) -> if(node.nodeID.compareTo(ikey) == 0){return node});
+            for (Node inode: this.nodes)
+                if(inode.nodeID.compareTo(ikey) == 0){
+                    return inode;
+                }
             return null;
         }
 
@@ -562,9 +587,9 @@ public class Binary_tree {
     }
 
     BigInteger getMaxK() {
-        byte[] bytes = new byte[msize];
+        byte[] bytes = new byte[nsize];
         bytes[0] = (byte) 0xf0;
-        return new BigInteger(bytes).subbtract(new BigInteger("1"));
+        return new BigInteger(bytes).subtract(new BigInteger("1"));
 
     }
 
