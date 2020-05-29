@@ -45,15 +45,20 @@ public final class PL {
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_NodeInfo_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_NodeInfoORValue_descriptor;
-  static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_NodeInfoORValue_fieldAccessorTable;
-  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_NodeID_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_NodeID_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_BasicNode_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_BasicNode_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_NodeInfoORValue_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_NodeInfoORValue_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -67,16 +72,19 @@ public final class PL {
       "e\030\002 \001(\0132\027.BooleanSuccessResponse\022\033\n\010brot" +
       "hers\030\n \003(\0132\t.NodeInfo\022\t\n\001i\030\001 \001(\005\"\013\n\tKey_" +
       "Value\"\005\n\003Key\"\007\n\005Value\")\n\026BooleanSuccessR" +
-      "esponse\022\017\n\007success\030\001 \001(\010\":\n\010NodeInfo\022\024\n\003" +
-      "nid\030\004 \001(\0132\007.NodeID\022\n\n\002ip\030\005 \001(\t\022\014\n\004port\030\006" +
-      " \001(\005\"\021\n\017NodeInfoORValue\"-\n\006NodeID\022\016\n\006nod" +
-      "eID\030\001 \001(\014\022\023\n\013client_name\030\002 \001(\t2\313\001\n\003P2P\022*" +
-      "\n\004PING\022\007.NodeID\032\027.BooleanSuccessResponse" +
-      "\"\000\022.\n\005STORE\022\n.Key_Value\032\027.BooleanSuccess" +
-      "Response\"\000\022#\n\tFIND_NODE\022\007.NodeID\032\t.NodeI" +
-      "nfo\"\0000\001\022&\n\nFIND_VALUE\022\004.Key\032\020.NodeInfoOR" +
-      "Value\"\000\022\033\n\004JOIN\022\007.NodeID\032\010.Kbucket\"\000B!\n\026" +
-      "kademlia_public_ledgerB\002PLP\001\242\002\000b\006proto3"
+      "esponse\022\017\n\007success\030\001 \001(\010\"@\n\010NodeInfo\022\030\n\004" +
+      "node\030\001 \001(\0132\n.BasicNode\022\032\n\006sender\030\002 \001(\0132\n" +
+      ".BasicNode\"4\n\006NodeID\022\016\n\006nodeID\030\001 \001(\014\022\032\n\006" +
+      "sender\030\002 \001(\0132\n.BasicNode\"J\n\tBasicNode\022\016\n" +
+      "\006nodeID\030\001 \001(\014\022\n\n\002ip\030\002 \001(\t\022\014\n\004port\030\003 \001(\005\022" +
+      "\023\n\013client_name\030\004 \001(\t\"\021\n\017NodeInfoORValue2" +
+      "\313\001\n\003P2P\022*\n\004PING\022\007.NodeID\032\027.BooleanSucces" +
+      "sResponse\"\000\022.\n\005STORE\022\n.Key_Value\032\027.Boole" +
+      "anSuccessResponse\"\000\022#\n\tFIND_NODE\022\007.NodeI" +
+      "D\032\t.NodeInfo\"\0000\001\022&\n\nFIND_VALUE\022\004.Key\032\020.N" +
+      "odeInfoORValue\"\000\022\033\n\004JOIN\022\007.NodeID\032\010.Kbuc" +
+      "ket\"\000B!\n\026kademlia_public_ledgerB\002PLP\001\242\002\000" +
+      "b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -117,19 +125,25 @@ public final class PL {
     internal_static_NodeInfo_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_NodeInfo_descriptor,
-        new java.lang.String[] { "Nid", "Ip", "Port", });
-    internal_static_NodeInfoORValue_descriptor =
+        new java.lang.String[] { "Node", "Sender", });
+    internal_static_NodeID_descriptor =
       getDescriptor().getMessageTypes().get(6);
+    internal_static_NodeID_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_NodeID_descriptor,
+        new java.lang.String[] { "NodeID", "Sender", });
+    internal_static_BasicNode_descriptor =
+      getDescriptor().getMessageTypes().get(7);
+    internal_static_BasicNode_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_BasicNode_descriptor,
+        new java.lang.String[] { "NodeID", "Ip", "Port", "ClientName", });
+    internal_static_NodeInfoORValue_descriptor =
+      getDescriptor().getMessageTypes().get(8);
     internal_static_NodeInfoORValue_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_NodeInfoORValue_descriptor,
         new java.lang.String[] { });
-    internal_static_NodeID_descriptor =
-      getDescriptor().getMessageTypes().get(7);
-    internal_static_NodeID_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_NodeID_descriptor,
-        new java.lang.String[] { "NodeID", "ClientName", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

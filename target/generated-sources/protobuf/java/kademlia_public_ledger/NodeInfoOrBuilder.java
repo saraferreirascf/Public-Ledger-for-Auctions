@@ -8,35 +8,32 @@ public interface NodeInfoOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>.NodeID nid = 4;</code>
-   * @return Whether the nid field is set.
+   * <code>.BasicNode node = 1;</code>
+   * @return Whether the node field is set.
    */
-  boolean hasNid();
+  boolean hasNode();
   /**
-   * <code>.NodeID nid = 4;</code>
-   * @return The nid.
+   * <code>.BasicNode node = 1;</code>
+   * @return The node.
    */
-  kademlia_public_ledger.NodeID getNid();
+  kademlia_public_ledger.BasicNode getNode();
   /**
-   * <code>.NodeID nid = 4;</code>
+   * <code>.BasicNode node = 1;</code>
    */
-  kademlia_public_ledger.NodeIDOrBuilder getNidOrBuilder();
+  kademlia_public_ledger.BasicNodeOrBuilder getNodeOrBuilder();
 
   /**
-   * <code>string ip = 5;</code>
-   * @return The ip.
+   * <code>.BasicNode sender = 2;</code>
+   * @return Whether the sender field is set.
    */
-  java.lang.String getIp();
+  boolean hasSender();
   /**
-   * <code>string ip = 5;</code>
-   * @return The bytes for ip.
+   * <code>.BasicNode sender = 2;</code>
+   * @return The sender.
    */
-  com.google.protobuf.ByteString
-      getIpBytes();
-
+  kademlia_public_ledger.BasicNode getSender();
   /**
-   * <code>int32 port = 6;</code>
-   * @return The port.
+   * <code>.BasicNode sender = 2;</code>
    */
-  int getPort();
+  kademlia_public_ledger.BasicNodeOrBuilder getSenderOrBuilder();
 }

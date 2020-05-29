@@ -17,7 +17,6 @@ private static final long serialVersionUID = 0L;
   }
   private NodeID() {
     nodeID_ = com.google.protobuf.ByteString.EMPTY;
-    clientName_ = "";
   }
 
   @java.lang.Override
@@ -56,9 +55,16 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 18: {
-            java.lang.String s = input.readStringRequireUtf8();
+            kademlia_public_ledger.BasicNode.Builder subBuilder = null;
+            if (sender_ != null) {
+              subBuilder = sender_.toBuilder();
+            }
+            sender_ = input.readMessage(kademlia_public_ledger.BasicNode.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(sender_);
+              sender_ = subBuilder.buildPartial();
+            }
 
-            clientName_ = s;
             break;
           }
           default: {
@@ -103,40 +109,27 @@ private static final long serialVersionUID = 0L;
     return nodeID_;
   }
 
-  public static final int CLIENT_NAME_FIELD_NUMBER = 2;
-  private volatile java.lang.Object clientName_;
+  public static final int SENDER_FIELD_NUMBER = 2;
+  private kademlia_public_ledger.BasicNode sender_;
   /**
-   * <code>string client_name = 2;</code>
-   * @return The clientName.
+   * <code>.BasicNode sender = 2;</code>
+   * @return Whether the sender field is set.
    */
-  public java.lang.String getClientName() {
-    java.lang.Object ref = clientName_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      clientName_ = s;
-      return s;
-    }
+  public boolean hasSender() {
+    return sender_ != null;
   }
   /**
-   * <code>string client_name = 2;</code>
-   * @return The bytes for clientName.
+   * <code>.BasicNode sender = 2;</code>
+   * @return The sender.
    */
-  public com.google.protobuf.ByteString
-      getClientNameBytes() {
-    java.lang.Object ref = clientName_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      clientName_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public kademlia_public_ledger.BasicNode getSender() {
+    return sender_ == null ? kademlia_public_ledger.BasicNode.getDefaultInstance() : sender_;
+  }
+  /**
+   * <code>.BasicNode sender = 2;</code>
+   */
+  public kademlia_public_ledger.BasicNodeOrBuilder getSenderOrBuilder() {
+    return getSender();
   }
 
   private byte memoizedIsInitialized = -1;
@@ -156,8 +149,8 @@ private static final long serialVersionUID = 0L;
     if (!nodeID_.isEmpty()) {
       output.writeBytes(1, nodeID_);
     }
-    if (!getClientNameBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, clientName_);
+    if (sender_ != null) {
+      output.writeMessage(2, getSender());
     }
     unknownFields.writeTo(output);
   }
@@ -172,8 +165,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeBytesSize(1, nodeID_);
     }
-    if (!getClientNameBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, clientName_);
+    if (sender_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(2, getSender());
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -192,8 +186,11 @@ private static final long serialVersionUID = 0L;
 
     if (!getNodeID()
         .equals(other.getNodeID())) return false;
-    if (!getClientName()
-        .equals(other.getClientName())) return false;
+    if (hasSender() != other.hasSender()) return false;
+    if (hasSender()) {
+      if (!getSender()
+          .equals(other.getSender())) return false;
+    }
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -207,8 +204,10 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + NODEID_FIELD_NUMBER;
     hash = (53 * hash) + getNodeID().hashCode();
-    hash = (37 * hash) + CLIENT_NAME_FIELD_NUMBER;
-    hash = (53 * hash) + getClientName().hashCode();
+    if (hasSender()) {
+      hash = (37 * hash) + SENDER_FIELD_NUMBER;
+      hash = (53 * hash) + getSender().hashCode();
+    }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -344,8 +343,12 @@ private static final long serialVersionUID = 0L;
       super.clear();
       nodeID_ = com.google.protobuf.ByteString.EMPTY;
 
-      clientName_ = "";
-
+      if (senderBuilder_ == null) {
+        sender_ = null;
+      } else {
+        sender_ = null;
+        senderBuilder_ = null;
+      }
       return this;
     }
 
@@ -373,7 +376,11 @@ private static final long serialVersionUID = 0L;
     public kademlia_public_ledger.NodeID buildPartial() {
       kademlia_public_ledger.NodeID result = new kademlia_public_ledger.NodeID(this);
       result.nodeID_ = nodeID_;
-      result.clientName_ = clientName_;
+      if (senderBuilder_ == null) {
+        result.sender_ = sender_;
+      } else {
+        result.sender_ = senderBuilder_.build();
+      }
       onBuilt();
       return result;
     }
@@ -425,9 +432,8 @@ private static final long serialVersionUID = 0L;
       if (other.getNodeID() != com.google.protobuf.ByteString.EMPTY) {
         setNodeID(other.getNodeID());
       }
-      if (!other.getClientName().isEmpty()) {
-        clientName_ = other.clientName_;
-        onChanged();
+      if (other.hasSender()) {
+        mergeSender(other.getSender());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -491,80 +497,123 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private java.lang.Object clientName_ = "";
+    private kademlia_public_ledger.BasicNode sender_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        kademlia_public_ledger.BasicNode, kademlia_public_ledger.BasicNode.Builder, kademlia_public_ledger.BasicNodeOrBuilder> senderBuilder_;
     /**
-     * <code>string client_name = 2;</code>
-     * @return The clientName.
+     * <code>.BasicNode sender = 2;</code>
+     * @return Whether the sender field is set.
      */
-    public java.lang.String getClientName() {
-      java.lang.Object ref = clientName_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        clientName_ = s;
-        return s;
+    public boolean hasSender() {
+      return senderBuilder_ != null || sender_ != null;
+    }
+    /**
+     * <code>.BasicNode sender = 2;</code>
+     * @return The sender.
+     */
+    public kademlia_public_ledger.BasicNode getSender() {
+      if (senderBuilder_ == null) {
+        return sender_ == null ? kademlia_public_ledger.BasicNode.getDefaultInstance() : sender_;
       } else {
-        return (java.lang.String) ref;
+        return senderBuilder_.getMessage();
       }
     }
     /**
-     * <code>string client_name = 2;</code>
-     * @return The bytes for clientName.
+     * <code>.BasicNode sender = 2;</code>
      */
-    public com.google.protobuf.ByteString
-        getClientNameBytes() {
-      java.lang.Object ref = clientName_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        clientName_ = b;
-        return b;
+    public Builder setSender(kademlia_public_ledger.BasicNode value) {
+      if (senderBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        sender_ = value;
+        onChanged();
       } else {
-        return (com.google.protobuf.ByteString) ref;
+        senderBuilder_.setMessage(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.BasicNode sender = 2;</code>
+     */
+    public Builder setSender(
+        kademlia_public_ledger.BasicNode.Builder builderForValue) {
+      if (senderBuilder_ == null) {
+        sender_ = builderForValue.build();
+        onChanged();
+      } else {
+        senderBuilder_.setMessage(builderForValue.build());
+      }
+
+      return this;
+    }
+    /**
+     * <code>.BasicNode sender = 2;</code>
+     */
+    public Builder mergeSender(kademlia_public_ledger.BasicNode value) {
+      if (senderBuilder_ == null) {
+        if (sender_ != null) {
+          sender_ =
+            kademlia_public_ledger.BasicNode.newBuilder(sender_).mergeFrom(value).buildPartial();
+        } else {
+          sender_ = value;
+        }
+        onChanged();
+      } else {
+        senderBuilder_.mergeFrom(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.BasicNode sender = 2;</code>
+     */
+    public Builder clearSender() {
+      if (senderBuilder_ == null) {
+        sender_ = null;
+        onChanged();
+      } else {
+        sender_ = null;
+        senderBuilder_ = null;
+      }
+
+      return this;
+    }
+    /**
+     * <code>.BasicNode sender = 2;</code>
+     */
+    public kademlia_public_ledger.BasicNode.Builder getSenderBuilder() {
+      
+      onChanged();
+      return getSenderFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.BasicNode sender = 2;</code>
+     */
+    public kademlia_public_ledger.BasicNodeOrBuilder getSenderOrBuilder() {
+      if (senderBuilder_ != null) {
+        return senderBuilder_.getMessageOrBuilder();
+      } else {
+        return sender_ == null ?
+            kademlia_public_ledger.BasicNode.getDefaultInstance() : sender_;
       }
     }
     /**
-     * <code>string client_name = 2;</code>
-     * @param value The clientName to set.
-     * @return This builder for chaining.
+     * <code>.BasicNode sender = 2;</code>
      */
-    public Builder setClientName(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      clientName_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string client_name = 2;</code>
-     * @return This builder for chaining.
-     */
-    public Builder clearClientName() {
-      
-      clientName_ = getDefaultInstance().getClientName();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string client_name = 2;</code>
-     * @param value The bytes for clientName to set.
-     * @return This builder for chaining.
-     */
-    public Builder setClientNameBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      clientName_ = value;
-      onChanged();
-      return this;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        kademlia_public_ledger.BasicNode, kademlia_public_ledger.BasicNode.Builder, kademlia_public_ledger.BasicNodeOrBuilder> 
+        getSenderFieldBuilder() {
+      if (senderBuilder_ == null) {
+        senderBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            kademlia_public_ledger.BasicNode, kademlia_public_ledger.BasicNode.Builder, kademlia_public_ledger.BasicNodeOrBuilder>(
+                getSender(),
+                getParentForChildren(),
+                isClean());
+        sender_ = null;
+      }
+      return senderBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

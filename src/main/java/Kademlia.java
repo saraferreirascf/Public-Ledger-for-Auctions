@@ -10,6 +10,7 @@ import com.google.protobuf.Message;
 import io.grpc.Channel;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import java.math.BigInteger;
 
 public class Kademlia {
     private static final Logger logger = Logger.getLogger(Kademlia.class.getName());
@@ -48,8 +49,7 @@ public class Kademlia {
                             tserver.start();
                             // join
                             tree.inserts(tree.current);
-                            for (int i=0; i<1000; i++)
-                                tree.inserts(tree.new Node());
+                                
                         } else if (commands[0].equals("createnode")) {
                             tree = new Binary_tree();
                             Thread tserver = new Thread(new Runnable() { 
@@ -73,9 +73,12 @@ public class Kademlia {
                             // Finnaly, u refreshes all k-buckets further away than its closest neighbor.
                             // During the refreshes, u both populates its own k-buckets and insets itsekf 
                             // into other nodes k-buckets as necessary.
-                        }  else if (commands[0].equals("printallnodes")) {
+                        }  else if (commands[0].equals("testinsertNodes")) {
+                            tree = new Binary_tree(50051);
+                            tree.inserts(tree.current);
+                            tree.testUnit.insertNodes();
                             tree.testUnit.printallnodes();
-                        }
+                        } 
                     }
 
                     in.close();

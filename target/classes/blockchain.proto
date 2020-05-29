@@ -80,15 +80,22 @@ message BooleanSuccessResponse {
 }
 
 message NodeInfo {
-  NodeID nid = 4;
-  string ip = 5;
-  int32 port = 6;
-}
-
-message NodeInfoORValue {
+  BasicNode node = 1;
+  BasicNode sender = 2;
 }
 
 message NodeID {
   bytes  nodeID = 1;
-  string client_name= 2;
+  BasicNode sender = 2;
+}
+
+message BasicNode {
+  bytes nodeID = 1;
+  string ip = 2;
+  int32 port = 3;
+  string client_name = 4;
+}
+
+
+message NodeInfoORValue {
 }

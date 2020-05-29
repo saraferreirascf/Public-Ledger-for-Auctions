@@ -25,6 +25,8 @@ import java.util.Collections;
 import java.util.List;
 import java.math.BigInteger;
 import com.google.protobuf.ByteString;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
 
 public class Binary_tree {
     private final Logger logger = Logger.getLogger(Binary_tree.class.getName());
@@ -35,8 +37,8 @@ public class Binary_tree {
     P2PServer server = null;
     P2PClient client = null;
     BigInteger k = new BigInteger("1");
-    BigInteger maxk = getMaxK();
     int nsize = 20;
+    BigInteger maxk = getMaxK();
     int alpha = 3;
     TestUnit_ testUnit = new TestUnit_();
 
@@ -97,38 +99,38 @@ public class Binary_tree {
                 listenKeys.add(inode.nodeID);
                 while ( round1 != null && round1.hasNext()) {
                     NodeInfo info = round1.next();
-                    Node infonode = new Node(info);
-                    if (infonode.nodeID.compareTo(idistance) < 0) {
-                        idistance = infonode.nodeID;
-                        closest.add(infonode);
+                    Node node = new Node(info.getNode());
+                    if (node.nodeID.compareTo(idistance) < 0) {
+                        idistance = node.nodeID;
+                        closest.add(node);
                     }
                     // round2 send findnode to k triples
-                    logger.info("round2(" + i + ") id:" + new BigInteger(info.getNid().getNodeID().toByteArray()) + " port: " + info.getPort());
-                    client = new P2PClient(ManagedChannelBuilder.forTarget(info.getIp() + ":" + info.getPort()).usePlaintext().build());
-                    Iterator<NodeInfo> round2 = client.FIND_NODE(info.getNid());
-                    listenKeys.add(infonode.nodeID);
+                    logger.info("round2(" + i + ") id:" + new BigInteger(1, node.nodeID.key) + " port: " + node.port);
+                    client = new P2PClient(ManagedChannelBuilder.forTarget(node.ip + ":" + node.port).usePlaintext().build());
+                    Iterator<NodeInfo> round2 = client.FIND_NODE(node.toNodeID().build());
+                    listenKeys.add(node.nodeID);
                     int counter = 0;
                     while ( (round2 != null && round2.hasNext()) || counter == alpha){
                         NodeInfo info2 = round2.next();
-                        Node infonode2 = new Node(info2);
-                        if (infonode2.nodeID.compareTo(idistance) < 0) {
-                            idistance = infonode2.nodeID;
-                            closest.add(infonode2);
+                        Node node2 = new Node(info2.getNode());
+                        if (node2.nodeID.compareTo(idistance) < 0) {
+                            idistance = node2.nodeID;
+                            closest.add(node2);
                         }
                         for (Key ikey: listenKeys){
                             if (counter == alpha)
                                 break;
-                            if (infonode2.nodeID.compareTo(ikey) != 0) {
-                                logger.info("round3(" + i + ") id:" + new BigInteger(info2.getNid().getNodeID().toByteArray()) + " port: " + info2.getPort());
-                                client = new P2PClient(ManagedChannelBuilder.forTarget(info2.getIp() + ":" + info2.getPort()).usePlaintext().build());
-                                Iterator<NodeInfo> round3 = client.FIND_NODE(info2.getNid());
+                            if (node2.nodeID.compareTo(ikey) != 0) {
+                                logger.info("round3(" + i + ") id:" + new BigInteger(1, node2.nodeID.key) + " port: " + node2.port);
+                                client = new P2PClient(ManagedChannelBuilder.forTarget(node2.ip + ":" + node2.port).usePlaintext().build());
+                                Iterator<NodeInfo> round3 = client.FIND_NODE(node2.toNodeID().build());
                                 counter++;
                                 while ( round3 != null && round3.hasNext()) {
                                     NodeInfo info3 = round3.next();
-                                    Node infonode3 = new Node(info3);
-                                    if (infonode3.nodeID.compareTo(idistance) < 0) {
-                                        idistance = infonode3.nodeID;
-                                        closest.add(infonode3);
+                                    Node node3 = new Node(info3.getNode());
+                                    if (node3.nodeID.compareTo(idistance) < 0) {
+                                        idistance = node3.nodeID;
+                                        closest.add(node3);
                                     }
                                 }
                                 break;
@@ -178,7 +180,7 @@ public class Binary_tree {
             return new String(this.key);
         }
         BigInteger kToBigInt(){
-            return new BigInteger(this.key);
+            return new BigInteger(1, this.key);
         }
     }
 
@@ -203,6 +205,14 @@ public class Binary_tree {
         }
 
         public BooleanSuccessResponse PING(NodeID request) {
+            BooleanSuccessResponse response = null;
+            try {
+                response = blockingStub.pING(request);
+                logger.info("PING return statement");
+                return response;
+            } catch (StatusRuntimeException e) {
+                logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            }
             return null;
         }
 
@@ -230,6 +240,45 @@ public class Binary_tree {
             for (KBucket kb: kbuckets) {
                 for(Node node: kb.nodes)
                     logger.info(kb.plength + " : " +kb.prefix.kToBigInt() + " : " + node.nodeID.kToBigInt());
+            }
+        }
+
+        public void insertNodes() throws InterruptedException, IOException {
+            logger.info("Insert nodes test unit " + kbuckets.size());
+            
+            while (kbuckets.size() != 160){
+                logger.info("ikbucket size: " + kbuckets.size() + " k: " + k.intValue());
+                
+                for (int i=0; i<kbuckets.size(); i++){
+                    KBucket ikbucket = kbuckets.get(i);
+                    if (ikbucket.inRange(iaddress)) {
+                        Key key;
+                        key = ikbucket.addRandomSufix();
+                        Node inode = new Node(123);
+                        inode.nodeID = key;
+                        inserts(inode);
+                    }
+                }
+            }
+            printallnodes();
+            String s = "";
+            while (s.equals("")) {
+                BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
+                s = bufferRead.readLine();
+            }
+            while (k.intValue() < 3) {
+                logger.info("ikbucket size: " + kbuckets.size() + " k: " + k.intValue());
+                for (int i=0; i<kbuckets.size(); i++){
+                    KBucket ikbucket = kbuckets.get(i);
+                    if (ikbucket.nodes.size() < k.intValue()) {
+                        Key key;
+                        key = ikbucket.addRandomSufix();
+                        Node inode = new Node(123);
+                        inode.nodeID = key;
+                        inserts(inode);
+                    }
+                }
+                
             }
         }
     }
@@ -290,10 +339,19 @@ public class Binary_tree {
 
             @Override
             public void pING(NodeID request, StreamObserver<BooleanSuccessResponse> responseObserver) {
-            
-                responseObserver.onNext(BooleanSuccessResponse.newBuilder().setSuccess(true).build());
-                System.out.println(request.getClientName() + " has connected");
+                logger.info(request.getSender().getClientName() + " has connected");
+
+                // when a kademlia node receives any message(request or reply) from another node,
+                // it updates the appropeiate k-bucket for the sender´s nodeID
+                Node snode = new Node(request.getSender());
+                inserts(snode);
+
+                if (snode.nodeID.compareTo(current.nodeID) == 0)
+                    responseObserver.onNext(BooleanSuccessResponse.newBuilder().setSuccess(true).build());
+                else
+                    responseObserver.onNext(BooleanSuccessResponse.newBuilder().setSuccess(false).build());
                 responseObserver.onCompleted();
+                logger.info("ping -> server response completed");
             }
 
             @Override
@@ -301,19 +359,27 @@ public class Binary_tree {
                 // FIND_NODE takes a 160-bit ID as na argument. The recipient of a the RPC returns <IP address, UDP port, Node ID>
                 // triples for the k nodes it knows about closest to the target ID. These triples can come from a single k-bucket,
                 // or they may come from multiple k-buckets if the closest kbucket is not full.
-                logger.info(request.getClientName() + " has connected");
-
+                logger.info(request.getSender().getClientName() + " has connected");
+                logger.info("kbuckets size:" + kbuckets.size());
+                
+                // when a kademlia node receives any message(request or reply) from another node,
+                // it updates the appropeiate k-bucket for the sender´s nodeID
+                Node snode = new Node(request.getSender());
+                inserts(snode);
+                
+                // prepare key to calculate closest nodes
                 Key key = new Key(request.getNodeID().toByteArray());
-                int ik = 0;
 
+                // sort
                 Collections.sort(kbuckets, new Comparator<KBucket>() {
                     @Override
                     public int compare(KBucket k1, KBucket k2) {
                         return k1.prefix.xor(key).compareTo(k2.prefix.xor(key));
                     }
                 });
-                logger.info("kbuckets size:" + kbuckets.size());
+
                 // find closest non-empty k-bucket
+                int ik = 0;
                 for (int i=0; i<kbuckets.size(); i++) {
                     logger.info("iterate for buckets");
                     KBucket ikbucket = kbuckets.get(i);
@@ -327,11 +393,13 @@ public class Binary_tree {
                         break;
                 }
                 responseObserver.onCompleted();
-                logger.info("id:" + current.nodeID.kToString() + "has completed find node for " + request.getClientName() + " has connected");
+                logger.info("id:" + current.nodeID.kToString() + "has completed find node for " + request.getSender().getClientName() + " has connected");
+                logger.info("find node -> server response completed");
             }
         }
     }
 
+    // Nota o bucket tem tem em seu range o own address tem sempre k=1 para forçar o split
     public boolean inserts(Node inode) {
         logger.info("JOIN init");
         int nbuckets = kbuckets.size();
@@ -354,13 +422,13 @@ public class Binary_tree {
                         ikbucket.nodes.add(inode);   
                         inode.kbucket = ikbucket;                     
                     } // verifica se o node não está full 
-                    else if (ikbucket.nodes.size() < k.intValue()) {
+                    else if (ikbucket.nodes.size() < ikbucket.k.intValue()) {
                         logger.info("Added");
                         inode.kbucket = ikbucket;
                         ikbucket.nodes.add(inode);
                         break;
                     } // se está full
-                    else if (ikbucket.nodes.size() == k.intValue()){
+                    else if (ikbucket.nodes.size() == ikbucket.k.intValue() && ikbucket.k.intValue() != 0){
                         // mas está no range do init adreess e temos menos que 160 kbucktes - split
                         if (ikbucket.inRange(this.iaddress) && nbuckets<160) {
                             inode.kbucket = ikbucket;
@@ -369,18 +437,11 @@ public class Binary_tree {
                             split(ikbucket);
                             break;
                         } else if (!ikbucket.inRange(this.iaddress)) {
-                            logger.info("Node outofrange init address");
-                            break;
-                        } else if (k.compareTo(maxk) < 0) {
-                            logger.info("k++");
-                            k = k.add(new BigInteger("1"));
-                            break;
-                        } else if (k.compareTo(maxk) == 0) {
                             // if the appropriate k-bucket is full, however then the recipient pings de k-buckets least-recently seen node to decide what to do
                             jnode = ikbucket.nodes.get(0);
-                            NodeInfo info = jnode.toNodeInfo().build();
-                            this.client = new P2PClient(ManagedChannelBuilder.forTarget(info.getIp() + ":" + info.getPort()).usePlaintext().build());
-                            BooleanSuccessResponse response = this.client.PING(info.getNid());
+                            NodeID infoID = jnode.toNodeID().build();
+                            this.client = new P2PClient(ManagedChannelBuilder.forTarget(jnode.ip + ":" + jnode.port).usePlaintext().build());
+                            BooleanSuccessResponse response = this.client.PING(infoID);
                             if (response.getSuccess()) {
                                 logger.info("Ping success, add to tail");
                                 ikbucket.nodes.remove(jnode);
@@ -435,22 +496,23 @@ public class Binary_tree {
             this.port = p;
             generateRandom160bits(this.nodeID);
         }
-        Node (NodeInfo info) {
-            this.port = info.getPort();
-            this.nodeID = new Key(info.getNid().getNodeID().toByteArray());
-            this.ip = info.getIp();
+        Node (BasicNode node) {
+            this.port = node.getPort();
+            this.nodeID = new Key(node.getNodeID().toByteArray());
+            this.ip = node.getIp();
         }
 
         // messages parse
-        public NodeID.Builder toNodeID(){
-            return NodeID.newBuilder().setNodeID(ByteString.copyFrom(this.nodeID.key)).setClientName("id: " + current.nodeID.kToString());
+        public BasicNode.Builder toBasicNode(){
+            return BasicNode.newBuilder().setNodeID(ByteString.copyFrom(this.nodeID.key)).setIp(this.ip).setPort(this.port).setClientName("id: " + this.nodeID.kToString());
         }
+
+        public NodeID.Builder toNodeID(){
+            return NodeID.newBuilder().setNodeID(ByteString.copyFrom(this.nodeID.key)).setSender(current.toBasicNode());
+        }
+
         public NodeInfo.Builder toNodeInfo() {
-            return NodeInfo.newBuilder().setNid(NodeID.newBuilder()
-                                            .setNodeID(ByteString.copyFrom(this.nodeID.key))
-                                            .setClientName("id: " + current.nodeID.kToString()))
-                                            .setIp(this.ip)
-                                            .setPort(this.port);
+            return NodeInfo.newBuilder().setNode(this.toBasicNode()).setSender(current.toBasicNode());
         }
 
         private ArrayList<String> readFile() {
@@ -504,10 +566,40 @@ public class Binary_tree {
         public Key prefix;
         public int plength;
         public ArrayList<Node> nodes = new ArrayList<Node>();
+        public BigInteger k = null;
 
         KBucket(Key prefix, int plength) {
             this.prefix = prefix;
             this.plength = plength;
+            byte[] bytes = new byte[nsize];
+            int position = this.plength % 8;
+            int index = this.plength / 8;
+
+            for (int i=0; i <nsize; i++) {
+                if (i<index) {
+                    bytes[i] = (byte) 0x00;
+                } else if (i == index) {
+                    int exp = 8 - position;
+                    int aux = (int)Math.pow(2, exp);
+                    bytes[i] = (byte) aux;
+                }else {
+                    bytes[i] = (byte) 0xff;
+                }
+            }
+
+            // se chegamos ao ponto máximo do split
+            if (this.plength == 160) {
+                // se somos o initial address ou own address
+                if (this.prefix.compareTo(iaddress) == 0) {
+                    k = new BigInteger("0");
+                } else {
+                    k = new BigInteger("1");
+                }
+            } // se estamos no range do own address vamos ter k=1 para forçar o split
+            else if (this.inRange(iaddress)){
+                k = new BigInteger("1");
+            } else if (!this.inRange(iaddress))
+                k = new BigInteger(1, bytes);
         }
 
         public Node getNodeByID(Key ikey) {
@@ -518,46 +610,70 @@ public class Binary_tree {
             return null;
         }
 
-        public Key addAndGet0ToPrefix() {
+        public Key addRandomSufix() {
+            logger.info("before addRandomSufix: " + this.prefix.kToBigInt());
             Key r = new Key();
-            if (plength == 0)
-                return r;
             
-            for (int i=0; i<this.plength; i++)
-                r.key[i] = prefix.key[i];
-            // last bit of last byte
-            int position = this.plength % 8;
+            int position = (this.plength % 8);
             int index = this.plength / 8;
-            r.key[index] = (byte) (r.key[index] | ~(1 << (8-position)));
+
+            for (int i=0; i <nsize; i++) {
+                if (i<index) {
+                    r.key[i] = this.prefix.key[i];
+                } else if (i == index) {
+                    int exp = (8-position);
+                    int min = 1;
+                    int max = (int)Math.pow(2, exp) - 1;
+                    int aux = (int)Math.round(((Math.random() * (max - min)) + min));
+                    r.key[i] = (byte)((int) this.prefix.key[i] + aux);
+                }else {
+                    int aux = (int)(Math.random() * 255);
+                    r.key[i] = (byte) aux;
+                }
+            }
+            logger.info("after addRandomSufix: " + r.kToBigInt());
+            return r;
+        }
+
+        public Key addAndGet0ToPrefix() {
+            logger.info("Entered add 0 to Prefix. Prefix: " + this.prefix.kToBigInt() + " plength: " + this.plength);
+            Key r = new Key();
+            
+            int position = (this.plength % 8);
+            int index = this.plength / 8;
+
+            for (int i=0; i<=index; i++)
+                r.key[i] = this.prefix.key[i];
+
+            // last bit of last byte
+            r.key[index] = (byte) (r.key[index] & ~(1 << (7-position)));
+            logger.info("add 0 to prefix: " + r.kToBigInt());
             return r;
         }
 
         public Key addAndGet1ToPrefix() {
+            logger.info("Entered add 1 to Prefix. Prefix: " + this.prefix.kToBigInt() + " plength: " + this.plength);
             Key r = new Key();
-            logger.info("plength: " + plength);
-            if (plength == 0) {
-                r.key[0] = (byte) 0x80;
-                logger.info("add 1 to prefix: " + r.kToBigInt());
-                return r;
-            }
             
-            for (int i=0; i<this.plength; i++)
-                r.key[i] = prefix.key[i];
-            // last bit of last byte
-            int position = this.plength % 8;
+            int position = (this.plength % 8);
             int index = this.plength / 8;
-            r.key[index] = (byte) (r.key[index] | (1 << (8-position)));
+
+            for (int i=0; i<=index; i++)
+                r.key[i] = this.prefix.key[i];
+            // last bit of last byte
+            r.key[index] = (byte) (r.key[index] | (1 << (7-position)));
+            logger.info("add 1 to prefix: " + r.kToBigInt());
             return r;
         }
 
         public boolean inRange(Node inode){
-            int i = 1, index, position;
+            int i = 0, index, position;
 
-            while (i <= this.plength) {
+            while (i < this.plength) {
                 position = i % 8;
                 index = i / 8;
 
-                if (((inode.nodeID.key[index] >> (8 - position)) & 1) == ((this.prefix.key[index] >> (8 - position)) & 1))
+                if (((inode.nodeID.key[index] >> (7 - position)) & 1) == ((this.prefix.key[index] >> (7 - position)) & 1))
                     i++;
                 else
                     return false;
@@ -565,13 +681,13 @@ public class Binary_tree {
             return true;
         }
         public boolean inRange(Key iid){
-            int i = 1, index, position;
-            logger.info("idd size: " + iid.key.length + " prefix size: " + this.prefix.key.length);
-            while (i <= this.plength) {
+            int i = 0, index, position;
+            logger.info("iaddress: " + iid.kToBigInt() + " prefix: " + this.prefix.kToBigInt() + " prefix length: " + this.plength);
+            while (i < this.plength) {
                 position = i % 8;
                 index = i / 8;
 
-                if (((iid.key[index] >> (8 - position)) & 1) == ((this.prefix.key[index] >> (8 - position)) & 1))
+                if (((iid.key[index] >> (7 - position)) & 1) == ((this.prefix.key[index] >> (7 - position)) & 1))
                     i++;
                 else
                     return false;
@@ -589,7 +705,7 @@ public class Binary_tree {
     BigInteger getMaxK() {
         byte[] bytes = new byte[nsize];
         bytes[0] = (byte) 0xf0;
-        return new BigInteger(bytes).subtract(new BigInteger("1"));
+        return new BigInteger(1, bytes).subtract(new BigInteger("1"));
 
     }
 

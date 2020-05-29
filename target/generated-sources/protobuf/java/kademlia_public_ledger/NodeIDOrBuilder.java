@@ -14,14 +14,17 @@ public interface NodeIDOrBuilder extends
   com.google.protobuf.ByteString getNodeID();
 
   /**
-   * <code>string client_name = 2;</code>
-   * @return The clientName.
+   * <code>.BasicNode sender = 2;</code>
+   * @return Whether the sender field is set.
    */
-  java.lang.String getClientName();
+  boolean hasSender();
   /**
-   * <code>string client_name = 2;</code>
-   * @return The bytes for clientName.
+   * <code>.BasicNode sender = 2;</code>
+   * @return The sender.
    */
-  com.google.protobuf.ByteString
-      getClientNameBytes();
+  kademlia_public_ledger.BasicNode getSender();
+  /**
+   * <code>.BasicNode sender = 2;</code>
+   */
+  kademlia_public_ledger.BasicNodeOrBuilder getSenderOrBuilder();
 }
