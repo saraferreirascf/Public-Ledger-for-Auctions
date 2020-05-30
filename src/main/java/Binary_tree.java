@@ -36,7 +36,6 @@ public class Binary_tree {
     Node current = null;
     P2PServer server = null;
     P2PClient client = null;
-    BigInteger k = new BigInteger("1");
     int nsize = 20;
     BigInteger maxk = getMaxK();
     int alpha = 3;
@@ -95,7 +94,7 @@ public class Binary_tree {
                 Node inode = father.get(i);
                 logger.info("round1(" + i + ") id:" + inode.nodeID.kToBigInt() + " port: " + inode.port);
                 client = new P2PClient(ManagedChannelBuilder.forTarget(inode.ip + ":" + inode.port).usePlaintext().build());
-                Iterator<NodeInfo> round1 = client.FIND_NODE(inode.toNodeID().build());
+                Iterator<NodeInfo> round1 = client.FIND_NODE(inode.toNodeID(key).build());
                 listenKeys.add(inode.nodeID);
                 while ( round1 != null && round1.hasNext()) {
                     NodeInfo info = round1.next();
@@ -107,7 +106,7 @@ public class Binary_tree {
                     // round2 send findnode to k triples
                     logger.info("round2(" + i + ") id:" + new BigInteger(1, node.nodeID.key) + " port: " + node.port);
                     client = new P2PClient(ManagedChannelBuilder.forTarget(node.ip + ":" + node.port).usePlaintext().build());
-                    Iterator<NodeInfo> round2 = client.FIND_NODE(node.toNodeID().build());
+                    Iterator<NodeInfo> round2 = client.FIND_NODE(node.toNodeID(key).build());
                     listenKeys.add(node.nodeID);
                     int counter = 0;
                     while ( (round2 != null && round2.hasNext()) || counter == alpha){
@@ -123,7 +122,7 @@ public class Binary_tree {
                             if (node2.nodeID.compareTo(ikey) != 0) {
                                 logger.info("round3(" + i + ") id:" + new BigInteger(1, node2.nodeID.key) + " port: " + node2.port);
                                 client = new P2PClient(ManagedChannelBuilder.forTarget(node2.ip + ":" + node2.port).usePlaintext().build());
-                                Iterator<NodeInfo> round3 = client.FIND_NODE(node2.toNodeID().build());
+                                Iterator<NodeInfo> round3 = client.FIND_NODE(node2.toNodeID(key).build());
                                 counter++;
                                 while ( round3 != null && round3.hasNext()) {
                                     NodeInfo info3 = round3.next();
@@ -220,7 +219,7 @@ public class Binary_tree {
         }
 
         public Iterator<NodeInfo> FIND_NODE(NodeID request) throws java.lang.InterruptedException{
-            //logger.info("FINDNODE " + request.getNodeID() + " from client " + request.getClientName());
+            logger.info("FINDNODE " + new BigInteger(request.getNodeID().toByteArray()).toString() + " from sender " + new BigInteger(request.getSender().getNodeID().toByteArray()).toString());
             Iterator<NodeInfo> response;
             try {
                 response = blockingStub.fINDNODE(request);
@@ -239,15 +238,22 @@ public class Binary_tree {
         public void printallnodes() {
             for (KBucket kb: kbuckets) {
                 for(Node node: kb.nodes)
-                    logger.info(kb.plength + " : " +kb.prefix.kToBigInt() + " : " + node.nodeID.kToBigInt());
+                    logger.info(iaddress.kToBigInt() + " : " + kb.plength + " : " +kb.prefix.kToBigInt() + " : " + node.nodeID.kToBigInt());
             }
         }
 
         public void insertNodes() throws InterruptedException, IOException {
             logger.info("Insert nodes test unit " + kbuckets.size());
             
-            while (kbuckets.size() != 160){
-                logger.info("ikbucket size: " + kbuckets.size() + " k: " + k.intValue());
+            while (kbuckets.size() != 161){
+                
+            logger.info("Insert nodes test unit " + kbuckets.size());
+            printallnodes();
+                String s = "";
+                while (s.equals("") && (kbuckets.size() == 160 || kbuckets.size() == 60 || kbuckets.size() == 120)) {
+                    BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
+                    s = bufferRead.readLine();
+                }
                 
                 for (int i=0; i<kbuckets.size(); i++){
                     KBucket ikbucket = kbuckets.get(i);
@@ -260,26 +266,22 @@ public class Binary_tree {
                     }
                 }
             }
-            printallnodes();
             String s = "";
-            while (s.equals("")) {
-                BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
-                s = bufferRead.readLine();
-            }
-            while (k.intValue() < 3) {
-                logger.info("ikbucket size: " + kbuckets.size() + " k: " + k.intValue());
+                while (s.equals("")) {
+                    BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
+                    s = bufferRead.readLine();
+                }
+
+            for ( int j=0; j<5; j++) {
                 for (int i=0; i<kbuckets.size(); i++){
                     KBucket ikbucket = kbuckets.get(i);
-                    if (ikbucket.nodes.size() < k.intValue()) {
-                        Key key;
-                        key = ikbucket.addRandomSufix();
-                        Node inode = new Node(123);
-                        inode.nodeID = key;
-                        inserts(inode);
-                    }
+                    Key key = ikbucket.addRandomSufix();
+                    Node inode = new Node(123);
+                    inode.nodeID = key;
+                    inserts(inode);
                 }
-                
-            }
+                printallnodes();
+            }            
         }
     }
     class P2PServer {
@@ -359,7 +361,7 @@ public class Binary_tree {
                 // FIND_NODE takes a 160-bit ID as na argument. The recipient of a the RPC returns <IP address, UDP port, Node ID>
                 // triples for the k nodes it knows about closest to the target ID. These triples can come from a single k-bucket,
                 // or they may come from multiple k-buckets if the closest kbucket is not full.
-                logger.info(request.getSender().getClientName() + " has connected");
+                logger.info(new BigInteger(request.getSender().getNodeID().toByteArray()).toString() + " has connected");
                 logger.info("kbuckets size:" + kbuckets.size());
                 
                 // when a kademlia node receives any message(request or reply) from another node,
@@ -380,20 +382,25 @@ public class Binary_tree {
 
                 // find closest non-empty k-bucket
                 int ik = 0;
+                // a documentação é muito subjetiva, fala em k closest nodes por isso vamos usar o k do kbuckt mais próximo, para definir o número de nós closest que devemos retornar
+                BigInteger nkclosest = new BigInteger("0");
                 for (int i=0; i<kbuckets.size(); i++) {
                     logger.info("iterate for buckets");
                     KBucket ikbucket = kbuckets.get(i);
+                    if (i == 0)
+                        nkclosest = ikbucket.k;
+                    
                     for (Node inode: ikbucket.nodes) {
                         logger.info("sending nodeID: " + inode.nodeID.kToBigInt());
                         responseObserver.onNext(inode.toNodeInfo().build());
-                        if (++ik == k.intValue())
+                        if (++ik == nkclosest.intValue())
                             break;
                     }
-                    if (ik == k.intValue())
+                    if (ik == nkclosest.intValue())
                         break;
                 }
                 responseObserver.onCompleted();
-                logger.info("id:" + current.nodeID.kToString() + "has completed find node for " + request.getSender().getClientName() + " has connected");
+                logger.info("id:" + current.nodeID.kToBigInt() + "has completed find node for " + new BigInteger(request.getSender().getNodeID().toByteArray()).toString() + " has connected");
                 logger.info("find node -> server response completed");
             }
         }
@@ -413,24 +420,26 @@ public class Binary_tree {
                 KBucket ikbucket = kbuckets.get(j);
                 logger.info("kbuctet prefix: " + ikbucket.prefix.kToBigInt());
                 logger.info("node id: " + inode.nodeID.kToBigInt());
+                logger.info("kbucket size: " + ikbucket.nodes.size() + " k: " + ikbucket.k.toString());
                 if (ikbucket.inRange(inode)) {
                     logger.info("Same range.");
                     // verifica se o node já existe no bucket
                     Node jnode = null;
                     if ((jnode = ikbucket.getNodeByID(inode.nodeID)) != null) {
+                        logger.info("NodeID already exists in kbucket");
                         ikbucket.nodes.remove(jnode);
                         ikbucket.nodes.add(inode);   
                         inode.kbucket = ikbucket;                     
                     } // verifica se o node não está full 
-                    else if (ikbucket.nodes.size() < ikbucket.k.intValue()) {
+                    else if (BigInteger.valueOf(Integer.valueOf(ikbucket.nodes.size())).compareTo(ikbucket.k) == -1) {
                         logger.info("Added");
                         inode.kbucket = ikbucket;
                         ikbucket.nodes.add(inode);
                         break;
                     } // se está full
-                    else if (ikbucket.nodes.size() == ikbucket.k.intValue() && ikbucket.k.intValue() != 0){
+                    else if (BigInteger.valueOf(Integer.valueOf(ikbucket.nodes.size())).compareTo(ikbucket.k) == 0 && ikbucket.k.compareTo(new BigInteger("0")) != 0){
                         // mas está no range do init adreess e temos menos que 160 kbucktes - split
-                        if (ikbucket.inRange(this.iaddress) && nbuckets<160) {
+                        if (ikbucket.inRange(this.iaddress)) {
                             inode.kbucket = ikbucket;
                             ikbucket.nodes.add(inode);
                             logger.info("Split");
@@ -456,7 +465,7 @@ public class Binary_tree {
                         }
                     }
                 } else {
-                    logger.info("Node out od range");
+                    logger.info("Node out of range");
                 }
             }
         }
@@ -509,6 +518,10 @@ public class Binary_tree {
 
         public NodeID.Builder toNodeID(){
             return NodeID.newBuilder().setNodeID(ByteString.copyFrom(this.nodeID.key)).setSender(current.toBasicNode());
+        }
+
+        public NodeID.Builder toNodeID(Key key){
+            return NodeID.newBuilder().setNodeID(ByteString.copyFrom(key.key)).setSender(current.toBasicNode());
         }
 
         public NodeInfo.Builder toNodeInfo() {
@@ -569,37 +582,47 @@ public class Binary_tree {
         public BigInteger k = null;
 
         KBucket(Key prefix, int plength) {
+            logger.info("kbucket constructor: ");
             this.prefix = prefix;
             this.plength = plength;
             byte[] bytes = new byte[nsize];
             int position = this.plength % 8;
             int index = this.plength / 8;
 
-            for (int i=0; i <nsize; i++) {
-                if (i<index) {
-                    bytes[i] = (byte) 0x00;
-                } else if (i == index) {
-                    int exp = 8 - position;
-                    int aux = (int)Math.pow(2, exp);
-                    bytes[i] = (byte) aux;
-                }else {
-                    bytes[i] = (byte) 0xff;
-                }
-            }
-
             // se chegamos ao ponto máximo do split
             if (this.plength == 160) {
+                logger.info("não é possível entrar aqui neste momento");
                 // se somos o initial address ou own address
                 if (this.prefix.compareTo(iaddress) == 0) {
-                    k = new BigInteger("0");
+                    this.k = new BigInteger("0");
                 } else {
-                    k = new BigInteger("1");
+                    this.k = new BigInteger("1");
                 }
             } // se estamos no range do own address vamos ter k=1 para forçar o split
             else if (this.inRange(iaddress)){
-                k = new BigInteger("1");
-            } else if (!this.inRange(iaddress))
-                k = new BigInteger(1, bytes);
+                logger.info("inside range");
+                this.k = new BigInteger("1");
+                
+            logger.info("Constructed k = " + this.k.intValue());
+            } else if (!this.inRange(iaddress)){
+                logger.info("outside range");
+                for (int i=0; i <nsize; i++) {
+                    if (i<index) {
+                        logger.info("menor");
+                        bytes[i] = (byte) 0x00;
+                    } else if (i == index) {
+                        logger.info("igual");
+                        int exp = 8 - position;
+                        int aux = (int)Math.pow(2, exp) - 1;
+                        bytes[i] = (byte) aux;
+                    }else {
+                        logger.info("maior");
+                        bytes[i] = (byte) 0xff;
+                    }
+                }
+                this.k = new BigInteger(1, bytes).add(new BigInteger("1"));
+            }
+            logger.info("Constructed k = " + this.k.toString());
         }
 
         public Node getNodeByID(Key ikey) {
