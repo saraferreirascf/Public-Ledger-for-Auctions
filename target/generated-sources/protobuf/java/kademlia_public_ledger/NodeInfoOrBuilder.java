@@ -36,4 +36,16 @@ public interface NodeInfoOrBuilder extends
    * <code>.BasicNode sender = 2;</code>
    */
   kademlia_public_ledger.BasicNodeOrBuilder getSenderOrBuilder();
+
+  /**
+   * <code>string value = 3;</code>
+   * @return The value.
+   */
+  java.lang.String getValue();
+  /**
+   * <code>string value = 3;</code>
+   * @return The bytes for value.
+   */
+  com.google.protobuf.ByteString
+      getValueBytes();
 }

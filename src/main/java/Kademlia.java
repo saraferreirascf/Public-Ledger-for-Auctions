@@ -67,8 +67,10 @@ public class Kademlia {
                             // join
                             tree.inserts(tree.current);
                             // este nó conhece o hardcoded 127.0.0.1:50051
-                            tree.inserts(tree.new Master_node(50051));
+                            Binary_tree.Master_node master = tree.new Master_node(50051);
+                            tree.inserts(master);
                             tree.lookup(tree.current.nodeID);
+                            tree.testUnit.findValue(master);
                             // lookup meu own id
                             // Finnaly, u refreshes all k-buckets further away than its closest neighbor.
                             // During the refreshes, u both populates its own k-buckets and insets itsekf 

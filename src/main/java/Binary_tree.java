@@ -153,6 +153,10 @@ public class Binary_tree {
         Key(byte[] k) {
             this.key = k;
         }
+
+        Key (BigInteger bi) {
+            this.key = bi.toByteArray();
+        }
         void MAX_KEY(){
             for (int i=0; i<nsize; i++)
                 this.key[i] = (byte) 0xff;
@@ -215,15 +219,28 @@ public class Binary_tree {
             return null;
         }
 
-        public void JOIN(byte[] nodeID) {
-        }
-
         public Iterator<NodeInfo> FIND_NODE(NodeID request) throws java.lang.InterruptedException{
             logger.info("FINDNODE " + new BigInteger(request.getNodeID().toByteArray()).toString() + " from sender " + new BigInteger(request.getSender().getNodeID().toByteArray()).toString());
             Iterator<NodeInfo> response;
             try {
                 response = blockingStub.fINDNODE(request);
                 logger.info("FINDNODE return statement");
+                return response;
+            } catch (StatusRuntimeException e) {
+                logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            }/* finally {
+                ((ManagedChannel)channel).shutdownNow().awaitTermination(5, TimeUnit.SECONDS);
+            }*/
+            return Collections.emptyIterator();
+        }
+
+        public Iterator<NodeInfo> FIND_VALUE(Key_Value request) throws java.lang.InterruptedException{
+            logger.info("FINDVALUE " + new BigInteger(request.getKey().toByteArray()).toString() + " from sender " + new BigInteger(request.getSender().getNodeID().toByteArray()).toString());
+            Iterator<NodeInfo> response;
+            try {
+                response = blockingStub.fINDVALUE(request);
+                logger.info("FINDVALUE return statement");
+                logger.info("Value: " + response.next().getValue());
                 return response;
             } catch (StatusRuntimeException e) {
                 logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
@@ -282,6 +299,12 @@ public class Binary_tree {
                 }
                 printallnodes();
             }            
+        }
+
+        public void findValue(Node inode) throws InterruptedException {
+            Key_Value kv = inode.toKey_Value(null).build();
+            client.FIND_VALUE(kv);
+
         }
     }
     class P2PServer {
@@ -354,6 +377,63 @@ public class Binary_tree {
                     responseObserver.onNext(BooleanSuccessResponse.newBuilder().setSuccess(false).build());
                 responseObserver.onCompleted();
                 logger.info("ping -> server response completed");
+            }
+
+            @Override
+            public void fINDVALUE(Key_Value request, StreamObserver<NodeInfo> responseObserver) {
+                // FIND_NODE takes a 160-bit ID as na argument. The recipient of a the RPC returns <IP address, UDP port, Node ID>
+                // triples for the k nodes it knows about closest to the target ID. These triples can come from a single k-bucket,
+                // or they may come from multiple k-buckets if the closest kbucket is not full.
+                logger.info(new BigInteger(request.getSender().getNodeID().toByteArray()).toString() + " has connected");
+                logger.info("kbuckets size:" + kbuckets.size());
+                
+                // when a kademlia node receives any message(request or reply) from another node,
+                // it updates the appropeiate k-bucket for the sender´s nodeID
+                Node snode = new Node(request.getSender());
+                inserts(snode);
+                
+                // prepare key to calculate closest nodes
+                Key key = new Key(request.getKey().toByteArray());
+
+                // the value is here?
+                if (key.compareTo(current.nodeID) == 0){
+                    // RETORNAR VALOR AQUI
+                    responseObserver.onNext(NodeInfo.newBuilder().setValue("Valor X").build());
+                    responseObserver.onCompleted();
+                    logger.info("id:" + current.nodeID.kToBigInt() + "has completed find value for " + new BigInteger(request.getSender().getNodeID().toByteArray()).toString() + " has connected");
+                    logger.info("find value -> server response completed");
+                }
+
+                // sort
+                Collections.sort(kbuckets, new Comparator<KBucket>() {
+                    @Override
+                    public int compare(KBucket k1, KBucket k2) {
+                        return k1.prefix.xor(key).compareTo(k2.prefix.xor(key));
+                    }
+                });
+
+                // find closest non-empty k-bucket
+                int ik = 0;
+                // a documentação é muito subjetiva, fala em k closest nodes por isso vamos usar o k do kbuckt mais próximo, para definir o número de nós closest que devemos retornar
+                BigInteger nkclosest = new BigInteger("0");
+                for (int i=0; i<kbuckets.size(); i++) {
+                    logger.info("iterate for buckets");
+                    KBucket ikbucket = kbuckets.get(i);
+                    if (i == 0) {
+                        nkclosest = ikbucket.k;
+                    }
+                    for (Node inode: ikbucket.nodes) {
+                        logger.info("sending nodeID: " + inode.nodeID.kToBigInt());
+                        responseObserver.onNext(inode.toNodeInfo().build());
+                        if (++ik == nkclosest.intValue())
+                            break;
+                    }
+                    if (ik == nkclosest.intValue())
+                        break;
+                }
+                responseObserver.onCompleted();
+                logger.info("id:" + current.nodeID.kToBigInt() + "has completed find value for " + new BigInteger(request.getSender().getNodeID().toByteArray()).toString() + " has connected");
+                logger.info("find value -> server response completed");
             }
 
             @Override
@@ -501,9 +581,10 @@ public class Binary_tree {
             writeFile(String.valueOf(this.port));
             generateRandom160bits(this.nodeID);
         }
+        // construtor para o hardcoded node
         Node(int p) {
             this.port = p;
-            generateRandom160bits(this.nodeID);
+            this.nodeID = new Key(new BigInteger("579182793079556569232906595954800423677054759475"));
         }
         Node (BasicNode node) {
             this.port = node.getPort();
@@ -522,6 +603,11 @@ public class Binary_tree {
 
         public NodeID.Builder toNodeID(Key key){
             return NodeID.newBuilder().setNodeID(ByteString.copyFrom(key.key)).setSender(current.toBasicNode());
+        }
+
+        // esta função apenas ser para a unidade de testes, não está completamente funcional, foi adaptada
+        public Key_Value.Builder toKey_Value(Key v) {
+            return Key_Value.newBuilder().setKey(ByteString.copyFrom(this.nodeID.key)).setSender(current.toBasicNode());
         }
 
         public NodeInfo.Builder toNodeInfo() {

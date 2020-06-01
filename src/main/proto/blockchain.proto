@@ -46,7 +46,7 @@ service P2P {
   // triples with one exception. If the rpc recipient has received
   // a store rpc for the key, it just returns the stored value
   //
-  rpc FIND_VALUE(Key) returns (NodeInfoORValue) {}
+  rpc FIND_VALUE(Key_Value) returns (stream NodeInfo) {}
 
   // A simple gRPC
   //
@@ -65,14 +65,12 @@ message Kbucket {
 }
 
 message Key_Value {
+  bytes key = 1;
+  bytes value = 2;
+  BasicNode sender = 3;
 
 }
 
-message Key {
-}
-
-message Value {
-}
 
 message BooleanSuccessResponse {
   bool success = 1;
@@ -82,6 +80,7 @@ message BooleanSuccessResponse {
 message NodeInfo {
   BasicNode node = 1;
   BasicNode sender = 2;
+  string value = 3; 
 }
 
 message NodeID {

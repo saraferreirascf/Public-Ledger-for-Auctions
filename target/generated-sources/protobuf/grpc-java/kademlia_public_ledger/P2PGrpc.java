@@ -123,29 +123,29 @@ public final class P2PGrpc {
     return getFINDNODEMethod;
   }
 
-  private static volatile io.grpc.MethodDescriptor<kademlia_public_ledger.Key,
-      kademlia_public_ledger.NodeInfoORValue> getFINDVALUEMethod;
+  private static volatile io.grpc.MethodDescriptor<kademlia_public_ledger.Key_Value,
+      kademlia_public_ledger.NodeInfo> getFINDVALUEMethod;
 
   @io.grpc.stub.annotations.RpcMethod(
       fullMethodName = SERVICE_NAME + '/' + "FIND_VALUE",
-      requestType = kademlia_public_ledger.Key.class,
-      responseType = kademlia_public_ledger.NodeInfoORValue.class,
-      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
-  public static io.grpc.MethodDescriptor<kademlia_public_ledger.Key,
-      kademlia_public_ledger.NodeInfoORValue> getFINDVALUEMethod() {
-    io.grpc.MethodDescriptor<kademlia_public_ledger.Key, kademlia_public_ledger.NodeInfoORValue> getFINDVALUEMethod;
+      requestType = kademlia_public_ledger.Key_Value.class,
+      responseType = kademlia_public_ledger.NodeInfo.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
+  public static io.grpc.MethodDescriptor<kademlia_public_ledger.Key_Value,
+      kademlia_public_ledger.NodeInfo> getFINDVALUEMethod() {
+    io.grpc.MethodDescriptor<kademlia_public_ledger.Key_Value, kademlia_public_ledger.NodeInfo> getFINDVALUEMethod;
     if ((getFINDVALUEMethod = P2PGrpc.getFINDVALUEMethod) == null) {
       synchronized (P2PGrpc.class) {
         if ((getFINDVALUEMethod = P2PGrpc.getFINDVALUEMethod) == null) {
           P2PGrpc.getFINDVALUEMethod = getFINDVALUEMethod =
-              io.grpc.MethodDescriptor.<kademlia_public_ledger.Key, kademlia_public_ledger.NodeInfoORValue>newBuilder()
-              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              io.grpc.MethodDescriptor.<kademlia_public_ledger.Key_Value, kademlia_public_ledger.NodeInfo>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
               .setFullMethodName(generateFullMethodName(SERVICE_NAME, "FIND_VALUE"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  kademlia_public_ledger.Key.getDefaultInstance()))
+                  kademlia_public_ledger.Key_Value.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
-                  kademlia_public_ledger.NodeInfoORValue.getDefaultInstance()))
+                  kademlia_public_ledger.NodeInfo.getDefaultInstance()))
               .setSchemaDescriptor(new P2PMethodDescriptorSupplier("FIND_VALUE"))
               .build();
         }
@@ -279,8 +279,8 @@ public final class P2PGrpc {
      * a store rpc for the key, it just returns the stored value
      * </pre>
      */
-    public void fINDVALUE(kademlia_public_ledger.Key request,
-        io.grpc.stub.StreamObserver<kademlia_public_ledger.NodeInfoORValue> responseObserver) {
+    public void fINDVALUE(kademlia_public_ledger.Key_Value request,
+        io.grpc.stub.StreamObserver<kademlia_public_ledger.NodeInfo> responseObserver) {
       asyncUnimplementedUnaryCall(getFINDVALUEMethod(), responseObserver);
     }
 
@@ -322,10 +322,10 @@ public final class P2PGrpc {
                   this, METHODID_FIND_NODE)))
           .addMethod(
             getFINDVALUEMethod(),
-            asyncUnaryCall(
+            asyncServerStreamingCall(
               new MethodHandlers<
-                kademlia_public_ledger.Key,
-                kademlia_public_ledger.NodeInfoORValue>(
+                kademlia_public_ledger.Key_Value,
+                kademlia_public_ledger.NodeInfo>(
                   this, METHODID_FIND_VALUE)))
           .addMethod(
             getJOINMethod(),
@@ -401,9 +401,9 @@ public final class P2PGrpc {
      * a store rpc for the key, it just returns the stored value
      * </pre>
      */
-    public void fINDVALUE(kademlia_public_ledger.Key request,
-        io.grpc.stub.StreamObserver<kademlia_public_ledger.NodeInfoORValue> responseObserver) {
-      asyncUnaryCall(
+    public void fINDVALUE(kademlia_public_ledger.Key_Value request,
+        io.grpc.stub.StreamObserver<kademlia_public_ledger.NodeInfo> responseObserver) {
+      asyncServerStreamingCall(
           getChannel().newCall(getFINDVALUEMethod(), getCallOptions()), request, responseObserver);
     }
 
@@ -483,8 +483,9 @@ public final class P2PGrpc {
      * a store rpc for the key, it just returns the stored value
      * </pre>
      */
-    public kademlia_public_ledger.NodeInfoORValue fINDVALUE(kademlia_public_ledger.Key request) {
-      return blockingUnaryCall(
+    public java.util.Iterator<kademlia_public_ledger.NodeInfo> fINDVALUE(
+        kademlia_public_ledger.Key_Value request) {
+      return blockingServerStreamingCall(
           getChannel(), getFINDVALUEMethod(), getCallOptions(), request);
     }
 
@@ -551,20 +552,6 @@ public final class P2PGrpc {
      * a store rpc for the key, it just returns the stored value
      * </pre>
      */
-    public com.google.common.util.concurrent.ListenableFuture<kademlia_public_ledger.NodeInfoORValue> fINDVALUE(
-        kademlia_public_ledger.Key request) {
-      return futureUnaryCall(
-          getChannel().newCall(getFINDVALUEMethod(), getCallOptions()), request);
-    }
-
-    /**
-     * <pre>
-     * A simple gRPC
-     * The FIND_VALUE behaves like FIND_NODE - returning {IP address, UDP port, NodeID}
-     * triples with one exception. If the rpc recipient has received
-     * a store rpc for the key, it just returns the stored value
-     * </pre>
-     */
     public com.google.common.util.concurrent.ListenableFuture<kademlia_public_ledger.Kbucket> jOIN(
         kademlia_public_ledger.NodeID request) {
       return futureUnaryCall(
@@ -608,8 +595,8 @@ public final class P2PGrpc {
               (io.grpc.stub.StreamObserver<kademlia_public_ledger.NodeInfo>) responseObserver);
           break;
         case METHODID_FIND_VALUE:
-          serviceImpl.fINDVALUE((kademlia_public_ledger.Key) request,
-              (io.grpc.stub.StreamObserver<kademlia_public_ledger.NodeInfoORValue>) responseObserver);
+          serviceImpl.fINDVALUE((kademlia_public_ledger.Key_Value) request,
+              (io.grpc.stub.StreamObserver<kademlia_public_ledger.NodeInfo>) responseObserver);
           break;
         case METHODID_JOIN:
           serviceImpl.jOIN((kademlia_public_ledger.NodeID) request,
