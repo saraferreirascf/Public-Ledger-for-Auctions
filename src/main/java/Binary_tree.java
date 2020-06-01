@@ -55,7 +55,7 @@ public class Binary_tree {
         generateRandom160bits(iaddress);
     }
 
-    public void lookup(Key key) throws InterruptedException {
+    public List<Node> lookup(Key key) throws InterruptedException {
         logger.info("started lookup");
         List<Key> listenKeys = new ArrayList<Key>();
         List<Node> closest = new ArrayList<Node>();
@@ -63,7 +63,7 @@ public class Binary_tree {
         Key idistance = new Key();
         idistance.MAX_KEY();
         KBucket ikbucket = null;
-
+        
         // find closest non-empty k-bucket
         for (int i=0; i<kbuckets.size(); i++) {
             KBucket tmpkbucket = kbuckets.get(i);
@@ -74,6 +74,7 @@ public class Binary_tree {
             }
         }
         
+
         logger.info("lookup kbucket size: " + ikbucket.nodes.size());
         // Send Find Node to alpha(=3) closest nodes
         // sorte list
@@ -99,9 +100,12 @@ public class Binary_tree {
                 while ( round1 != null && round1.hasNext()) {
                     NodeInfo info = round1.next();
                     Node node = new Node(info.getNode());
+                    inserts(node);
                     if (node.nodeID.compareTo(idistance) < 0) {
                         idistance = node.nodeID;
                         closest.add(node);
+                        if (BigInteger.valueOf(Integer.valueOf(closest.size())).compareTo(ikbucket.k) == 0)
+                            return closest;
                     }
                     // round2 send findnode to k triples
                     logger.info("round2(" + i + ") id:" + new BigInteger(1, node.nodeID.key) + " port: " + node.port);
@@ -112,9 +116,12 @@ public class Binary_tree {
                     while ( (round2 != null && round2.hasNext()) || counter == alpha){
                         NodeInfo info2 = round2.next();
                         Node node2 = new Node(info2.getNode());
+                        inserts(node2);
                         if (node2.nodeID.compareTo(idistance) < 0) {
                             idistance = node2.nodeID;
                             closest.add(node2);
+                            if (BigInteger.valueOf(Integer.valueOf(closest.size())).compareTo(ikbucket.k) == 0)
+                                return closest;
                         }
                         for (Key ikey: listenKeys){
                             if (counter == alpha)
@@ -127,9 +134,12 @@ public class Binary_tree {
                                 while ( round3 != null && round3.hasNext()) {
                                     NodeInfo info3 = round3.next();
                                     Node node3 = new Node(info3.getNode());
+                                    inserts(node3);
                                     if (node3.nodeID.compareTo(idistance) < 0) {
                                         idistance = node3.nodeID;
                                         closest.add(node3);
+                                    if (BigInteger.valueOf(Integer.valueOf(closest.size())).compareTo(ikbucket.k) == 0)
+                                        return closest;
                                     }
                                 }
                                 break;
@@ -139,8 +149,132 @@ public class Binary_tree {
                 }
             }
         }
-        
         logger.info("ended lookup");
+        return closest;
+    }
+
+    public List<Node> findvalue_lookup(Key key, Key v) throws InterruptedException {
+        logger.info("started find value lookup");
+        List<Key> listenKeys = new ArrayList<Key>();
+        List<Node> closest = new ArrayList<Node>();
+        List<Node> father = new ArrayList<Node>();
+        Key idistance = new Key();
+        idistance.MAX_KEY();
+        KBucket ikbucket = null;
+        
+        // find closest non-empty k-bucket
+        for (int i=0; i<kbuckets.size(); i++) {
+            KBucket tmpkbucket = kbuckets.get(i);
+            Key tmpdistance = tmpkbucket.prefix.xor(key);
+            if (tmpdistance.compareTo(idistance) < 0) {
+                idistance = tmpdistance;
+                ikbucket = tmpkbucket;
+            }
+        }
+        
+
+        logger.info("lookup kbucket size: " + ikbucket.nodes.size());
+        // Send Find Node to alpha(=3) closest nodes
+        // sorte list
+        if (ikbucket != null) {
+            Collections.sort(ikbucket.nodes, new Comparator<Node>() {
+                @Override
+                public int compare(Node n1, Node n2) {
+                    return n1.nodeID.xor(key).compareTo(n2.nodeID.xor(key));
+                }
+            });
+
+            int sublsize = (ikbucket.nodes.size() < alpha) ? ikbucket.nodes.size(): alpha;
+            father = ikbucket.nodes.subList(0, sublsize);
+            closest = ikbucket.nodes.subList(0, sublsize);
+            logger.info("send alpha FIND NODES!!!");
+            for (int i=0; i<sublsize; i++) {
+                // send alpha FIND NODES
+                Node inode = father.get(i);
+                logger.info("round1(" + i + ") id:" + inode.nodeID.kToBigInt() + " port: " + inode.port);
+                client = new P2PClient(ManagedChannelBuilder.forTarget(inode.ip + ":" + inode.port).usePlaintext().build());
+                Iterator<NodeInfo> round1 = client.FIND_VALUE(inode.toKey_Value(key, v, "").build());
+                listenKeys.add(inode.nodeID);
+                while ( round1 != null && round1.hasNext()) {
+                    NodeInfo info = round1.next();
+                    if (info.getValue() != null) {
+                        storeIn(closest, key, v, info.getValue());
+                    }
+                    Node node = new Node(info.getNode());
+                    inserts(node);
+                    if (node.nodeID.compareTo(idistance) < 0) {
+                        idistance = node.nodeID;
+                        closest.add(node);
+                        if (BigInteger.valueOf(Integer.valueOf(closest.size())).compareTo(ikbucket.k) == 0)
+                            return closest;
+                    }
+                    // round2 send findnode to k triples
+                    logger.info("round2(" + i + ") id:" + new BigInteger(1, node.nodeID.key) + " port: " + node.port);
+                    client = new P2PClient(ManagedChannelBuilder.forTarget(node.ip + ":" + node.port).usePlaintext().build());
+                    Iterator<NodeInfo> round2 = client.FIND_VALUE(node.toKey_Value(key, v, "").build());
+                    listenKeys.add(node.nodeID);
+                    int counter = 0;
+                    while ( (round2 != null && round2.hasNext()) || counter == alpha){
+                        NodeInfo info2 = round2.next();
+                        if (info2.getValue() != null) {
+                            storeIn(closest, key, v, info2.getValue());
+                        }
+                        Node node2 = new Node(info2.getNode());
+                        inserts(node2);
+                        if (node2.nodeID.compareTo(idistance) < 0) {
+                            idistance = node2.nodeID;
+                            closest.add(node2);
+                            if (BigInteger.valueOf(Integer.valueOf(closest.size())).compareTo(ikbucket.k) == 0)
+                                return closest;
+                        }
+                        for (Key ikey: listenKeys){
+                            if (counter == alpha)
+                                break;
+                            if (node2.nodeID.compareTo(ikey) != 0) {
+                                logger.info("round3(" + i + ") id:" + new BigInteger(1, node2.nodeID.key) + " port: " + node2.port);
+                                client = new P2PClient(ManagedChannelBuilder.forTarget(node2.ip + ":" + node2.port).usePlaintext().build());
+                                Iterator<NodeInfo> round3 = client.FIND_VALUE(node2.toKey_Value(key, v, "").build());
+                                counter++;
+                                while ( round3 != null && round3.hasNext()) {
+                                    NodeInfo info3 = round3.next();
+                                    if (info3.getValue() != null) {
+                                        storeIn(closest, key, v, info3.getValue());
+                                    }
+                                    Node node3 = new Node(info3.getNode());
+                                    inserts(node3);
+                                    if (node3.nodeID.compareTo(idistance) < 0) {
+                                        idistance = node3.nodeID;
+                                        closest.add(node3);
+                                        if (BigInteger.valueOf(Integer.valueOf(closest.size())).compareTo(ikbucket.k) == 0)
+                                            return closest;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        logger.info("ended find value lookup");
+        return closest;
+    }
+
+    public void storeIn(List<Node> inodes, Key k, Key kv, String value) throws InterruptedException{
+        int i = 0;
+        for (int j=0; j<inodes.size(); j++) {
+            Node inode = inodes.get(j);
+            BooleanSuccessResponse response = client.STORE(inode.toKey_Value(k, kv, value).build());
+            logger.info("store in closest: " + i++ + " response: " + response.getSuccess());
+        }
+        logger.info("Store in closest completed");
+        return ;
+    }
+
+    public void store(Key key, Key kv, String value) throws InterruptedException {
+        List<Node> inodes = lookup(key);
+
+        storeIn(inodes, key, kv, value);
     }
 
     class Key {
@@ -234,6 +368,22 @@ public class Binary_tree {
             return Collections.emptyIterator();
         }
 
+        public BooleanSuccessResponse STORE(Key_Value request) throws java.lang.InterruptedException{
+            logger.info("FINDVALUE " + new BigInteger(request.getKey().toByteArray()).toString() + " from sender " + new BigInteger(request.getSender().getNodeID().toByteArray()).toString());
+            BooleanSuccessResponse response =  null;
+            try {
+                response = blockingStub.sTORE(request);
+                logger.info("FINDVALUE return statement");
+                logger.info("Value: " + response.getSuccess());
+                return response;
+            } catch (StatusRuntimeException e) {
+                logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            }/* finally {
+                ((ManagedChannel)channel).shutdownNow().awaitTermination(5, TimeUnit.SECONDS);
+            }*/
+            return response;
+        }
+
         public Iterator<NodeInfo> FIND_VALUE(Key_Value request) throws java.lang.InterruptedException{
             logger.info("FINDVALUE " + new BigInteger(request.getKey().toByteArray()).toString() + " from sender " + new BigInteger(request.getSender().getNodeID().toByteArray()).toString());
             Iterator<NodeInfo> response;
@@ -302,7 +452,7 @@ public class Binary_tree {
         }
 
         public void findValue(Node inode) throws InterruptedException {
-            Key_Value kv = inode.toKey_Value(null).build();
+            Key_Value kv = inode.toKey_Value(inode.nodeID, inode.nodeID, "123").build();
             client.FIND_VALUE(kv);
 
         }
@@ -378,6 +528,25 @@ public class Binary_tree {
                 responseObserver.onCompleted();
                 logger.info("ping -> server response completed");
             }
+
+             @Override
+            public void sTORE(Key_Value request, StreamObserver<BooleanSuccessResponse> responseObserver) {
+                // FIND_NODE takes a 160-bit ID as na argument. The recipient of a the RPC returns <IP address, UDP port, Node ID>
+                // triples for the k nodes it knows about closest to the target ID. These triples can come from a single k-bucket,
+                // or they may come from multiple k-buckets if the closest kbucket is not full.
+                logger.info(new BigInteger(request.getSender().getNodeID().toByteArray()).toString() + " has connected");
+                logger.info("kbuckets size:" + kbuckets.size());
+                
+                String value = request.getValue();
+
+                // write file
+
+                responseObserver.onNext(BooleanSuccessResponse.newBuilder().setSuccess(true).build());
+                responseObserver.onCompleted();
+                logger.info("id:" + current.nodeID.kToBigInt() + "has completed store for " + new BigInteger(request.getSender().getNodeID().toByteArray()).toString() + " has connected");
+                logger.info("store -> server response completed");
+            }
+
 
             @Override
             public void fINDVALUE(Key_Value request, StreamObserver<NodeInfo> responseObserver) {
@@ -606,8 +775,8 @@ public class Binary_tree {
         }
 
         // esta função apenas ser para a unidade de testes, não está completamente funcional, foi adaptada
-        public Key_Value.Builder toKey_Value(Key v) {
-            return Key_Value.newBuilder().setKey(ByteString.copyFrom(this.nodeID.key)).setSender(current.toBasicNode());
+        public Key_Value.Builder toKey_Value(Key id, Key kv, String v) {
+            return Key_Value.newBuilder().setKey(ByteString.copyFrom(id.key)).setKv(ByteString.copyFrom(kv.key)).setValue(v).setSender(current.toBasicNode());
         }
 
         public NodeInfo.Builder toNodeInfo() {

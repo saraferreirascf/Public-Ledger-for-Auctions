@@ -60,22 +60,22 @@ public final class PL {
     java.lang.String[] descriptorData = {
       "\n\020blockchain.proto\"\\\n\007Kbucket\022)\n\010respons" +
       "e\030\002 \001(\0132\027.BooleanSuccessResponse\022\033\n\010brot" +
-      "hers\030\n \003(\0132\t.NodeInfo\022\t\n\001i\030\001 \001(\005\"C\n\tKey_" +
-      "Value\022\013\n\003key\030\001 \001(\014\022\r\n\005value\030\002 \001(\014\022\032\n\006sen" +
-      "der\030\003 \001(\0132\n.BasicNode\")\n\026BooleanSuccessR" +
-      "esponse\022\017\n\007success\030\001 \001(\010\"O\n\010NodeInfo\022\030\n\004" +
-      "node\030\001 \001(\0132\n.BasicNode\022\032\n\006sender\030\002 \001(\0132\n" +
-      ".BasicNode\022\r\n\005value\030\003 \001(\t\"4\n\006NodeID\022\016\n\006n" +
-      "odeID\030\001 \001(\014\022\032\n\006sender\030\002 \001(\0132\n.BasicNode\"" +
-      "J\n\tBasicNode\022\016\n\006nodeID\030\001 \001(\014\022\n\n\002ip\030\002 \001(\t" +
-      "\022\014\n\004port\030\003 \001(\005\022\023\n\013client_name\030\004 \001(\t\"\021\n\017N" +
-      "odeInfoORValue2\314\001\n\003P2P\022*\n\004PING\022\007.NodeID\032" +
-      "\027.BooleanSuccessResponse\"\000\022.\n\005STORE\022\n.Ke" +
-      "y_Value\032\027.BooleanSuccessResponse\"\000\022#\n\tFI" +
-      "ND_NODE\022\007.NodeID\032\t.NodeInfo\"\0000\001\022\'\n\nFIND_" +
-      "VALUE\022\n.Key_Value\032\t.NodeInfo\"\0000\001\022\033\n\004JOIN" +
-      "\022\007.NodeID\032\010.Kbucket\"\000B!\n\026kademlia_public" +
-      "_ledgerB\002PLP\001\242\002\000b\006proto3"
+      "hers\030\n \003(\0132\t.NodeInfo\022\t\n\001i\030\001 \001(\005\"O\n\tKey_" +
+      "Value\022\013\n\003key\030\001 \001(\014\022\n\n\002kv\030\002 \001(\014\022\r\n\005value\030" +
+      "\004 \001(\t\022\032\n\006sender\030\003 \001(\0132\n.BasicNode\")\n\026Boo" +
+      "leanSuccessResponse\022\017\n\007success\030\001 \001(\010\"O\n\010" +
+      "NodeInfo\022\030\n\004node\030\001 \001(\0132\n.BasicNode\022\032\n\006se" +
+      "nder\030\002 \001(\0132\n.BasicNode\022\r\n\005value\030\003 \001(\t\"4\n" +
+      "\006NodeID\022\016\n\006nodeID\030\001 \001(\014\022\032\n\006sender\030\002 \001(\0132" +
+      "\n.BasicNode\"J\n\tBasicNode\022\016\n\006nodeID\030\001 \001(\014" +
+      "\022\n\n\002ip\030\002 \001(\t\022\014\n\004port\030\003 \001(\005\022\023\n\013client_nam" +
+      "e\030\004 \001(\t\"\021\n\017NodeInfoORValue2\314\001\n\003P2P\022*\n\004PI" +
+      "NG\022\007.NodeID\032\027.BooleanSuccessResponse\"\000\022." +
+      "\n\005STORE\022\n.Key_Value\032\027.BooleanSuccessResp" +
+      "onse\"\000\022#\n\tFIND_NODE\022\007.NodeID\032\t.NodeInfo\"" +
+      "\0000\001\022\'\n\nFIND_VALUE\022\n.Key_Value\032\t.NodeInfo" +
+      "\"\0000\001\022\033\n\004JOIN\022\007.NodeID\032\010.Kbucket\"\000B!\n\026kad" +
+      "emlia_public_ledgerB\002PLP\001\242\002\000b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -92,7 +92,7 @@ public final class PL {
     internal_static_Key_Value_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Key_Value_descriptor,
-        new java.lang.String[] { "Key", "Value", "Sender", });
+        new java.lang.String[] { "Key", "Kv", "Value", "Sender", });
     internal_static_BooleanSuccessResponse_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_BooleanSuccessResponse_fieldAccessorTable = new

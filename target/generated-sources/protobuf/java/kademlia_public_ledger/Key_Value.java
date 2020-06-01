@@ -17,7 +17,8 @@ private static final long serialVersionUID = 0L;
   }
   private Key_Value() {
     key_ = com.google.protobuf.ByteString.EMPTY;
-    value_ = com.google.protobuf.ByteString.EMPTY;
+    kv_ = com.google.protobuf.ByteString.EMPTY;
+    value_ = "";
   }
 
   @java.lang.Override
@@ -57,7 +58,7 @@ private static final long serialVersionUID = 0L;
           }
           case 18: {
 
-            value_ = input.readBytes();
+            kv_ = input.readBytes();
             break;
           }
           case 26: {
@@ -71,6 +72,12 @@ private static final long serialVersionUID = 0L;
               sender_ = subBuilder.buildPartial();
             }
 
+            break;
+          }
+          case 34: {
+            java.lang.String s = input.readStringRequireUtf8();
+
+            value_ = s;
             break;
           }
           default: {
@@ -115,14 +122,50 @@ private static final long serialVersionUID = 0L;
     return key_;
   }
 
-  public static final int VALUE_FIELD_NUMBER = 2;
-  private com.google.protobuf.ByteString value_;
+  public static final int KV_FIELD_NUMBER = 2;
+  private com.google.protobuf.ByteString kv_;
   /**
-   * <code>bytes value = 2;</code>
+   * <code>bytes kv = 2;</code>
+   * @return The kv.
+   */
+  public com.google.protobuf.ByteString getKv() {
+    return kv_;
+  }
+
+  public static final int VALUE_FIELD_NUMBER = 4;
+  private volatile java.lang.Object value_;
+  /**
+   * <code>string value = 4;</code>
    * @return The value.
    */
-  public com.google.protobuf.ByteString getValue() {
-    return value_;
+  public java.lang.String getValue() {
+    java.lang.Object ref = value_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      value_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string value = 4;</code>
+   * @return The bytes for value.
+   */
+  public com.google.protobuf.ByteString
+      getValueBytes() {
+    java.lang.Object ref = value_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      value_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
   }
 
   public static final int SENDER_FIELD_NUMBER = 3;
@@ -165,11 +208,14 @@ private static final long serialVersionUID = 0L;
     if (!key_.isEmpty()) {
       output.writeBytes(1, key_);
     }
-    if (!value_.isEmpty()) {
-      output.writeBytes(2, value_);
+    if (!kv_.isEmpty()) {
+      output.writeBytes(2, kv_);
     }
     if (sender_ != null) {
       output.writeMessage(3, getSender());
+    }
+    if (!getValueBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 4, value_);
     }
     unknownFields.writeTo(output);
   }
@@ -184,13 +230,16 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeBytesSize(1, key_);
     }
-    if (!value_.isEmpty()) {
+    if (!kv_.isEmpty()) {
       size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(2, value_);
+        .computeBytesSize(2, kv_);
     }
     if (sender_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(3, getSender());
+    }
+    if (!getValueBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, value_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -209,6 +258,8 @@ private static final long serialVersionUID = 0L;
 
     if (!getKey()
         .equals(other.getKey())) return false;
+    if (!getKv()
+        .equals(other.getKv())) return false;
     if (!getValue()
         .equals(other.getValue())) return false;
     if (hasSender() != other.hasSender()) return false;
@@ -229,6 +280,8 @@ private static final long serialVersionUID = 0L;
     hash = (19 * hash) + getDescriptor().hashCode();
     hash = (37 * hash) + KEY_FIELD_NUMBER;
     hash = (53 * hash) + getKey().hashCode();
+    hash = (37 * hash) + KV_FIELD_NUMBER;
+    hash = (53 * hash) + getKv().hashCode();
     hash = (37 * hash) + VALUE_FIELD_NUMBER;
     hash = (53 * hash) + getValue().hashCode();
     if (hasSender()) {
@@ -370,7 +423,9 @@ private static final long serialVersionUID = 0L;
       super.clear();
       key_ = com.google.protobuf.ByteString.EMPTY;
 
-      value_ = com.google.protobuf.ByteString.EMPTY;
+      kv_ = com.google.protobuf.ByteString.EMPTY;
+
+      value_ = "";
 
       if (senderBuilder_ == null) {
         sender_ = null;
@@ -405,6 +460,7 @@ private static final long serialVersionUID = 0L;
     public kademlia_public_ledger.Key_Value buildPartial() {
       kademlia_public_ledger.Key_Value result = new kademlia_public_ledger.Key_Value(this);
       result.key_ = key_;
+      result.kv_ = kv_;
       result.value_ = value_;
       if (senderBuilder_ == null) {
         result.sender_ = sender_;
@@ -462,8 +518,12 @@ private static final long serialVersionUID = 0L;
       if (other.getKey() != com.google.protobuf.ByteString.EMPTY) {
         setKey(other.getKey());
       }
-      if (other.getValue() != com.google.protobuf.ByteString.EMPTY) {
-        setValue(other.getValue());
+      if (other.getKv() != com.google.protobuf.ByteString.EMPTY) {
+        setKv(other.getKv());
+      }
+      if (!other.getValue().isEmpty()) {
+        value_ = other.value_;
+        onChanged();
       }
       if (other.hasSender()) {
         mergeSender(other.getSender());
@@ -530,20 +590,80 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private com.google.protobuf.ByteString value_ = com.google.protobuf.ByteString.EMPTY;
+    private com.google.protobuf.ByteString kv_ = com.google.protobuf.ByteString.EMPTY;
     /**
-     * <code>bytes value = 2;</code>
-     * @return The value.
+     * <code>bytes kv = 2;</code>
+     * @return The kv.
      */
-    public com.google.protobuf.ByteString getValue() {
-      return value_;
+    public com.google.protobuf.ByteString getKv() {
+      return kv_;
     }
     /**
-     * <code>bytes value = 2;</code>
+     * <code>bytes kv = 2;</code>
+     * @param value The kv to set.
+     * @return This builder for chaining.
+     */
+    public Builder setKv(com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      kv_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>bytes kv = 2;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearKv() {
+      
+      kv_ = getDefaultInstance().getKv();
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object value_ = "";
+    /**
+     * <code>string value = 4;</code>
+     * @return The value.
+     */
+    public java.lang.String getValue() {
+      java.lang.Object ref = value_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        value_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string value = 4;</code>
+     * @return The bytes for value.
+     */
+    public com.google.protobuf.ByteString
+        getValueBytes() {
+      java.lang.Object ref = value_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        value_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string value = 4;</code>
      * @param value The value to set.
      * @return This builder for chaining.
      */
-    public Builder setValue(com.google.protobuf.ByteString value) {
+    public Builder setValue(
+        java.lang.String value) {
       if (value == null) {
     throw new NullPointerException();
   }
@@ -553,12 +673,28 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>bytes value = 2;</code>
+     * <code>string value = 4;</code>
      * @return This builder for chaining.
      */
     public Builder clearValue() {
       
       value_ = getDefaultInstance().getValue();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string value = 4;</code>
+     * @param value The bytes for value to set.
+     * @return This builder for chaining.
+     */
+    public Builder setValueBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      value_ = value;
       onChanged();
       return this;
     }

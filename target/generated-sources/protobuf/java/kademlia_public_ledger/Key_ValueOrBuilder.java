@@ -14,10 +14,22 @@ public interface Key_ValueOrBuilder extends
   com.google.protobuf.ByteString getKey();
 
   /**
-   * <code>bytes value = 2;</code>
+   * <code>bytes kv = 2;</code>
+   * @return The kv.
+   */
+  com.google.protobuf.ByteString getKv();
+
+  /**
+   * <code>string value = 4;</code>
    * @return The value.
    */
-  com.google.protobuf.ByteString getValue();
+  java.lang.String getValue();
+  /**
+   * <code>string value = 4;</code>
+   * @return The bytes for value.
+   */
+  com.google.protobuf.ByteString
+      getValueBytes();
 
   /**
    * <code>.BasicNode sender = 3;</code>
