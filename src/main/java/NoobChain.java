@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import com.google.gson.GsonBuilder;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 //miners to do proof-of-work by trying different variable values in the block until its hash starts with a certain number of 0’s.
 /*public class NoobChain {
@@ -70,15 +72,25 @@ import java.util.Map;
 
 public class NoobChain {
 
-    public static ArrayList<Block> blockchain = new ArrayList<Block>();
+    private static final Logger logger = Logger.getLogger(NoobChain.class.getName());
+    public ArrayList<Block> blockchain = null;
     public static HashMap<String,TransactionOutput> UTXOs = new HashMap<String,TransactionOutput>();
 
-    public static int difficulty = 3;
+    public int difficulty = 3;
     public static float minimumTransaction = 0.1f;
-    public static Wallet walletA;
-    public static Wallet walletB;
-    public static Transaction genesisTransaction;
+    //public Wallet wallet;
+    //public Transaction genesisTransaction;
 
+    NoobChain() {
+        this.blockchain = new ArrayList<Block>();
+    }
+
+    public void printChain() {
+        String blockchainJson = StringUtil.getJson(blockchain);
+        System.out.println("\nThe block chain: ");
+        System.out.println(blockchainJson);
+    }
+    /*
     public static void main(String[] args) {
         //add our blocks to the blockchain ArrayList:
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider()); //Setup Bouncy castle as a Security Provider
@@ -125,13 +137,14 @@ public class NoobChain {
         isChainValid();
 
     }
-
-    public static Boolean isChainValid() {
+    */
+    
+    public Boolean isChainValid() {
         Block currentBlock;
         Block previousBlock;
         String hashTarget = new String(new char[difficulty]).replace('\0', '0');
-        HashMap<String,TransactionOutput> tempUTXOs = new HashMap<String,TransactionOutput>(); //a temporary working list of unspent transactions at a given block state.
-        tempUTXOs.put(genesisTransaction.outputs.get(0).id, genesisTransaction.outputs.get(0));
+        //HashMap<String,TransactionOutput> tempUTXOs = new HashMap<String,TransactionOutput>(); //a temporary working list of unspent transactions at a given block state.
+        //tempUTXOs.put(genesisTransaction.outputs.get(0).id, genesisTransaction.outputs.get(0));
 
         //loop through blockchain to check hashes:
         for(int i=1; i < blockchain.size(); i++) {
@@ -155,7 +168,7 @@ public class NoobChain {
             }
 
             //loop thru blockchains transactions:
-            TransactionOutput tempOutput;
+            /*TransactionOutput tempOutput;
             for(int t=0; t <currentBlock.transactions.size(); t++) {
                 Transaction currentTransaction = currentBlock.transactions.get(t);
 
@@ -197,15 +210,16 @@ public class NoobChain {
                     return false;
                 }
 
-            }
+            }*/
 
         }
         System.out.println("Blockchain is valid");
         return true;
     }
 
-    public static void addBlock(Block newBlock) {
+    public void addBlock(Block newBlock) {
         newBlock.mineBlock(difficulty);
         blockchain.add(newBlock);
+        logger.info("Added block");
     }
 }

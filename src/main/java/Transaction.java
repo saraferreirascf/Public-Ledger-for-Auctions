@@ -1,11 +1,15 @@
 import java.security.*;
 import java.util.ArrayList;
+import java.util.Iterator;
+import kademlia_public_ledger.*;
+import java.util.List;
+import com.google.protobuf.ByteString;
 
 public class Transaction {
 
     public String transactionId; //Contains a hash of transaction*
     public PublicKey sender; //Senders address/public key.
-    public PublicKey reciepient; //Recipients address/public key.
+    public static PublicKey reciepient; //Recipients address/public key.
     public float value; //Contains the amount we wish to send to the recipient.
     public byte[] signature; //This is to prevent anybody else from spending funds in our wallet.
 
@@ -20,6 +24,49 @@ public class Transaction {
         this.reciepient = to;
         this.value = value;
         this.inputs = inputs;
+    }
+
+    public Transaction(String tid, String from, String to, float value, byte[] s, ArrayList<TransactionInput> inputs, ArrayList<TransactionOutput> outputs) {
+        //this.sender = from;
+        //this.reciepient = to;
+        this.transactionId = tid;
+        this.value = value;
+        this.signature = s;
+        this.inputs = inputs;
+        this.outputs = outputs;
+    }
+
+    public static Iterable<Transaction_> toTransactions_(ArrayList<Transaction> ts){
+        ArrayList<Transaction_> result = new ArrayList<Transaction_>();
+        for (int i=0; i<ts.size(); i++) {
+            Transaction t = ts.get(i);
+            result.add(Transaction_.newBuilder().setTransactionId(t.transactionId).setSender(StringUtil.getStringFromKey(t.sender)).setReciepient(StringUtil.getStringFromKey(reciepient)).setValue((long)t.value).setSignature(ByteString.copyFrom(t.signature)).build());
+        }
+        return  getIterableFromIterator(result.iterator());
+    }
+
+    public static <T> Iterable<T> 
+    getIterableFromIterator(Iterator<T> iterator) 
+    { 
+        return new Iterable<T>() { 
+            @Override
+            public Iterator<T> iterator() 
+            { 
+                return iterator; 
+            } 
+        }; 
+    } 
+
+    public static ArrayList<Transaction> copyFrom(List<Transaction_> transactions_){
+        ArrayList<Transaction> itransactions = new ArrayList<Transaction>();
+        for (int i=0; i<transactions_.size(); i++){
+            itransactions.add(Transaction.copyFrom(transactions_.get(i)));
+        }
+        return itransactions;
+    }
+
+    public static Transaction copyFrom(Transaction_ transaction_){
+        return new Transaction(transaction_.getTransactionId(), transaction_.getSender(), transaction_.getReciepient(), transaction_.getValue(), transaction_.getSignature().toByteArray(), TransactionInput.copyFrom(transaction_.getInputsList()), TransactionOutput.copyFrom(transaction_.getOutputsList()));
     }
 
     public boolean processTransaction() {

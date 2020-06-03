@@ -185,6 +185,37 @@ public final class P2PGrpc {
     return getJOINMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<kademlia_public_ledger.NodeInfo,
+      kademlia_public_ledger.Block_> getGETBlockChainMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GETBlockChain",
+      requestType = kademlia_public_ledger.NodeInfo.class,
+      responseType = kademlia_public_ledger.Block_.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
+  public static io.grpc.MethodDescriptor<kademlia_public_ledger.NodeInfo,
+      kademlia_public_ledger.Block_> getGETBlockChainMethod() {
+    io.grpc.MethodDescriptor<kademlia_public_ledger.NodeInfo, kademlia_public_ledger.Block_> getGETBlockChainMethod;
+    if ((getGETBlockChainMethod = P2PGrpc.getGETBlockChainMethod) == null) {
+      synchronized (P2PGrpc.class) {
+        if ((getGETBlockChainMethod = P2PGrpc.getGETBlockChainMethod) == null) {
+          P2PGrpc.getGETBlockChainMethod = getGETBlockChainMethod =
+              io.grpc.MethodDescriptor.<kademlia_public_ledger.NodeInfo, kademlia_public_ledger.Block_>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GETBlockChain"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  kademlia_public_ledger.NodeInfo.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  kademlia_public_ledger.Block_.getDefaultInstance()))
+              .setSchemaDescriptor(new P2PMethodDescriptorSupplier("GETBlockChain"))
+              .build();
+        }
+      }
+    }
+    return getGETBlockChainMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -297,6 +328,16 @@ public final class P2PGrpc {
       asyncUnimplementedUnaryCall(getJOINMethod(), responseObserver);
     }
 
+    /**
+     * <pre>
+     * Get BlockChain
+     * </pre>
+     */
+    public void gETBlockChain(kademlia_public_ledger.NodeInfo request,
+        io.grpc.stub.StreamObserver<kademlia_public_ledger.Block_> responseObserver) {
+      asyncUnimplementedUnaryCall(getGETBlockChainMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -334,6 +375,13 @@ public final class P2PGrpc {
                 kademlia_public_ledger.NodeID,
                 kademlia_public_ledger.Kbucket>(
                   this, METHODID_JOIN)))
+          .addMethod(
+            getGETBlockChainMethod(),
+            asyncServerStreamingCall(
+              new MethodHandlers<
+                kademlia_public_ledger.NodeInfo,
+                kademlia_public_ledger.Block_>(
+                  this, METHODID_GETBLOCK_CHAIN)))
           .build();
     }
   }
@@ -420,6 +468,17 @@ public final class P2PGrpc {
       asyncUnaryCall(
           getChannel().newCall(getJOINMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     * <pre>
+     * Get BlockChain
+     * </pre>
+     */
+    public void gETBlockChain(kademlia_public_ledger.NodeInfo request,
+        io.grpc.stub.StreamObserver<kademlia_public_ledger.Block_> responseObserver) {
+      asyncServerStreamingCall(
+          getChannel().newCall(getGETBlockChainMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -501,6 +560,17 @@ public final class P2PGrpc {
       return blockingUnaryCall(
           getChannel(), getJOINMethod(), getCallOptions(), request);
     }
+
+    /**
+     * <pre>
+     * Get BlockChain
+     * </pre>
+     */
+    public java.util.Iterator<kademlia_public_ledger.Block_> gETBlockChain(
+        kademlia_public_ledger.NodeInfo request) {
+      return blockingServerStreamingCall(
+          getChannel(), getGETBlockChainMethod(), getCallOptions(), request);
+    }
   }
 
   /**
@@ -564,6 +634,7 @@ public final class P2PGrpc {
   private static final int METHODID_FIND_NODE = 2;
   private static final int METHODID_FIND_VALUE = 3;
   private static final int METHODID_JOIN = 4;
+  private static final int METHODID_GETBLOCK_CHAIN = 5;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -601,6 +672,10 @@ public final class P2PGrpc {
         case METHODID_JOIN:
           serviceImpl.jOIN((kademlia_public_ledger.NodeID) request,
               (io.grpc.stub.StreamObserver<kademlia_public_ledger.Kbucket>) responseObserver);
+          break;
+        case METHODID_GETBLOCK_CHAIN:
+          serviceImpl.gETBlockChain((kademlia_public_ledger.NodeInfo) request,
+              (io.grpc.stub.StreamObserver<kademlia_public_ledger.Block_>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -668,6 +743,7 @@ public final class P2PGrpc {
               .addMethod(getFINDNODEMethod())
               .addMethod(getFINDVALUEMethod())
               .addMethod(getJOINMethod())
+              .addMethod(getGETBlockChainMethod())
               .build();
         }
       }

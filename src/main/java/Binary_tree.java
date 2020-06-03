@@ -40,12 +40,22 @@ public class Binary_tree {
     BigInteger maxk = getMaxK();
     int alpha = 3;
     TestUnit_ testUnit = new TestUnit_();
+    NoobChain chain = null;
 
     Binary_tree() throws java.io.IOException {
         this.current = new Node();
         this.server = new P2PServer(this.current.port);
         iaddress = new Key();
         generateRandom160bits(iaddress);
+        this.chain = new NoobChain();
+    }
+
+    Binary_tree(String nome) throws java.io.IOException {
+        this.current = new Node(nome);
+        this.server = new P2PServer(this.current.port);
+        iaddress = new Key();
+        generateRandom160bits(iaddress);
+        this.chain = new NoobChain();
     }
 
     Binary_tree(int p) throws java.io.IOException {
@@ -53,6 +63,8 @@ public class Binary_tree {
         this.server = new P2PServer(p);
         iaddress = new Key();
         generateRandom160bits(iaddress);
+        this.chain = new NoobChain();
+        this.chain.addBlock(new Block("Genesis Block", "0"));
     }
 
     public List<Node> lookup(Key key) throws InterruptedException {
@@ -75,10 +87,11 @@ public class Binary_tree {
         }
         
 
-        logger.info("lookup kbucket size: " + ikbucket.nodes.size());
+
         // Send Find Node to alpha(=3) closest nodes
         // sorte list
         if (ikbucket != null) {
+            logger.info("lookup kbucket size: " + ikbucket.nodes.size());
             Collections.sort(ikbucket.nodes, new Comparator<Node>() {
                 @Override
                 public int compare(Node n1, Node n2) {
@@ -123,7 +136,8 @@ public class Binary_tree {
                             if (BigInteger.valueOf(Integer.valueOf(closest.size())).compareTo(ikbucket.k) == 0)
                                 return closest;
                         }
-                        for (Key ikey: listenKeys){
+                        for (int u=0; u<listenKeys.size(); u++){
+                            Key ikey = listenKeys.get(u);
                             if (counter == alpha)
                                 break;
                             if (node2.nodeID.compareTo(ikey) != 0) {
@@ -227,7 +241,8 @@ public class Binary_tree {
                             if (BigInteger.valueOf(Integer.valueOf(closest.size())).compareTo(ikbucket.k) == 0)
                                 return closest;
                         }
-                        for (Key ikey: listenKeys){
+                        for (int u=0; u<listenKeys.size(); u++){
+                            Key ikey = listenKeys.get(u);
                             if (counter == alpha)
                                 break;
                             if (node2.nodeID.compareTo(ikey) != 0) {
@@ -369,11 +384,11 @@ public class Binary_tree {
         }
 
         public BooleanSuccessResponse STORE(Key_Value request) throws java.lang.InterruptedException{
-            logger.info("FINDVALUE " + new BigInteger(request.getKey().toByteArray()).toString() + " from sender " + new BigInteger(request.getSender().getNodeID().toByteArray()).toString());
+            logger.info("STORE " + new BigInteger(request.getKey().toByteArray()).toString() + " from sender " + new BigInteger(request.getSender().getNodeID().toByteArray()).toString());
             BooleanSuccessResponse response =  null;
             try {
                 response = blockingStub.sTORE(request);
-                logger.info("FINDVALUE return statement");
+                logger.info("STORE return statement");
                 logger.info("Value: " + response.getSuccess());
                 return response;
             } catch (StatusRuntimeException e) {
@@ -399,13 +414,28 @@ public class Binary_tree {
             }*/
             return Collections.emptyIterator();
         }
+
+        public Iterator<Block_> GETBlockChain(NodeInfo request) throws java.lang.InterruptedException {
+            //logger.info("FINDVALUE " + new BigInteger(request.getKey().toByteArray()).toString() + " from sender " + new BigInteger(request.getSender().getNodeID().toByteArray()).toString());
+            Iterator<Block_> response;
+            try {
+                response = blockingStub.gETBlockChain(request);
+                return response;
+            } catch (StatusRuntimeException e) {
+                logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            }
+            return Collections.emptyIterator();
+        }
     }
 
     class TestUnit_ {
         public void printallnodes() {
-            for (KBucket kb: kbuckets) {
-                for(Node node: kb.nodes)
+            for (int i=0; i<kbuckets.size(); i++){
+                KBucket kb = kbuckets.get(i);
+                for( int j=0; j<kb.nodes.size(); j++){
+                    Node node = kb.nodes.get(j);
                     logger.info(iaddress.kToBigInt() + " : " + kb.plength + " : " +kb.prefix.kToBigInt() + " : " + node.nodeID.kToBigInt());
+                }
             }
         }
 
@@ -453,6 +483,7 @@ public class Binary_tree {
 
         public void findValue(Node inode) throws InterruptedException {
             Key_Value kv = inode.toKey_Value(inode.nodeID, inode.nodeID, "123").build();
+            client = new P2PClient(ManagedChannelBuilder.forTarget(inode.ip + ":" + inode.port).usePlaintext().build());
             client.FIND_VALUE(kv);
 
         }
@@ -537,9 +568,15 @@ public class Binary_tree {
                 logger.info(new BigInteger(request.getSender().getNodeID().toByteArray()).toString() + " has connected");
                 logger.info("kbuckets size:" + kbuckets.size());
                 
+                // when a kademlia node receives any message(request or reply) from another node,
+                // it updates the appropeiate k-bucket for the sender´s nodeID
+                Node snode = new Node(request.getSender());
+                inserts(snode);
+
                 String value = request.getValue();
 
                 // write file
+                logger.info("I receive this value to store: " + value);
 
                 responseObserver.onNext(BooleanSuccessResponse.newBuilder().setSuccess(true).build());
                 responseObserver.onCompleted();
@@ -571,6 +608,7 @@ public class Binary_tree {
                     responseObserver.onCompleted();
                     logger.info("id:" + current.nodeID.kToBigInt() + "has completed find value for " + new BigInteger(request.getSender().getNodeID().toByteArray()).toString() + " has connected");
                     logger.info("find value -> server response completed");
+                    return ;
                 }
 
                 // sort
@@ -591,7 +629,8 @@ public class Binary_tree {
                     if (i == 0) {
                         nkclosest = ikbucket.k;
                     }
-                    for (Node inode: ikbucket.nodes) {
+                    for (int j=0; j<ikbucket.nodes.size(); j++){
+                        Node inode = ikbucket.nodes.get(j);
                         logger.info("sending nodeID: " + inode.nodeID.kToBigInt());
                         responseObserver.onNext(inode.toNodeInfo().build());
                         if (++ik == nkclosest.intValue())
@@ -639,18 +678,41 @@ public class Binary_tree {
                     if (i == 0)
                         nkclosest = ikbucket.k;
                     
-                    for (Node inode: ikbucket.nodes) {
+                    for (int j=0; j<ikbucket.nodes.size(); j++){
+                        Node inode = ikbucket.nodes.get(j);
                         logger.info("sending nodeID: " + inode.nodeID.kToBigInt());
                         responseObserver.onNext(inode.toNodeInfo().build());
                         if (++ik == nkclosest.intValue())
                             break;
+
                     }
+
                     if (ik == nkclosest.intValue())
                         break;
                 }
                 responseObserver.onCompleted();
                 logger.info("id:" + current.nodeID.kToBigInt() + "has completed find node for " + new BigInteger(request.getSender().getNodeID().toByteArray()).toString() + " has connected");
                 logger.info("find node -> server response completed");
+            }
+
+            @Override
+            public void gETBlockChain(NodeInfo request, StreamObserver<Block_> responseObserver){
+                logger.info(new BigInteger("GetBlockChain: " + request.getSender().getNodeID().toByteArray()).toString() + " has connected");
+                
+                // when a kademlia node receives any message(request or reply) from another node,
+                // it updates the appropeiate k-bucket for the sender´s nodeID
+                Node snode = new Node(request.getSender());
+                inserts(snode);
+
+                for (int i=0; i<chain.blockchain.size(); i++){
+                    Block iblock = chain.blockchain.get(i);
+                     responseObserver.onNext(iblock.toBlock_().build());
+                }
+
+                responseObserver.onCompleted();
+                logger.info("id:" + current.nodeID.kToBigInt() + "has completed getblockChain for " + new BigInteger(request.getSender().getNodeID().toByteArray()).toString() + " has connected");
+                logger.info("getblockChain -> server response completed");
+
             }
         }
     }
@@ -725,7 +787,8 @@ public class Binary_tree {
         kbuckets.add(new KBucket(i.addAndGet0ToPrefix(), i.plength+1));
         kbuckets.add(new KBucket(i.addAndGet1ToPrefix(), i.plength+1));
         kbuckets.remove(i);
-        for (Node inode : i.nodes) {
+        for (int j=0; j<i.nodes.size(); j++){
+            Node inode = i.nodes.get(j);
             inode.kbucket = null;
             inserts(inode);
         }
@@ -744,9 +807,16 @@ public class Binary_tree {
         public String ip = "127.0.0.1";
         public int port;
         public KBucket kbucket = null;
+        public String name = "";
 
         Node() {
             this.port = get_Port();
+            writeFile(String.valueOf(this.port));
+            generateRandom160bits(this.nodeID);
+        }
+        Node(String name) {
+            this.port = get_Port();
+            this.name = name;
             writeFile(String.valueOf(this.port));
             generateRandom160bits(this.nodeID);
         }
@@ -881,10 +951,12 @@ public class Binary_tree {
         }
 
         public Node getNodeByID(Key ikey) {
-            for (Node inode: this.nodes)
+            for (int i=0; i<this.nodes.size(); i++) {
+                Node inode = this.nodes.get(i);
                 if(inode.nodeID.compareTo(ikey) == 0){
                     return inode;
                 }
+            }
             return null;
         }
 
@@ -987,5 +1059,14 @@ public class Binary_tree {
 
     }
 
-}
+    /*
+    BLOCKCHAIN
+    */
 
+    public void updateBlockchain(Node inode) throws InterruptedException {
+        client = new P2PClient(ManagedChannelBuilder.forTarget(inode.ip + ":" + inode.port).usePlaintext().build());
+        chain.blockchain = new ArrayList<Block>();
+        chain.blockchain.addAll(Block.copyFrom(client.GETBlockChain(inode.toNodeInfo().build())));
+        chain.printChain();
+    }
+}

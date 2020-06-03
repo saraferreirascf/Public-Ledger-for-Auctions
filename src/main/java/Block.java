@@ -1,23 +1,54 @@
 import java.util.Date;
 import java.util.ArrayList;
+import java.util.Iterator;
+import kademlia_public_ledger.*;
+import com.google.common.collect.Iterators;
 
 public class Block {
 
     public String hash;
     public String previousHash;
     public String merkleRoot;
-    //private String data; //our data will be a simple message. in the future it will be transactions
+    private String data; //our data will be a simple message. in the future it will be transactions
     public ArrayList<Transaction> transactions = new ArrayList<Transaction>();
     private long timeStamp; //as number of milliseconds since 1/1/1970.
     private int nonce;
 
     //Block Constructor.
-    public Block(String previousHash ) {
-        //this.data = data;
+    public Block(String previousHash, String data) {
+        this.data = data;
         this.previousHash = previousHash;
         this.timeStamp = new Date().getTime();
 
         this.hash = calculateHash(); //Making sure we do this after we set the other values.
+    }
+
+    public Block(String hash, String previousHash, String merkleRoot, String data, ArrayList<Transaction> transactions, long timestamp, int nonce) {
+        this.hash = hash;
+        this.data = data;
+        this.previousHash = previousHash;
+        this.merkleRoot = merkleRoot;
+        this.transactions = transactions;
+        this.timeStamp = timestamp;
+        this.nonce = nonce;
+    }
+
+    public static ArrayList<Block> copyFrom(Iterator<Block_> blocks_) {
+        ArrayList<Block> ichain = new ArrayList<Block>();
+        for (int i=0; i<Iterators.size(blocks_); i++){
+            ichain.add(copyFrom(blocks_.next()));
+        }
+        return ichain;
+    }
+
+    public static  Block copyFrom(Block_ block_) {
+        return new Block(block_.getHash(),
+                         block_.getPreviousHash(),
+                         block_.getMerkleRoot(),
+                         block_.getData(),
+                         Transaction.copyFrom(block_.getTransactionsList()),
+                         block_.getTimestamp(),
+                         block_.getNonce());
     }
 
     //Calculate new hash based on blocks contents
@@ -29,6 +60,16 @@ public class Block {
                         merkleRoot
         );
         return calculatedhash;
+    }
+
+    public Block_.Builder toBlock_(){
+        return Block_.newBuilder().setHash(this.hash)
+                                    .setPreviousHash(this.previousHash)
+                                    .setMerkleRoot(this.merkleRoot)
+                                    .setData(this.data)
+                                    .addAllTransactions(Transaction.toTransactions_(this.transactions))
+                                    .setTimestamp(this.timeStamp)
+                                    .setNonce(this.nonce);
     }
 
     //Increases nonce value until hash target is reached.

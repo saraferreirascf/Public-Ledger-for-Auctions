@@ -56,6 +56,9 @@ service P2P {
   //
   rpc JOIN(NodeID) returns (Kbucket) {}
 
+  // Get BlockChain
+  rpc GETBlockChain(NodeInfo) returns (stream Block_) {}
+
 }
 
 message Kbucket {
@@ -72,6 +75,38 @@ message Key_Value {
 
 }
 
+message Block_ {
+  string hash = 1;
+  string previousHash = 2;
+  string merkleRoot = 3;
+  string data = 4;
+  repeated Transaction_ transactions = 5;
+  int64 timestamp = 6;
+  int32 nonce = 7;
+}
+
+message Transaction_ {
+  string transactionId = 1;
+  string sender = 2;
+  string reciepient = 3;
+  int64 value = 4;
+  bytes signature = 5;
+  repeated TransactionInput_ inputs = 6;
+  repeated TransactionOutput_ outputs = 7;
+}
+
+message TransactionInput_ {
+  string transactionOutputId = 1;
+  TransactionOutput_ UTXO = 2;
+}
+
+message TransactionOutput_ {
+  string id = 1;
+  string reciepient = 2;
+  int64 value = 3;
+  string parentTransactionId = 4;
+
+}
 
 message BooleanSuccessResponse {
   bool success = 1;
