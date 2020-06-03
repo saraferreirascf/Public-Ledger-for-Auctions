@@ -697,7 +697,7 @@ public class Binary_tree {
 
             @Override
             public void gETBlockChain(NodeInfo request, StreamObserver<Block_> responseObserver){
-                logger.info(new BigInteger("GetBlockChain: " + request.getSender().getNodeID().toByteArray()).toString() + " has connected");
+                //logger.info(new BigInteger("GetBlockChain: " + request.getSender().getNodeID().toByteArray()).toString() + " has connected");
                 
                 // when a kademlia node receives any message(request or reply) from another node,
                 // it updates the appropeiate k-bucket for the sender´s nodeID
@@ -1066,6 +1066,7 @@ public class Binary_tree {
     public void updateBlockchain(Node inode) throws InterruptedException {
         client = new P2PClient(ManagedChannelBuilder.forTarget(inode.ip + ":" + inode.port).usePlaintext().build());
         chain.blockchain = new ArrayList<Block>();
+        System.out.println(client.GETBlockChain(inode.toNodeInfo().build()));
         chain.blockchain.addAll(Block.copyFrom(client.GETBlockChain(inode.toNodeInfo().build())));
         chain.printChain();
     }

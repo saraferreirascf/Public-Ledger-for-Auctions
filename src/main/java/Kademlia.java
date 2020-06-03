@@ -76,6 +76,7 @@ public class Kademlia {
                             tree.inserts(master);
                             logger.info("Created master node");
                             tree.lookup(tree.current.nodeID);
+                            System.out.println("Waiting to mine blocks....");
                             
                             //tree.chain.printChain();
                             //tree.getBlockChain(master);
@@ -95,6 +96,7 @@ public class Kademlia {
                             tree.testUnit.printallnodes();
                         }  else if (commands[0].equals("createuser")) {
                             tree = new Binary_tree(commands[1]);
+                            System.out.println("Welcome to the network "+commands[1]);
                             Thread tserver = new Thread(new Runnable() { 
                                 @Override
                                 public void run()
@@ -116,7 +118,7 @@ public class Kademlia {
                             logger.info("Created master node");
                             tree.lookup(tree.current.nodeID);
 
-                            tree.chain.printChain();
+                           // tree.chain.printChain(); // ainda esta vazia
                             tree.updateBlockchain(master);
                             //*** falta pedir a transação e enviar para os miners
                         } 

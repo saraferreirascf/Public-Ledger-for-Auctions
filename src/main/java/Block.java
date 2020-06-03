@@ -23,12 +23,13 @@ public class Block {
         this.hash = calculateHash(); //Making sure we do this after we set the other values.
     }
 
-    public Block(String hash, String previousHash, String merkleRoot, String data, ArrayList<Transaction> transactions, long timestamp, int nonce) {
+    //faltam as transacos aqui
+    public Block(String hash, String previousHash, String merkleRoot, String data, long timestamp, int nonce) {
         this.hash = hash;
         this.data = data;
         this.previousHash = previousHash;
         this.merkleRoot = merkleRoot;
-        this.transactions = transactions;
+        //this.transactions = transactions;
         this.timeStamp = timestamp;
         this.nonce = nonce;
     }
@@ -46,7 +47,7 @@ public class Block {
                          block_.getPreviousHash(),
                          block_.getMerkleRoot(),
                          block_.getData(),
-                         Transaction.copyFrom(block_.getTransactionsList()),
+                         //Transaction.copyFrom(block_.getTransactionsList()),
                          block_.getTimestamp(),
                          block_.getNonce());
     }
