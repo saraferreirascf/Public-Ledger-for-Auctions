@@ -36,7 +36,7 @@ public class Block {
 
     public static ArrayList<Block> copyFrom(Iterator<Block_> blocks_) {
         ArrayList<Block> ichain = new ArrayList<Block>();
-        for (int i=0; i<Iterators.size(blocks_); i++){
+        while(blocks_.hasNext()){
             ichain.add(copyFrom(blocks_.next()));
         }
         return ichain;
