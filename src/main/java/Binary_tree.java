@@ -41,6 +41,7 @@ public class Binary_tree {
     int alpha = 3;
     TestUnit_ testUnit = new TestUnit_();
     NoobChain chain = null;
+    Boolean isMiner =false;
 
     Binary_tree() throws java.io.IOException {
         this.current = new Node();
@@ -48,6 +49,7 @@ public class Binary_tree {
         iaddress = new Key();
         generateRandom160bits(iaddress);
         this.chain = new NoobChain();
+        this.isMiner=true;
     }
 
     Binary_tree(String nome) throws java.io.IOException {

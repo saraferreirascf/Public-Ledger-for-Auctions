@@ -1,3 +1,13 @@
+//TODO
+    //Com o lookup aos user da rede, ver se o recipient da transacao existe, se nao, mostrar a lista dos que existem e dizer para escolher dai.
+    //Criar bloco com esta transaçao (podemos comecar por criar um bloco com esta informacao e nao ser logo uma transacao mesmo)
+    //Criar wallet para cada user que se junte.
+    //Lookup dos miners (têm na construcao da tree que o atributo isMiner é true)
+    //Mandar a esses nós o bloco
+    //Fazer com que, quando eles recebam minem o bloco
+    //Ver qual é o primeiro a minar (recebe dinheiro) e esse bloco é mandado a todos os users (incluindo ao master) para atualizarmos a blockchain
+    //Ver melhor a cena dos transation outputs e inputs, em ultimo caso pomos dinheiro nas carteiras manualmente.
+
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -11,9 +21,12 @@ import io.grpc.Channel;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import java.math.BigInteger;
+import java.util.Scanner;  // Import the Scanner class
 
 public class Kademlia {
     private static final Logger logger = Logger.getLogger(Kademlia.class.getName());
+    Scanner scan = new Scanner(System.in);  // Create a Scanner object
+
 
     private Binary_tree tree = null;
 
@@ -118,9 +131,23 @@ public class Kademlia {
                             logger.info("Created master node");
                             tree.lookup(tree.current.nodeID);
 
-                           // tree.chain.printChain(); // ainda esta vazia
+                           // tree.chain.printChain(); // ainda esta vazia pq nao pediu nada ao master
                             tree.updateBlockchain(master);
-                            //*** falta pedir a transação e enviar para os miners
+
+                            System.out.println("Waiting for transactions...");
+                            System.out.println("Please indicate the recipient of the transation");
+
+                            
+                            String recipient =scan.nextLine();
+
+
+                            System.out.println("Please indicate the value of the transation");
+                            int value =Integer.parseInt(scan.nextLine());
+
+                            logger.info("Sending to miners transaction of "+ value +" to "+recipient);
+                            
+
+                            
                         } 
                     }
 
