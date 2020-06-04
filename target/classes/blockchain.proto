@@ -64,6 +64,8 @@ service P2P {
 
   rpc SendBlock(Block_) returns (BooleanSuccessResponse) {}
 
+  rpc GetNodeFromName(NodeName) returns (BasicNode) {}
+
 }
 
 message Kbucket {
@@ -129,6 +131,11 @@ message NodeInfo {
 message NodeID {
   bytes  nodeID = 1;
   BasicNode sender = 2;
+}
+
+message NodeName {
+  BasicNode sender = 1;
+  string name = 2;
 }
 
 message BasicNode {

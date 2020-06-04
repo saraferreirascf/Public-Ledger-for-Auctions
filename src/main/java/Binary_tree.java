@@ -443,13 +443,24 @@ public class Binary_tree {
         public BooleanSuccessResponse SendBlock(Block_ request){
             BooleanSuccessResponse response = null;
             try {
-                //response = blockingStub.sendBlock(request);
+                // *****response = blockingStub.sendBlock(request);
                 
             } catch (StatusRuntimeException e) {
                 logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
             }
             return response;
         }
+
+        public BasicNode GetNodeFromName(NodeName request){
+            BasicNode response = null;
+            try {
+                response = blockingStub.getNodeFromName(request);                
+            } catch (StatusRuntimeException e) {
+                logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            }
+            return response;
+        }
+        
 
     }
 
@@ -703,16 +714,18 @@ public class Binary_tree {
                     if (i == 0)
                         nkclosest = ikbucket.k;
                     
+                    System.out.println("****** " + nkclosest.toString() );
+
                     for (int j=0; j<ikbucket.nodes.size(); j++){
                         Node inode = ikbucket.nodes.get(j);
                         logger.info("sending nodeID: " + inode.nodeID.kToBigInt());
                         responseObserver.onNext(inode.toNodeInfo().build());
-                        if (++ik == nkclosest.intValue())
+                        if (BigInteger.valueOf(Integer.valueOf(++ik)).compareTo(nkclosest) == 0)
                             break;
 
                     }
 
-                    if (ik == nkclosest.intValue())
+                    if (BigInteger.valueOf(Integer.valueOf(ik)).compareTo(nkclosest) == 0)
                         break;
                 }
                 responseObserver.onCompleted();
@@ -765,6 +778,7 @@ public class Binary_tree {
                     for (int j=0; j<ikbucket.nodes.size(); j++){
                         Node inode = ikbucket.nodes.get(j);
                         client = new P2PClient(ManagedChannelBuilder.forTarget(inode.ip + ":" + inode.port).usePlaintext().build());
+                        System.out.println("Send block to " + inode.name);
                         client.SendBlock(target.toBlock_(current).build());
                     }
                 }
@@ -801,6 +815,41 @@ public class Binary_tree {
                 return;
 
             }
+
+            @Override
+            public void getNodeFromName(NodeName request, StreamObserver<BasicNode> responseObserver){
+                //logger.info(new BigInteger("GetBlockChain: " + request.getSender().getNodeID().toByteArray()).toString() + " has connected");
+                
+                // when a kademlia node receives any message(request or reply) from another node,
+                // it updates the appropeiate k-bucket for the sender´s nodeID
+                if (request.getSender() != null) {
+                    Node snode = new Node(request.getSender());
+                    inserts(snode);
+                }
+
+                String recipient = request.getName();
+
+                for (int i=0; i<kbuckets.size(); i++) {
+                    KBucket ikbucket = kbuckets.get(i);
+
+                    for (int j=0; j<ikbucket.nodes.size(); j++) {
+                        Node inode = ikbucket.nodes.get(j);
+                        if (inode.name.equals(recipient)) {
+                            logger.info("Finded node name");
+                            responseObserver.onNext(inode.toBasicNode().build());
+                            responseObserver.onCompleted();
+                            return;
+                        }
+                    }
+                }
+
+                responseObserver.onCompleted();
+                logger.info("getNodeFromName -> server response completed");
+                return;
+
+            }
+
+            
         }
     }
 
@@ -904,7 +953,7 @@ public class Binary_tree {
             writeFile(String.valueOf(this.port));
             generateRandom160bits(this.nodeID);
             this.isMiner = true;
-            this.name = ""
+            this.name = "";
         }
         Node(String name) {
             this.port = get_Port();
@@ -927,6 +976,8 @@ public class Binary_tree {
             this.ip = node.getIp();
             this.isMiner = node.getIsMiner();
             this.name = node.getName();
+            
+            this.publicKey = node.getPublickey();
         }
 
         // messages parse
@@ -951,6 +1002,9 @@ public class Binary_tree {
             return NodeInfo.newBuilder().setNode(this.toBasicNode()).setSender(current.toBasicNode());
         }
 
+        public NodeName.Builder toNodeName(String name){
+            return NodeName.newBuilder().setName(name).setSender(current.toBasicNode());
+        }
         private ArrayList<String> readFile() {
             ArrayList<String> content = new ArrayList<String>();
             try {
@@ -1180,6 +1234,7 @@ public class Binary_tree {
 
             for (int j=0; j<ikbucket.nodes.size(); j++) {
                 Node inode = ikbucket.nodes.get(j);
+                System.out.println(inode.name + " é igual ao " + name + "?");
                 if (inode.name.equals(name))
                     return inode;
             }
@@ -1212,23 +1267,24 @@ public class Binary_tree {
 
     public void sendTransaction(String recipient, int amount) throws java.security.NoSuchAlgorithmException, java.security.spec.InvalidKeySpecException, InterruptedException, java.security.NoSuchProviderException {
         Node inode = getNodeFromName(recipient);
-
-        List<Node> closest = lookup(inode.nodeID);
+        List<Node> closest;
         boolean exist = false;
-        for (int i=0; i<closest.size(); i++) {
-            Node iclosest = closest.get(i);
-            if (iclosest.nodeID.compareTo(inode.nodeID) == 0) {
-                // send trasaction
-                //*** está a levar as transaction inputs como null
-                Transaction transaction = new Transaction(chain.wallet.publicKey, StringUtil.getKeyFromString(iclosest.publicKey), amount, null);
-                List<Node> miners = getMiners();
-                for (int j=0; j<miners.size(); j++){
-                    Node iminer = miners.get(j);
-                    client = new P2PClient(ManagedChannelBuilder.forTarget(iminer.ip + ":" + iminer.port).usePlaintext().build());
-                    // Send transaction to miners
-                    client.SendTransaction(Transaction.toTransaction_(transaction, current));
-                }
-            }
+
+        if (inode == null){
+            // find node from name
+            client = client = new P2PClient(ManagedChannelBuilder.forTarget("localhost:50051").usePlaintext().build());
+            inode =  new Node(client.GetNodeFromName(current.toNodeName(recipient).build()));
+            System.out.println("node name: " + inode.name);
+        }
+
+
+        Transaction transaction = new Transaction(chain.wallet.publicKey, StringUtil.getKeyFromString(inode.publicKey), amount, null);
+        List<Node> miners = look();
+        for (int j=0; j<miners.size(); j++){
+            Node iminer = miners.get(j);
+            client = new P2PClient(ManagedChannelBuilder.forTarget(iminer.ip + ":" + iminer.port).usePlaintext().build());
+            // Send transaction to miners
+            client.SendTransaction(Transaction.toTransaction_(transaction, current));
         }
 
         if (!exist) {

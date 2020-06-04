@@ -92,7 +92,7 @@ public class Kademlia {
                             System.out.println("Waiting to mine blocks....");
                             
                             //tree.chain.printChain();
-                            //tree.getBlockChain(master);
+                            tree.updateBlockchain(master);
 
                             /*
                             tree.testUnit.findValue(master);
@@ -129,7 +129,7 @@ public class Kademlia {
                             Binary_tree.Master_node master = tree.new Master_node(50051);
                             tree.inserts(master);
                             logger.info("Created master node");
-                            tree.lookup(tree.current.nodeID);
+                            System.out.println("Tamanho closest: " + tree.lookup(tree.current.nodeID).size());
 
                            // tree.chain.printChain(); // ainda esta vazia pq nao pediu nada ao master
                             tree.updateBlockchain(master);
@@ -151,6 +151,8 @@ public class Kademlia {
                         } else if (commands[0].equals("printallnodes")) {
                             
                             tree.testUnit.printallnodes();
+                        } else if (commands[0].equals("printallchain")) {
+                            tree.chain.printChain();
                         }
                     }
 
