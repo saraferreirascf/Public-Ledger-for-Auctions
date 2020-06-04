@@ -24,12 +24,12 @@ public class Block {
     }
 
     //faltam as transacos aqui
-    public Block(String hash, String previousHash, String merkleRoot, String data, long timestamp, int nonce) {
+    public Block(String hash, String previousHash, String merkleRoot, String data, ArrayList<Transaction> transactions, long timestamp, int nonce) {
         this.hash = hash;
         this.data = data;
         this.previousHash = previousHash;
         this.merkleRoot = merkleRoot;
-        //this.transactions = transactions;
+        this.transactions = transactions;
         this.timeStamp = timestamp;
         this.nonce = nonce;
     }
@@ -47,7 +47,7 @@ public class Block {
                          block_.getPreviousHash(),
                          block_.getMerkleRoot(),
                          block_.getData(),
-                         //Transaction.copyFrom(block_.getTransactionsList()),
+                         Transaction.copyFrom(block_.getTransactionsList()),
                          block_.getTimestamp(),
                          block_.getNonce());
     }
@@ -63,7 +63,16 @@ public class Block {
         return calculatedhash;
     }
 
-    public Block_.Builder toBlock_(){
+    public Block_.Builder toBlock_(Binary_tree.Node inode){
+        if (inode != null)
+            return Block_.newBuilder().setHash(this.hash)
+                                    .setPreviousHash(this.previousHash)
+                                    .setMerkleRoot(this.merkleRoot)
+                                    .setData(this.data)
+                                    .addAllTransactions(Transaction.toTransactions_(this.transactions))
+                                    .setTimestamp(this.timeStamp)
+                                    .setNonce(this.nonce)
+                                    .setSenderNode(inode.toBasicNode());
         return Block_.newBuilder().setHash(this.hash)
                                     .setPreviousHash(this.previousHash)
                                     .setMerkleRoot(this.merkleRoot)

@@ -97,6 +97,19 @@ private static final long serialVersionUID = 0L;
             nonce_ = input.readInt32();
             break;
           }
+          case 66: {
+            kademlia_public_ledger.BasicNode.Builder subBuilder = null;
+            if (senderNode_ != null) {
+              subBuilder = senderNode_.toBuilder();
+            }
+            senderNode_ = input.readMessage(kademlia_public_ledger.BasicNode.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(senderNode_);
+              senderNode_ = subBuilder.buildPartial();
+            }
+
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -331,6 +344,29 @@ private static final long serialVersionUID = 0L;
     return nonce_;
   }
 
+  public static final int SENDERNODE_FIELD_NUMBER = 8;
+  private kademlia_public_ledger.BasicNode senderNode_;
+  /**
+   * <code>.BasicNode senderNode = 8;</code>
+   * @return Whether the senderNode field is set.
+   */
+  public boolean hasSenderNode() {
+    return senderNode_ != null;
+  }
+  /**
+   * <code>.BasicNode senderNode = 8;</code>
+   * @return The senderNode.
+   */
+  public kademlia_public_ledger.BasicNode getSenderNode() {
+    return senderNode_ == null ? kademlia_public_ledger.BasicNode.getDefaultInstance() : senderNode_;
+  }
+  /**
+   * <code>.BasicNode senderNode = 8;</code>
+   */
+  public kademlia_public_ledger.BasicNodeOrBuilder getSenderNodeOrBuilder() {
+    return getSenderNode();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -366,6 +402,9 @@ private static final long serialVersionUID = 0L;
     if (nonce_ != 0) {
       output.writeInt32(7, nonce_);
     }
+    if (senderNode_ != null) {
+      output.writeMessage(8, getSenderNode());
+    }
     unknownFields.writeTo(output);
   }
 
@@ -399,6 +438,10 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(7, nonce_);
     }
+    if (senderNode_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(8, getSenderNode());
+    }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
     return size;
@@ -428,6 +471,11 @@ private static final long serialVersionUID = 0L;
         != other.getTimestamp()) return false;
     if (getNonce()
         != other.getNonce()) return false;
+    if (hasSenderNode() != other.hasSenderNode()) return false;
+    if (hasSenderNode()) {
+      if (!getSenderNode()
+          .equals(other.getSenderNode())) return false;
+    }
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -456,6 +504,10 @@ private static final long serialVersionUID = 0L;
         getTimestamp());
     hash = (37 * hash) + NONCE_FIELD_NUMBER;
     hash = (53 * hash) + getNonce();
+    if (hasSenderNode()) {
+      hash = (37 * hash) + SENDERNODE_FIELD_NUMBER;
+      hash = (53 * hash) + getSenderNode().hashCode();
+    }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -608,6 +660,12 @@ private static final long serialVersionUID = 0L;
 
       nonce_ = 0;
 
+      if (senderNodeBuilder_ == null) {
+        senderNode_ = null;
+      } else {
+        senderNode_ = null;
+        senderNodeBuilder_ = null;
+      }
       return this;
     }
 
@@ -650,6 +708,11 @@ private static final long serialVersionUID = 0L;
       }
       result.timestamp_ = timestamp_;
       result.nonce_ = nonce_;
+      if (senderNodeBuilder_ == null) {
+        result.senderNode_ = senderNode_;
+      } else {
+        result.senderNode_ = senderNodeBuilder_.build();
+      }
       onBuilt();
       return result;
     }
@@ -745,6 +808,9 @@ private static final long serialVersionUID = 0L;
       }
       if (other.getNonce() != 0) {
         setNonce(other.getNonce());
+      }
+      if (other.hasSenderNode()) {
+        mergeSenderNode(other.getSenderNode());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -1378,6 +1444,125 @@ private static final long serialVersionUID = 0L;
       nonce_ = 0;
       onChanged();
       return this;
+    }
+
+    private kademlia_public_ledger.BasicNode senderNode_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        kademlia_public_ledger.BasicNode, kademlia_public_ledger.BasicNode.Builder, kademlia_public_ledger.BasicNodeOrBuilder> senderNodeBuilder_;
+    /**
+     * <code>.BasicNode senderNode = 8;</code>
+     * @return Whether the senderNode field is set.
+     */
+    public boolean hasSenderNode() {
+      return senderNodeBuilder_ != null || senderNode_ != null;
+    }
+    /**
+     * <code>.BasicNode senderNode = 8;</code>
+     * @return The senderNode.
+     */
+    public kademlia_public_ledger.BasicNode getSenderNode() {
+      if (senderNodeBuilder_ == null) {
+        return senderNode_ == null ? kademlia_public_ledger.BasicNode.getDefaultInstance() : senderNode_;
+      } else {
+        return senderNodeBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.BasicNode senderNode = 8;</code>
+     */
+    public Builder setSenderNode(kademlia_public_ledger.BasicNode value) {
+      if (senderNodeBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        senderNode_ = value;
+        onChanged();
+      } else {
+        senderNodeBuilder_.setMessage(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.BasicNode senderNode = 8;</code>
+     */
+    public Builder setSenderNode(
+        kademlia_public_ledger.BasicNode.Builder builderForValue) {
+      if (senderNodeBuilder_ == null) {
+        senderNode_ = builderForValue.build();
+        onChanged();
+      } else {
+        senderNodeBuilder_.setMessage(builderForValue.build());
+      }
+
+      return this;
+    }
+    /**
+     * <code>.BasicNode senderNode = 8;</code>
+     */
+    public Builder mergeSenderNode(kademlia_public_ledger.BasicNode value) {
+      if (senderNodeBuilder_ == null) {
+        if (senderNode_ != null) {
+          senderNode_ =
+            kademlia_public_ledger.BasicNode.newBuilder(senderNode_).mergeFrom(value).buildPartial();
+        } else {
+          senderNode_ = value;
+        }
+        onChanged();
+      } else {
+        senderNodeBuilder_.mergeFrom(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.BasicNode senderNode = 8;</code>
+     */
+    public Builder clearSenderNode() {
+      if (senderNodeBuilder_ == null) {
+        senderNode_ = null;
+        onChanged();
+      } else {
+        senderNode_ = null;
+        senderNodeBuilder_ = null;
+      }
+
+      return this;
+    }
+    /**
+     * <code>.BasicNode senderNode = 8;</code>
+     */
+    public kademlia_public_ledger.BasicNode.Builder getSenderNodeBuilder() {
+      
+      onChanged();
+      return getSenderNodeFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.BasicNode senderNode = 8;</code>
+     */
+    public kademlia_public_ledger.BasicNodeOrBuilder getSenderNodeOrBuilder() {
+      if (senderNodeBuilder_ != null) {
+        return senderNodeBuilder_.getMessageOrBuilder();
+      } else {
+        return senderNode_ == null ?
+            kademlia_public_ledger.BasicNode.getDefaultInstance() : senderNode_;
+      }
+    }
+    /**
+     * <code>.BasicNode senderNode = 8;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        kademlia_public_ledger.BasicNode, kademlia_public_ledger.BasicNode.Builder, kademlia_public_ledger.BasicNodeOrBuilder> 
+        getSenderNodeFieldBuilder() {
+      if (senderNodeBuilder_ == null) {
+        senderNodeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            kademlia_public_ledger.BasicNode, kademlia_public_ledger.BasicNode.Builder, kademlia_public_ledger.BasicNodeOrBuilder>(
+                getSenderNode(),
+                getParentForChildren(),
+                isClean());
+        senderNode_ = null;
+      }
+      return senderNodeBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

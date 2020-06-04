@@ -82,38 +82,40 @@ public final class PL {
       "e\030\002 \001(\0132\027.BooleanSuccessResponse\022\033\n\010brot" +
       "hers\030\n \003(\0132\t.NodeInfo\022\t\n\001i\030\001 \001(\005\"O\n\tKey_" +
       "Value\022\013\n\003key\030\001 \001(\014\022\n\n\002kv\030\002 \001(\014\022\r\n\005value\030" +
-      "\004 \001(\t\022\032\n\006sender\030\003 \001(\0132\n.BasicNode\"\225\001\n\006Bl" +
+      "\004 \001(\t\022\032\n\006sender\030\003 \001(\0132\n.BasicNode\"\265\001\n\006Bl" +
       "ock_\022\014\n\004hash\030\001 \001(\t\022\024\n\014previousHash\030\002 \001(\t" +
       "\022\022\n\nmerkleRoot\030\003 \001(\t\022\014\n\004data\030\004 \001(\t\022#\n\014tr" +
       "ansactions\030\005 \003(\0132\r.Transaction_\022\021\n\ttimes" +
-      "tamp\030\006 \001(\003\022\r\n\005nonce\030\007 \001(\005\"\325\001\n\014Transactio" +
-      "n_\022\025\n\rtransactionId\030\001 \001(\t\022\016\n\006sender\030\002 \001(" +
-      "\t\022\022\n\nreciepient\030\003 \001(\t\022\r\n\005value\030\004 \001(\003\022\021\n\t" +
-      "signature\030\005 \001(\014\022\"\n\006inputs\030\006 \003(\0132\022.Transa" +
-      "ctionInput_\022$\n\007outputs\030\007 \003(\0132\023.Transacti" +
-      "onOutput_\022\036\n\nsenderNode\030\010 \001(\0132\n.BasicNod" +
-      "e\"S\n\021TransactionInput_\022\033\n\023transactionOut" +
-      "putId\030\001 \001(\t\022!\n\004UTXO\030\002 \001(\0132\023.TransactionO" +
-      "utput_\"`\n\022TransactionOutput_\022\n\n\002id\030\001 \001(\t" +
-      "\022\022\n\nreciepient\030\002 \001(\t\022\r\n\005value\030\003 \001(\003\022\033\n\023p" +
-      "arentTransactionId\030\004 \001(\t\")\n\026BooleanSucce" +
-      "ssResponse\022\017\n\007success\030\001 \001(\010\"O\n\010NodeInfo\022" +
-      "\030\n\004node\030\001 \001(\0132\n.BasicNode\022\032\n\006sender\030\002 \001(" +
-      "\0132\n.BasicNode\022\r\n\005value\030\003 \001(\t\"4\n\006NodeID\022\016" +
-      "\n\006nodeID\030\001 \001(\014\022\032\n\006sender\030\002 \001(\0132\n.BasicNo" +
-      "de\"n\n\tBasicNode\022\016\n\006nodeID\030\001 \001(\014\022\n\n\002ip\030\002 " +
-      "\001(\t\022\014\n\004port\030\003 \001(\005\022\023\n\013client_name\030\004 \001(\t\022\021" +
-      "\n\tpublickey\030\005 \001(\t\022\017\n\007isMiner\030\006 \001(\010\"\021\n\017No" +
-      "deInfoORValue2\262\002\n\003P2P\022*\n\004PING\022\007.NodeID\032\027" +
-      ".BooleanSuccessResponse\"\000\022.\n\005STORE\022\n.Key" +
-      "_Value\032\027.BooleanSuccessResponse\"\000\022#\n\tFIN" +
-      "D_NODE\022\007.NodeID\032\t.NodeInfo\"\0000\001\022\'\n\nFIND_V" +
-      "ALUE\022\n.Key_Value\032\t.NodeInfo\"\0000\001\022\033\n\004JOIN\022" +
-      "\007.NodeID\032\010.Kbucket\"\000\022\'\n\rGETBlockChain\022\t." +
-      "NodeInfo\032\007.Block_\"\0000\001\022;\n\017SendTransaction" +
-      "\022\r.Transaction_\032\027.BooleanSuccessResponse" +
-      "\"\000B!\n\026kademlia_public_ledgerB\002PLP\001\242\002\000b\006p" +
-      "roto3"
+      "tamp\030\006 \001(\003\022\r\n\005nonce\030\007 \001(\005\022\036\n\nsenderNode\030" +
+      "\010 \001(\0132\n.BasicNode\"\325\001\n\014Transaction_\022\025\n\rtr" +
+      "ansactionId\030\001 \001(\t\022\016\n\006sender\030\002 \001(\t\022\022\n\nrec" +
+      "iepient\030\003 \001(\t\022\r\n\005value\030\004 \001(\003\022\021\n\tsignatur" +
+      "e\030\005 \001(\014\022\"\n\006inputs\030\006 \003(\0132\022.TransactionInp" +
+      "ut_\022$\n\007outputs\030\007 \003(\0132\023.TransactionOutput" +
+      "_\022\036\n\nsenderNode\030\010 \001(\0132\n.BasicNode\"S\n\021Tra" +
+      "nsactionInput_\022\033\n\023transactionOutputId\030\001 " +
+      "\001(\t\022!\n\004UTXO\030\002 \001(\0132\023.TransactionOutput_\"`" +
+      "\n\022TransactionOutput_\022\n\n\002id\030\001 \001(\t\022\022\n\nreci" +
+      "epient\030\002 \001(\t\022\r\n\005value\030\003 \001(\003\022\033\n\023parentTra" +
+      "nsactionId\030\004 \001(\t\")\n\026BooleanSuccessRespon" +
+      "se\022\017\n\007success\030\001 \001(\010\"O\n\010NodeInfo\022\030\n\004node\030" +
+      "\001 \001(\0132\n.BasicNode\022\032\n\006sender\030\002 \001(\0132\n.Basi" +
+      "cNode\022\r\n\005value\030\003 \001(\t\"4\n\006NodeID\022\016\n\006nodeID" +
+      "\030\001 \001(\014\022\032\n\006sender\030\002 \001(\0132\n.BasicNode\"|\n\tBa" +
+      "sicNode\022\016\n\006nodeID\030\001 \001(\014\022\n\n\002ip\030\002 \001(\t\022\014\n\004p" +
+      "ort\030\003 \001(\005\022\023\n\013client_name\030\004 \001(\t\022\021\n\tpublic" +
+      "key\030\005 \001(\t\022\017\n\007isMiner\030\006 \001(\010\022\014\n\004name\030\007 \001(\t" +
+      "\"\021\n\017NodeInfoORValue2\343\002\n\003P2P\022*\n\004PING\022\007.No" +
+      "deID\032\027.BooleanSuccessResponse\"\000\022.\n\005STORE" +
+      "\022\n.Key_Value\032\027.BooleanSuccessResponse\"\000\022" +
+      "#\n\tFIND_NODE\022\007.NodeID\032\t.NodeInfo\"\0000\001\022\'\n\n" +
+      "FIND_VALUE\022\n.Key_Value\032\t.NodeInfo\"\0000\001\022\033\n" +
+      "\004JOIN\022\007.NodeID\032\010.Kbucket\"\000\022\'\n\rGETBlockCh" +
+      "ain\022\t.NodeInfo\032\007.Block_\"\0000\001\022;\n\017SendTrans" +
+      "action\022\r.Transaction_\032\027.BooleanSuccessRe" +
+      "sponse\"\000\022/\n\tSendBlock\022\007.Block_\032\027.Boolean" +
+      "SuccessResponse\"\000B!\n\026kademlia_public_led" +
+      "gerB\002PLP\001\242\002\000b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -136,7 +138,7 @@ public final class PL {
     internal_static_Block__fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_Block__descriptor,
-        new java.lang.String[] { "Hash", "PreviousHash", "MerkleRoot", "Data", "Transactions", "Timestamp", "Nonce", });
+        new java.lang.String[] { "Hash", "PreviousHash", "MerkleRoot", "Data", "Transactions", "Timestamp", "Nonce", "SenderNode", });
     internal_static_Transaction__descriptor =
       getDescriptor().getMessageTypes().get(3);
     internal_static_Transaction__fieldAccessorTable = new
@@ -178,7 +180,7 @@ public final class PL {
     internal_static_BasicNode_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_BasicNode_descriptor,
-        new java.lang.String[] { "NodeID", "Ip", "Port", "ClientName", "Publickey", "IsMiner", });
+        new java.lang.String[] { "NodeID", "Ip", "Port", "ClientName", "Publickey", "IsMiner", "Name", });
     internal_static_NodeInfoORValue_descriptor =
       getDescriptor().getMessageTypes().get(10);
     internal_static_NodeInfoORValue_fieldAccessorTable = new

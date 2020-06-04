@@ -440,7 +440,17 @@ public class Binary_tree {
             }
             return response;
         }
-    
+        public BooleanSuccessResponse SendBlock(Block_ request){
+            BooleanSuccessResponse response = null;
+            try {
+                //response = blockingStub.sendBlock(request);
+                
+            } catch (StatusRuntimeException e) {
+                logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            }
+            return response;
+        }
+
     }
 
     class TestUnit_ {
@@ -449,7 +459,7 @@ public class Binary_tree {
                 KBucket kb = kbuckets.get(i);
                 for( int j=0; j<kb.nodes.size(); j++){
                     Node node = kb.nodes.get(j);
-                    logger.info(iaddress.kToBigInt() + " : " + kb.plength + " : " +kb.prefix.kToBigInt() + " : " + node.nodeID.kToBigInt());
+                    logger.info(node.name + " : " + iaddress.kToBigInt() + " : " + kb.plength + " : " +kb.prefix.kToBigInt() + " : " + node.nodeID.kToBigInt());
                 }
             }
         }
@@ -721,7 +731,7 @@ public class Binary_tree {
 
                 for (int i=0; i<chain.blockchain.size(); i++){
                     Block iblock = chain.blockchain.get(i);
-                     responseObserver.onNext(iblock.toBlock_().build());
+                     responseObserver.onNext(iblock.toBlock_(current).build());
                 }
 
                 responseObserver.onCompleted();
@@ -730,34 +740,65 @@ public class Binary_tree {
 
             }
 
-             @Override
+            @Override
             public void sendTransaction(Transaction_ request, StreamObserver<BooleanSuccessResponse> responseObserver){
                 //logger.info(new BigInteger("GetBlockChain: " + request.getSender().getNodeID().toByteArray()).toString() + " has connected");
                 
                 // when a kademlia node receives any message(request or reply) from another node,
                 // it updates the appropeiate k-bucket for the sender´s nodeID
-                if (request.getSender() != null) {
-                    Node snode = new Node(request.getSender());
+                if (request.getSenderNode() != null) {
+                    Node snode = new Node(request.getSenderNode());
                     inserts(snode);
                 }
 
                 Transaction transaction = Transaction.copyFrom(request);
                 Block lblock = chain.blockchain.get(chain.blockchain.size()-1);
-                lblock.addTransaction(transaction);
-                lblock.mineBlock(chain.difficulty);
+                Block target = new Block(lblock.hash, "Bloco " + chain.blockchain.size());
+                
+                target.addTransaction(transaction);
+                target.mineBlock(chain.difficulty);
 
                 // send block for all users
-                /*
                 for (int i=0; i<kbuckets.size(); i++){
                     KBucket ikbucket = kbuckets.get(i);
 
                     for (int j=0; j<ikbucket.nodes.size(); j++){
-                        Node inode = 
+                        Node inode = ikbucket.nodes.get(j);
+                        client = new P2PClient(ManagedChannelBuilder.forTarget(inode.ip + ":" + inode.port).usePlaintext().build());
+                        client.SendBlock(target.toBlock_(current).build());
                     }
-                }*/
+                }
                 responseObserver.onNext(BooleanSuccessResponse.newBuilder().setSuccess(true).build());
                 responseObserver.onCompleted();
                 logger.info("sendTransation -> server response completed");
+
+            }
+
+            @Override
+            public void sendBlock(Block_ request, StreamObserver<BooleanSuccessResponse> responseObserver){
+                //logger.info(new BigInteger("GetBlockChain: " + request.getSender().getNodeID().toByteArray()).toString() + " has connected");
+                
+                // when a kademlia node receives any message(request or reply) from another node,
+                // it updates the appropeiate k-bucket for the sender´s nodeID
+                if (request.getSenderNode() != null) {
+                    Node snode = new Node(request.getSenderNode());
+                    inserts(snode);
+                }
+
+                Block newblock = Block.copyFrom(request);
+                Block lblock = chain.blockchain.get(chain.blockchain.size()-1);
+                
+                if (!lblock.hash.equals(newblock.previousHash)){
+                    responseObserver.onNext(BooleanSuccessResponse.newBuilder().setSuccess(false).build());
+                    responseObserver.onCompleted();
+                    return;
+                }
+                
+                chain.blockchain.add(newblock);
+                responseObserver.onNext(BooleanSuccessResponse.newBuilder().setSuccess(true).build());
+                responseObserver.onCompleted();
+                logger.info("sendBlock -> server response completed");
+                return;
 
             }
         }
@@ -853,8 +894,8 @@ public class Binary_tree {
         public String ip = "127.0.0.1";
         public int port;
         public KBucket kbucket = null;
-        public String name = "";
-        public String publicKey = "";
+        public String name;
+        public String publicKey;
         public boolean isMiner;
 
 
@@ -863,6 +904,7 @@ public class Binary_tree {
             writeFile(String.valueOf(this.port));
             generateRandom160bits(this.nodeID);
             this.isMiner = true;
+            this.name = ""
         }
         Node(String name) {
             this.port = get_Port();
@@ -877,17 +919,19 @@ public class Binary_tree {
             this.port = p;
             this.nodeID = new Key(new BigInteger("579182793079556569232906595954800423677054759475"));
             this.isMiner = false;
+            this.name = "";
         }
         Node (BasicNode node) {
             this.port = node.getPort();
             this.nodeID = new Key(node.getNodeID().toByteArray());
             this.ip = node.getIp();
             this.isMiner = node.getIsMiner();
+            this.name = node.getName();
         }
 
         // messages parse
         public BasicNode.Builder toBasicNode(){
-            return BasicNode.newBuilder().setIsMiner(this.isMiner).setPublickey(this.publicKey).setNodeID(ByteString.copyFrom(this.nodeID.key)).setIp(this.ip).setPort(this.port).setClientName("id: " + this.nodeID.kToString());
+            return BasicNode.newBuilder().setName((this.name == null) ? "": this.name).setIsMiner(this.isMiner).setPublickey((this.publicKey == null) ? "": this.publicKey).setNodeID(ByteString.copyFrom(this.nodeID.key)).setIp(this.ip).setPort(this.port).setClientName("id: " + this.nodeID.kToString());
         }
 
         public NodeID.Builder toNodeID(){

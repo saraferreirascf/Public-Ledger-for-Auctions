@@ -90,4 +90,19 @@ public interface Block_OrBuilder extends
    * @return The nonce.
    */
   int getNonce();
+
+  /**
+   * <code>.BasicNode senderNode = 8;</code>
+   * @return Whether the senderNode field is set.
+   */
+  boolean hasSenderNode();
+  /**
+   * <code>.BasicNode senderNode = 8;</code>
+   * @return The senderNode.
+   */
+  kademlia_public_ledger.BasicNode getSenderNode();
+  /**
+   * <code>.BasicNode senderNode = 8;</code>
+   */
+  kademlia_public_ledger.BasicNodeOrBuilder getSenderNodeOrBuilder();
 }

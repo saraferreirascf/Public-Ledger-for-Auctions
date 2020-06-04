@@ -60,4 +60,16 @@ public interface BasicNodeOrBuilder extends
    * @return The isMiner.
    */
   boolean getIsMiner();
+
+  /**
+   * <code>string name = 7;</code>
+   * @return The name.
+   */
+  java.lang.String getName();
+  /**
+   * <code>string name = 7;</code>
+   * @return The bytes for name.
+   */
+  com.google.protobuf.ByteString
+      getNameBytes();
 }

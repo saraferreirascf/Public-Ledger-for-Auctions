@@ -247,6 +247,37 @@ public final class P2PGrpc {
     return getSendTransactionMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<kademlia_public_ledger.Block_,
+      kademlia_public_ledger.BooleanSuccessResponse> getSendBlockMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "SendBlock",
+      requestType = kademlia_public_ledger.Block_.class,
+      responseType = kademlia_public_ledger.BooleanSuccessResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<kademlia_public_ledger.Block_,
+      kademlia_public_ledger.BooleanSuccessResponse> getSendBlockMethod() {
+    io.grpc.MethodDescriptor<kademlia_public_ledger.Block_, kademlia_public_ledger.BooleanSuccessResponse> getSendBlockMethod;
+    if ((getSendBlockMethod = P2PGrpc.getSendBlockMethod) == null) {
+      synchronized (P2PGrpc.class) {
+        if ((getSendBlockMethod = P2PGrpc.getSendBlockMethod) == null) {
+          P2PGrpc.getSendBlockMethod = getSendBlockMethod =
+              io.grpc.MethodDescriptor.<kademlia_public_ledger.Block_, kademlia_public_ledger.BooleanSuccessResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SendBlock"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  kademlia_public_ledger.Block_.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  kademlia_public_ledger.BooleanSuccessResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new P2PMethodDescriptorSupplier("SendBlock"))
+              .build();
+        }
+      }
+    }
+    return getSendBlockMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -379,6 +410,13 @@ public final class P2PGrpc {
       asyncUnimplementedUnaryCall(getSendTransactionMethod(), responseObserver);
     }
 
+    /**
+     */
+    public void sendBlock(kademlia_public_ledger.Block_ request,
+        io.grpc.stub.StreamObserver<kademlia_public_ledger.BooleanSuccessResponse> responseObserver) {
+      asyncUnimplementedUnaryCall(getSendBlockMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -430,6 +468,13 @@ public final class P2PGrpc {
                 kademlia_public_ledger.Transaction_,
                 kademlia_public_ledger.BooleanSuccessResponse>(
                   this, METHODID_SEND_TRANSACTION)))
+          .addMethod(
+            getSendBlockMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                kademlia_public_ledger.Block_,
+                kademlia_public_ledger.BooleanSuccessResponse>(
+                  this, METHODID_SEND_BLOCK)))
           .build();
     }
   }
@@ -538,6 +583,14 @@ public final class P2PGrpc {
       asyncUnaryCall(
           getChannel().newCall(getSendTransactionMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void sendBlock(kademlia_public_ledger.Block_ request,
+        io.grpc.stub.StreamObserver<kademlia_public_ledger.BooleanSuccessResponse> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getSendBlockMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -640,6 +693,13 @@ public final class P2PGrpc {
       return blockingUnaryCall(
           getChannel(), getSendTransactionMethod(), getCallOptions(), request);
     }
+
+    /**
+     */
+    public kademlia_public_ledger.BooleanSuccessResponse sendBlock(kademlia_public_ledger.Block_ request) {
+      return blockingUnaryCall(
+          getChannel(), getSendBlockMethod(), getCallOptions(), request);
+    }
   }
 
   /**
@@ -707,6 +767,14 @@ public final class P2PGrpc {
       return futureUnaryCall(
           getChannel().newCall(getSendTransactionMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<kademlia_public_ledger.BooleanSuccessResponse> sendBlock(
+        kademlia_public_ledger.Block_ request) {
+      return futureUnaryCall(
+          getChannel().newCall(getSendBlockMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_PING = 0;
@@ -716,6 +784,7 @@ public final class P2PGrpc {
   private static final int METHODID_JOIN = 4;
   private static final int METHODID_GETBLOCK_CHAIN = 5;
   private static final int METHODID_SEND_TRANSACTION = 6;
+  private static final int METHODID_SEND_BLOCK = 7;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -760,6 +829,10 @@ public final class P2PGrpc {
           break;
         case METHODID_SEND_TRANSACTION:
           serviceImpl.sendTransaction((kademlia_public_ledger.Transaction_) request,
+              (io.grpc.stub.StreamObserver<kademlia_public_ledger.BooleanSuccessResponse>) responseObserver);
+          break;
+        case METHODID_SEND_BLOCK:
+          serviceImpl.sendBlock((kademlia_public_ledger.Block_) request,
               (io.grpc.stub.StreamObserver<kademlia_public_ledger.BooleanSuccessResponse>) responseObserver);
           break;
         default:
@@ -830,6 +903,7 @@ public final class P2PGrpc {
               .addMethod(getJOINMethod())
               .addMethod(getGETBlockChainMethod())
               .addMethod(getSendTransactionMethod())
+              .addMethod(getSendBlockMethod())
               .build();
         }
       }

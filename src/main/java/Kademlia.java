@@ -148,7 +148,10 @@ public class Kademlia {
                             tree.sendTransaction(recipient, value);
 
                             
-                        } 
+                        } else if (commands[0].equals("printallnodes")) {
+                            
+                            tree.testUnit.printallnodes();
+                        }
                     }
 
                     in.close();

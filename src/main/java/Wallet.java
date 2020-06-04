@@ -3,6 +3,7 @@ import java.security.spec.ECGenParameterSpec;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class Wallet {
 
@@ -10,6 +11,7 @@ public class Wallet {
     public PublicKey publicKey;
 
     public HashMap<String,TransactionOutput> UTXOs = new HashMap<String,TransactionOutput>();
+    static { Security.addProvider(new BouncyCastleProvider());  }
 
     public Wallet() {
         generateKeyPair();
