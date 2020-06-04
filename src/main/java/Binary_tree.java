@@ -461,6 +461,15 @@ public class Binary_tree {
             return response;
         }
         
+        public Iterator<BasicNode> GetMinersFromMaster(BasicNode request){
+            Iterator<BasicNode> response = null;
+            try {
+                response = blockingStub.getMinersFromMaster(request);                
+            } catch (StatusRuntimeException e) {
+                logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            }
+            return response;
+        }
 
     }
 
@@ -523,6 +532,8 @@ public class Binary_tree {
             client.FIND_VALUE(kv);
 
         }
+
+        
     }
     class P2PServer {
         private final Logger logger = Logger.getLogger(P2PServer.class.getName());
@@ -849,7 +860,29 @@ public class Binary_tree {
 
             }
 
+            @Override
+            public void getMinersFromMaster(BasicNode request, StreamObserver<BasicNode> responseObserver){
+                //logger.info(new BigInteger("GetBlockChain: " + request.getSender().getNodeID().toByteArray()).toString() + " has connected");
+                
+                for (int i=0; i<kbuckets.size(); i++) {
+                    KBucket ikbucket = kbuckets.get(i);
+
+                    for (int j=0; j<ikbucket.nodes.size(); j++) {
+                        Node inode = ikbucket.nodes.get(j);
+                        if (inode.isMiner) {
+                            logger.info("Finded node miner");
+                            responseObserver.onNext(inode.toBasicNode().build());
+                        }
+                    }
+                }
+
+                responseObserver.onCompleted();
+                logger.info("GetMinersFromMaster -> server response completed");
+                return;
+
+            }
             
+
         }
     }
 
@@ -1228,6 +1261,16 @@ public class Binary_tree {
         return miners;
     }
 
+    public void getMinersFromMaster(Node master){
+        client = new P2PClient(ManagedChannelBuilder.forTarget("localhost:50051").usePlaintext().build());
+        Iterator<BasicNode> miners = client.GetMinersFromMaster(master.toBasicNode().build());
+
+     while( miners.hasNext()){
+            inserts(new Node(miners.next()));
+        }
+        return;
+    }
+
     public Node getNodeFromName(String name){
         for (int i=0; i<kbuckets.size(); i++) {
             KBucket ikbucket = kbuckets.get(i);
@@ -1272,14 +1315,14 @@ public class Binary_tree {
 
         if (inode == null){
             // find node from name
-            client = client = new P2PClient(ManagedChannelBuilder.forTarget("localhost:50051").usePlaintext().build());
+            client = new P2PClient(ManagedChannelBuilder.forTarget("localhost:50051").usePlaintext().build());
             inode =  new Node(client.GetNodeFromName(current.toNodeName(recipient).build()));
             System.out.println("node name: " + inode.name);
         }
 
 
         Transaction transaction = new Transaction(chain.wallet.publicKey, StringUtil.getKeyFromString(inode.publicKey), amount, null);
-        List<Node> miners = look();
+        List<Node> miners = getMiners();
         for (int j=0; j<miners.size(); j++){
             Node iminer = miners.get(j);
             client = new P2PClient(ManagedChannelBuilder.forTarget(iminer.ip + ":" + iminer.port).usePlaintext().build());

@@ -133,6 +133,7 @@ public class Kademlia {
 
                            // tree.chain.printChain(); // ainda esta vazia pq nao pediu nada ao master
                             tree.updateBlockchain(master);
+                            tree.getMinersFromMaster(master);
 
                             System.out.println("Waiting for transactions...");
                             System.out.println("Please indicate the recipient of the transation");

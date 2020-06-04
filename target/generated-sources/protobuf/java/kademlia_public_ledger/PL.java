@@ -111,7 +111,7 @@ public final class PL {
       "me\030\002 \001(\t\"|\n\tBasicNode\022\016\n\006nodeID\030\001 \001(\014\022\n\n" +
       "\002ip\030\002 \001(\t\022\014\n\004port\030\003 \001(\005\022\023\n\013client_name\030\004" +
       " \001(\t\022\021\n\tpublickey\030\005 \001(\t\022\017\n\007isMiner\030\006 \001(\010" +
-      "\022\014\n\004name\030\007 \001(\t\"\021\n\017NodeInfoORValue2\217\003\n\003P2" +
+      "\022\014\n\004name\030\007 \001(\t\"\021\n\017NodeInfoORValue2\302\003\n\003P2" +
       "P\022*\n\004PING\022\007.NodeID\032\027.BooleanSuccessRespo" +
       "nse\"\000\022.\n\005STORE\022\n.Key_Value\032\027.BooleanSucc" +
       "essResponse\"\000\022#\n\tFIND_NODE\022\007.NodeID\032\t.No" +
@@ -121,8 +121,10 @@ public final class PL {
       "\001\022;\n\017SendTransaction\022\r.Transaction_\032\027.Bo" +
       "oleanSuccessResponse\"\000\022/\n\tSendBlock\022\007.Bl" +
       "ock_\032\027.BooleanSuccessResponse\"\000\022*\n\017GetNo" +
-      "deFromName\022\t.NodeName\032\n.BasicNode\"\000B!\n\026k" +
-      "ademlia_public_ledgerB\002PLP\001\242\002\000b\006proto3"
+      "deFromName\022\t.NodeName\032\n.BasicNode\"\000\0221\n\023G" +
+      "etMinersFromMaster\022\n.BasicNode\032\n.BasicNo" +
+      "de\"\0000\001B!\n\026kademlia_public_ledgerB\002PLP\001\242\002" +
+      "\000b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

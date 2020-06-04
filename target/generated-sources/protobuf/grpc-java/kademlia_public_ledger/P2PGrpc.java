@@ -309,6 +309,37 @@ public final class P2PGrpc {
     return getGetNodeFromNameMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<kademlia_public_ledger.BasicNode,
+      kademlia_public_ledger.BasicNode> getGetMinersFromMasterMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetMinersFromMaster",
+      requestType = kademlia_public_ledger.BasicNode.class,
+      responseType = kademlia_public_ledger.BasicNode.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
+  public static io.grpc.MethodDescriptor<kademlia_public_ledger.BasicNode,
+      kademlia_public_ledger.BasicNode> getGetMinersFromMasterMethod() {
+    io.grpc.MethodDescriptor<kademlia_public_ledger.BasicNode, kademlia_public_ledger.BasicNode> getGetMinersFromMasterMethod;
+    if ((getGetMinersFromMasterMethod = P2PGrpc.getGetMinersFromMasterMethod) == null) {
+      synchronized (P2PGrpc.class) {
+        if ((getGetMinersFromMasterMethod = P2PGrpc.getGetMinersFromMasterMethod) == null) {
+          P2PGrpc.getGetMinersFromMasterMethod = getGetMinersFromMasterMethod =
+              io.grpc.MethodDescriptor.<kademlia_public_ledger.BasicNode, kademlia_public_ledger.BasicNode>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetMinersFromMaster"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  kademlia_public_ledger.BasicNode.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  kademlia_public_ledger.BasicNode.getDefaultInstance()))
+              .setSchemaDescriptor(new P2PMethodDescriptorSupplier("GetMinersFromMaster"))
+              .build();
+        }
+      }
+    }
+    return getGetMinersFromMasterMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -455,6 +486,13 @@ public final class P2PGrpc {
       asyncUnimplementedUnaryCall(getGetNodeFromNameMethod(), responseObserver);
     }
 
+    /**
+     */
+    public void getMinersFromMaster(kademlia_public_ledger.BasicNode request,
+        io.grpc.stub.StreamObserver<kademlia_public_ledger.BasicNode> responseObserver) {
+      asyncUnimplementedUnaryCall(getGetMinersFromMasterMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -520,6 +558,13 @@ public final class P2PGrpc {
                 kademlia_public_ledger.NodeName,
                 kademlia_public_ledger.BasicNode>(
                   this, METHODID_GET_NODE_FROM_NAME)))
+          .addMethod(
+            getGetMinersFromMasterMethod(),
+            asyncServerStreamingCall(
+              new MethodHandlers<
+                kademlia_public_ledger.BasicNode,
+                kademlia_public_ledger.BasicNode>(
+                  this, METHODID_GET_MINERS_FROM_MASTER)))
           .build();
     }
   }
@@ -644,6 +689,14 @@ public final class P2PGrpc {
       asyncUnaryCall(
           getChannel().newCall(getGetNodeFromNameMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void getMinersFromMaster(kademlia_public_ledger.BasicNode request,
+        io.grpc.stub.StreamObserver<kademlia_public_ledger.BasicNode> responseObserver) {
+      asyncServerStreamingCall(
+          getChannel().newCall(getGetMinersFromMasterMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -760,6 +813,14 @@ public final class P2PGrpc {
       return blockingUnaryCall(
           getChannel(), getGetNodeFromNameMethod(), getCallOptions(), request);
     }
+
+    /**
+     */
+    public java.util.Iterator<kademlia_public_ledger.BasicNode> getMinersFromMaster(
+        kademlia_public_ledger.BasicNode request) {
+      return blockingServerStreamingCall(
+          getChannel(), getGetMinersFromMasterMethod(), getCallOptions(), request);
+    }
   }
 
   /**
@@ -854,6 +915,7 @@ public final class P2PGrpc {
   private static final int METHODID_SEND_TRANSACTION = 6;
   private static final int METHODID_SEND_BLOCK = 7;
   private static final int METHODID_GET_NODE_FROM_NAME = 8;
+  private static final int METHODID_GET_MINERS_FROM_MASTER = 9;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -906,6 +968,10 @@ public final class P2PGrpc {
           break;
         case METHODID_GET_NODE_FROM_NAME:
           serviceImpl.getNodeFromName((kademlia_public_ledger.NodeName) request,
+              (io.grpc.stub.StreamObserver<kademlia_public_ledger.BasicNode>) responseObserver);
+          break;
+        case METHODID_GET_MINERS_FROM_MASTER:
+          serviceImpl.getMinersFromMaster((kademlia_public_ledger.BasicNode) request,
               (io.grpc.stub.StreamObserver<kademlia_public_ledger.BasicNode>) responseObserver);
           break;
         default:
@@ -978,6 +1044,7 @@ public final class P2PGrpc {
               .addMethod(getSendTransactionMethod())
               .addMethod(getSendBlockMethod())
               .addMethod(getGetNodeFromNameMethod())
+              .addMethod(getGetMinersFromMasterMethod())
               .build();
         }
       }

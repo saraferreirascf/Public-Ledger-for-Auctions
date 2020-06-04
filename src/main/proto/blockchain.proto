@@ -66,6 +66,8 @@ service P2P {
 
   rpc GetNodeFromName(NodeName) returns (BasicNode) {}
 
+  rpc GetMinersFromMaster(BasicNode) returns (stream BasicNode) {}
+
 }
 
 message Kbucket {
