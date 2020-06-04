@@ -1,11 +1,11 @@
 //TODO
-    //Com o lookup aos user da rede, ver se o recipient da transacao existe, se nao, mostrar a lista dos que existem e dizer para escolher dai.
-    //Criar bloco com esta transaçao (podemos comecar por criar um bloco com esta informacao e nao ser logo uma transacao mesmo)
-    //Criar wallet para cada user que se junte.
-    //Lookup dos miners (têm na construcao da tree que o atributo isMiner é true)
-    //Mandar a esses nós o bloco
-    //Fazer com que, quando eles recebam minem o bloco
-    //Ver qual é o primeiro a minar (recebe dinheiro) e esse bloco é mandado a todos os users (incluindo ao master) para atualizarmos a blockchain
+    //FEITO - Com o lookup aos user da rede, ver se o recipient da transacao existe, se nao, mostrar a lista dos que existem e dizer para escolher dai.
+    //FEITO - Criar bloco com esta transaçao (podemos comecar por criar um bloco com esta informacao e nao ser logo uma transacao mesmo)
+    //FEITO - Criar wallet para cada user que se junte.
+    //FEITO - Lookup dos miners (têm na construcao da tree que o atributo isMiner é true)
+    //FEITO - Mandar a esses nós o bloco
+    //Feito - Fazer com que, quando eles recebam minem o bloco
+    //POR Implementar(ver na class P2PServer função sendTransaction) - Ver qual é o primeiro a minar (recebe dinheiro) e esse bloco é mandado a todos os users (incluindo ao master) para atualizarmos a blockchain
     //Ver melhor a cena dos transation outputs e inputs, em ultimo caso pomos dinheiro nas carteiras manualmente.
 
 
@@ -145,7 +145,7 @@ public class Kademlia {
                             int value =Integer.parseInt(scan.nextLine());
 
                             logger.info("Sending to miners transaction of "+ value +" to "+recipient);
-                            
+                            tree.sendTransaction(recipient, value);
 
                             
                         } 

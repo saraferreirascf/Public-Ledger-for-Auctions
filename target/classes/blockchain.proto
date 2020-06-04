@@ -59,6 +59,9 @@ service P2P {
   // Get BlockChain
   rpc GETBlockChain(NodeInfo) returns (stream Block_) {}
 
+  // send transaction to miners
+  rpc SendTransaction(Transaction_) returns (BooleanSuccessResponse) {}
+
 }
 
 message Kbucket {
@@ -93,6 +96,7 @@ message Transaction_ {
   bytes signature = 5;
   repeated TransactionInput_ inputs = 6;
   repeated TransactionOutput_ outputs = 7;
+  BasicNode senderNode = 8;
 }
 
 message TransactionInput_ {
@@ -129,6 +133,8 @@ message BasicNode {
   string ip = 2;
   int32 port = 3;
   string client_name = 4;
+  string publickey = 5;
+  bool isMiner = 6;
 }
 
 

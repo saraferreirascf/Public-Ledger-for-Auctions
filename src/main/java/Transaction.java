@@ -40,9 +40,15 @@ public class Transaction {
         ArrayList<Transaction_> result = new ArrayList<Transaction_>();
         for (int i=0; i<ts.size(); i++) {
             Transaction t = ts.get(i);
-            result.add(Transaction_.newBuilder().setTransactionId(t.transactionId).setSender(StringUtil.getStringFromKey(t.sender)).setReciepient(StringUtil.getStringFromKey(reciepient)).setValue((long)t.value).setSignature(ByteString.copyFrom(t.signature)).build());
+            result.add(toTransaction_(t, null));
         }
         return  getIterableFromIterator(result.iterator());
+    }
+
+    public static Transaction_ toTransaction_ (Transaction transaction, Binary_tree.Node inode){
+        if (inode != null)
+            return Transaction_.newBuilder().setSenderNode(inode.toBasicNode()).setTransactionId(transaction.transactionId).setSender(StringUtil.getStringFromKey(transaction.sender)).setReciepient(StringUtil.getStringFromKey(transaction.reciepient)).setValue((long)transaction.value).setSignature(ByteString.copyFrom(transaction.signature)).build();
+        return Transaction_.newBuilder().setTransactionId(transaction.transactionId).setSender(StringUtil.getStringFromKey(transaction.sender)).setReciepient(StringUtil.getStringFromKey(transaction.reciepient)).setValue((long)transaction.value).setSignature(ByteString.copyFrom(transaction.signature)).build();
     }
 
     public static <T> Iterable<T> 

@@ -19,6 +19,7 @@ private static final long serialVersionUID = 0L;
     nodeID_ = com.google.protobuf.ByteString.EMPTY;
     ip_ = "";
     clientName_ = "";
+    publickey_ = "";
   }
 
   @java.lang.Override
@@ -71,6 +72,17 @@ private static final long serialVersionUID = 0L;
             java.lang.String s = input.readStringRequireUtf8();
 
             clientName_ = s;
+            break;
+          }
+          case 42: {
+            java.lang.String s = input.readStringRequireUtf8();
+
+            publickey_ = s;
+            break;
+          }
+          case 48: {
+
+            isMiner_ = input.readBool();
             break;
           }
           default: {
@@ -197,6 +209,52 @@ private static final long serialVersionUID = 0L;
     }
   }
 
+  public static final int PUBLICKEY_FIELD_NUMBER = 5;
+  private volatile java.lang.Object publickey_;
+  /**
+   * <code>string publickey = 5;</code>
+   * @return The publickey.
+   */
+  public java.lang.String getPublickey() {
+    java.lang.Object ref = publickey_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      publickey_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string publickey = 5;</code>
+   * @return The bytes for publickey.
+   */
+  public com.google.protobuf.ByteString
+      getPublickeyBytes() {
+    java.lang.Object ref = publickey_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      publickey_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int ISMINER_FIELD_NUMBER = 6;
+  private boolean isMiner_;
+  /**
+   * <code>bool isMiner = 6;</code>
+   * @return The isMiner.
+   */
+  public boolean getIsMiner() {
+    return isMiner_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -223,6 +281,12 @@ private static final long serialVersionUID = 0L;
     if (!getClientNameBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 4, clientName_);
     }
+    if (!getPublickeyBytes().isEmpty()) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 5, publickey_);
+    }
+    if (isMiner_ != false) {
+      output.writeBool(6, isMiner_);
+    }
     unknownFields.writeTo(output);
   }
 
@@ -245,6 +309,13 @@ private static final long serialVersionUID = 0L;
     }
     if (!getClientNameBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, clientName_);
+    }
+    if (!getPublickeyBytes().isEmpty()) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, publickey_);
+    }
+    if (isMiner_ != false) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeBoolSize(6, isMiner_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -269,6 +340,10 @@ private static final long serialVersionUID = 0L;
         != other.getPort()) return false;
     if (!getClientName()
         .equals(other.getClientName())) return false;
+    if (!getPublickey()
+        .equals(other.getPublickey())) return false;
+    if (getIsMiner()
+        != other.getIsMiner()) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -288,6 +363,11 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getPort();
     hash = (37 * hash) + CLIENT_NAME_FIELD_NUMBER;
     hash = (53 * hash) + getClientName().hashCode();
+    hash = (37 * hash) + PUBLICKEY_FIELD_NUMBER;
+    hash = (53 * hash) + getPublickey().hashCode();
+    hash = (37 * hash) + ISMINER_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
+        getIsMiner());
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -429,6 +509,10 @@ private static final long serialVersionUID = 0L;
 
       clientName_ = "";
 
+      publickey_ = "";
+
+      isMiner_ = false;
+
       return this;
     }
 
@@ -459,6 +543,8 @@ private static final long serialVersionUID = 0L;
       result.ip_ = ip_;
       result.port_ = port_;
       result.clientName_ = clientName_;
+      result.publickey_ = publickey_;
+      result.isMiner_ = isMiner_;
       onBuilt();
       return result;
     }
@@ -520,6 +606,13 @@ private static final long serialVersionUID = 0L;
       if (!other.getClientName().isEmpty()) {
         clientName_ = other.clientName_;
         onChanged();
+      }
+      if (!other.getPublickey().isEmpty()) {
+        publickey_ = other.publickey_;
+        onChanged();
+      }
+      if (other.getIsMiner() != false) {
+        setIsMiner(other.getIsMiner());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -761,6 +854,112 @@ private static final long serialVersionUID = 0L;
   checkByteStringIsUtf8(value);
       
       clientName_ = value;
+      onChanged();
+      return this;
+    }
+
+    private java.lang.Object publickey_ = "";
+    /**
+     * <code>string publickey = 5;</code>
+     * @return The publickey.
+     */
+    public java.lang.String getPublickey() {
+      java.lang.Object ref = publickey_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        publickey_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string publickey = 5;</code>
+     * @return The bytes for publickey.
+     */
+    public com.google.protobuf.ByteString
+        getPublickeyBytes() {
+      java.lang.Object ref = publickey_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        publickey_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string publickey = 5;</code>
+     * @param value The publickey to set.
+     * @return This builder for chaining.
+     */
+    public Builder setPublickey(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      publickey_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string publickey = 5;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearPublickey() {
+      
+      publickey_ = getDefaultInstance().getPublickey();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string publickey = 5;</code>
+     * @param value The bytes for publickey to set.
+     * @return This builder for chaining.
+     */
+    public Builder setPublickeyBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      publickey_ = value;
+      onChanged();
+      return this;
+    }
+
+    private boolean isMiner_ ;
+    /**
+     * <code>bool isMiner = 6;</code>
+     * @return The isMiner.
+     */
+    public boolean getIsMiner() {
+      return isMiner_;
+    }
+    /**
+     * <code>bool isMiner = 6;</code>
+     * @param value The isMiner to set.
+     * @return This builder for chaining.
+     */
+    public Builder setIsMiner(boolean value) {
+      
+      isMiner_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>bool isMiner = 6;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearIsMiner() {
+      
+      isMiner_ = false;
       onChanged();
       return this;
     }

@@ -1,4 +1,5 @@
 import java.security.*;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.Base64;
 import com.google.gson.GsonBuilder;
@@ -69,6 +70,13 @@ public class StringUtil {
 
     public static String getStringFromKey(Key key) {
         return Base64.getEncoder().encodeToString(key.getEncoded());
+    }
+
+    public static PublicKey getKeyFromString(String stored) throws java.security.NoSuchAlgorithmException, java.security.spec.InvalidKeySpecException, java.security.NoSuchProviderException {
+        byte[] data = Base64.getDecoder().decode((stored.getBytes()));
+        KeyFactory factory = KeyFactory.getInstance("ECDSA", "BC");
+        PublicKey ecPublicKey = factory.generatePublic(new X509EncodedKeySpec(data)); 
+        return ecPublicKey;
     }
 
     public static String getMerkleRoot(ArrayList<Transaction> transactions) {

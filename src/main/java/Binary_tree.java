@@ -44,28 +44,28 @@ public class Binary_tree {
     Boolean isMiner =false;
 
     Binary_tree() throws java.io.IOException {
+        this.chain = new NoobChain();
         this.current = new Node();
         this.server = new P2PServer(this.current.port);
         iaddress = new Key();
         generateRandom160bits(iaddress);
-        this.chain = new NoobChain();
         this.isMiner=true;
     }
 
     Binary_tree(String nome) throws java.io.IOException {
+        this.chain = new NoobChain();
         this.current = new Node(nome);
         this.server = new P2PServer(this.current.port);
         iaddress = new Key();
         generateRandom160bits(iaddress);
-        this.chain = new NoobChain();
     }
 
     Binary_tree(int p) throws java.io.IOException {
+        this.chain = new NoobChain();
         this.current = new Master_node(p);
         this.server = new P2PServer(p);
         iaddress = new Key();
         generateRandom160bits(iaddress);
-        this.chain = new NoobChain();
         this.chain.addBlock(new Block("Genesis Block", "0"));
     }
 
@@ -428,6 +428,19 @@ public class Binary_tree {
             }
             return Collections.emptyIterator();
         }
+
+        public BooleanSuccessResponse  SendTransaction(Transaction_ request) throws java.lang.InterruptedException {
+            //logger.info("FINDVALUE " + new BigInteger(request.getKey().toByteArray()).toString() + " from sender " + new BigInteger(request.getSender().getNodeID().toByteArray()).toString());
+            BooleanSuccessResponse response = null;
+            try {
+                response = blockingStub.sendTransaction(request);
+                
+            } catch (StatusRuntimeException e) {
+                logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
+            }
+            return response;
+        }
+    
     }
 
     class TestUnit_ {
@@ -716,6 +729,37 @@ public class Binary_tree {
                 logger.info("getblockChain -> server response completed");
 
             }
+
+             @Override
+            public void sendTransaction(Transaction_ request, StreamObserver<BooleanSuccessResponse> responseObserver){
+                //logger.info(new BigInteger("GetBlockChain: " + request.getSender().getNodeID().toByteArray()).toString() + " has connected");
+                
+                // when a kademlia node receives any message(request or reply) from another node,
+                // it updates the appropeiate k-bucket for the sender´s nodeID
+                if (request.getSender() != null) {
+                    Node snode = new Node(request.getSender());
+                    inserts(snode);
+                }
+
+                Transaction transaction = Transaction.copyFrom(request);
+                Block lblock = chain.blockchain.get(chain.blockchain.size()-1);
+                lblock.addTransaction(transaction);
+                lblock.mineBlock(chain.difficulty);
+
+                // send block for all users
+                /*
+                for (int i=0; i<kbuckets.size(); i++){
+                    KBucket ikbucket = kbuckets.get(i);
+
+                    for (int j=0; j<ikbucket.nodes.size(); j++){
+                        Node inode = 
+                    }
+                }*/
+                responseObserver.onNext(BooleanSuccessResponse.newBuilder().setSuccess(true).build());
+                responseObserver.onCompleted();
+                logger.info("sendTransation -> server response completed");
+
+            }
         }
     }
 
@@ -810,32 +854,40 @@ public class Binary_tree {
         public int port;
         public KBucket kbucket = null;
         public String name = "";
+        public String publicKey = "";
+        public boolean isMiner;
+
 
         Node() {
             this.port = get_Port();
             writeFile(String.valueOf(this.port));
             generateRandom160bits(this.nodeID);
+            this.isMiner = true;
         }
         Node(String name) {
             this.port = get_Port();
             this.name = name;
             writeFile(String.valueOf(this.port));
             generateRandom160bits(this.nodeID);
+            this.publicKey = StringUtil.getStringFromKey(chain.wallet.publicKey);
+            this.isMiner = false;
         }
         // construtor para o hardcoded node
         Node(int p) {
             this.port = p;
             this.nodeID = new Key(new BigInteger("579182793079556569232906595954800423677054759475"));
+            this.isMiner = false;
         }
         Node (BasicNode node) {
             this.port = node.getPort();
             this.nodeID = new Key(node.getNodeID().toByteArray());
             this.ip = node.getIp();
+            this.isMiner = node.getIsMiner();
         }
 
         // messages parse
         public BasicNode.Builder toBasicNode(){
-            return BasicNode.newBuilder().setNodeID(ByteString.copyFrom(this.nodeID.key)).setIp(this.ip).setPort(this.port).setClientName("id: " + this.nodeID.kToString());
+            return BasicNode.newBuilder().setIsMiner(this.isMiner).setPublickey(this.publicKey).setNodeID(ByteString.copyFrom(this.nodeID.key)).setIp(this.ip).setPort(this.port).setClientName("id: " + this.nodeID.kToString());
         }
 
         public NodeID.Builder toNodeID(){
@@ -1064,6 +1116,47 @@ public class Binary_tree {
     /*
     BLOCKCHAIN
     */
+    public List<Node> getMiners(){
+        ArrayList<Node> miners = new ArrayList<Node>();
+        for (int i=0; i<kbuckets.size(); i++) {
+            KBucket ikbucket = kbuckets.get(i);
+
+            for (int j=0; j<ikbucket.nodes.size(); j++) {
+                Node inode = ikbucket.nodes.get(j);
+                if (inode.isMiner)
+                    miners.add(inode);
+            }
+        }
+        return miners;
+    }
+
+    public Node getNodeFromName(String name){
+        for (int i=0; i<kbuckets.size(); i++) {
+            KBucket ikbucket = kbuckets.get(i);
+
+            for (int j=0; j<ikbucket.nodes.size(); j++) {
+                Node inode = ikbucket.nodes.get(j);
+                if (inode.name.equals(name))
+                    return inode;
+            }
+        }
+        return null;
+    }
+
+    public void printAllUsers(){
+        for (int i=0; i<kbuckets.size(); i++) {
+            KBucket ikbucket = kbuckets.get(i);
+            System.out.print("[");
+            for (int j=0; j<ikbucket.nodes.size(); j++) {
+                if (j != 0)
+                    System.out.print(", ");
+                Node inode = ikbucket.nodes.get(j);
+                System.out.print(inode.name);
+            }
+            System.out.println("]");
+        }
+        return;
+    }
 
     public void updateBlockchain(Node inode) throws InterruptedException {
         client = new P2PClient(ManagedChannelBuilder.forTarget(inode.ip + ":" + inode.port).usePlaintext().build());
@@ -1071,5 +1164,35 @@ public class Binary_tree {
         System.out.println(client.GETBlockChain(inode.toNodeInfo().build()));
         chain.blockchain.addAll(Block.copyFrom(client.GETBlockChain(inode.toNodeInfo().build())));
         chain.printChain();
+    }
+
+    public void sendTransaction(String recipient, int amount) throws java.security.NoSuchAlgorithmException, java.security.spec.InvalidKeySpecException, InterruptedException, java.security.NoSuchProviderException {
+        Node inode = getNodeFromName(recipient);
+
+        List<Node> closest = lookup(inode.nodeID);
+        boolean exist = false;
+        for (int i=0; i<closest.size(); i++) {
+            Node iclosest = closest.get(i);
+            if (iclosest.nodeID.compareTo(inode.nodeID) == 0) {
+                // send trasaction
+                //*** está a levar as transaction inputs como null
+                Transaction transaction = new Transaction(chain.wallet.publicKey, StringUtil.getKeyFromString(iclosest.publicKey), amount, null);
+                List<Node> miners = getMiners();
+                for (int j=0; j<miners.size(); j++){
+                    Node iminer = miners.get(j);
+                    client = new P2PClient(ManagedChannelBuilder.forTarget(iminer.ip + ":" + iminer.port).usePlaintext().build());
+                    // Send transaction to miners
+                    client.SendTransaction(Transaction.toTransaction_(transaction, current));
+                }
+            }
+        }
+
+        if (!exist) {
+            System.out.println("we did not find the recipient " + recipient);
+            System.out.println("lista de utilizadores conhecidos:");
+            printAllUsers();
+            return;
+        }
+        return;
     }
 }

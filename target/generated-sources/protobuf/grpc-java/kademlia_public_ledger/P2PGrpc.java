@@ -216,6 +216,37 @@ public final class P2PGrpc {
     return getGETBlockChainMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<kademlia_public_ledger.Transaction_,
+      kademlia_public_ledger.BooleanSuccessResponse> getSendTransactionMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "SendTransaction",
+      requestType = kademlia_public_ledger.Transaction_.class,
+      responseType = kademlia_public_ledger.BooleanSuccessResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<kademlia_public_ledger.Transaction_,
+      kademlia_public_ledger.BooleanSuccessResponse> getSendTransactionMethod() {
+    io.grpc.MethodDescriptor<kademlia_public_ledger.Transaction_, kademlia_public_ledger.BooleanSuccessResponse> getSendTransactionMethod;
+    if ((getSendTransactionMethod = P2PGrpc.getSendTransactionMethod) == null) {
+      synchronized (P2PGrpc.class) {
+        if ((getSendTransactionMethod = P2PGrpc.getSendTransactionMethod) == null) {
+          P2PGrpc.getSendTransactionMethod = getSendTransactionMethod =
+              io.grpc.MethodDescriptor.<kademlia_public_ledger.Transaction_, kademlia_public_ledger.BooleanSuccessResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SendTransaction"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  kademlia_public_ledger.Transaction_.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  kademlia_public_ledger.BooleanSuccessResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new P2PMethodDescriptorSupplier("SendTransaction"))
+              .build();
+        }
+      }
+    }
+    return getSendTransactionMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -338,6 +369,16 @@ public final class P2PGrpc {
       asyncUnimplementedUnaryCall(getGETBlockChainMethod(), responseObserver);
     }
 
+    /**
+     * <pre>
+     * send transaction to miners
+     * </pre>
+     */
+    public void sendTransaction(kademlia_public_ledger.Transaction_ request,
+        io.grpc.stub.StreamObserver<kademlia_public_ledger.BooleanSuccessResponse> responseObserver) {
+      asyncUnimplementedUnaryCall(getSendTransactionMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -382,6 +423,13 @@ public final class P2PGrpc {
                 kademlia_public_ledger.NodeInfo,
                 kademlia_public_ledger.Block_>(
                   this, METHODID_GETBLOCK_CHAIN)))
+          .addMethod(
+            getSendTransactionMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                kademlia_public_ledger.Transaction_,
+                kademlia_public_ledger.BooleanSuccessResponse>(
+                  this, METHODID_SEND_TRANSACTION)))
           .build();
     }
   }
@@ -479,6 +527,17 @@ public final class P2PGrpc {
       asyncServerStreamingCall(
           getChannel().newCall(getGETBlockChainMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     * <pre>
+     * send transaction to miners
+     * </pre>
+     */
+    public void sendTransaction(kademlia_public_ledger.Transaction_ request,
+        io.grpc.stub.StreamObserver<kademlia_public_ledger.BooleanSuccessResponse> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getSendTransactionMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -571,6 +630,16 @@ public final class P2PGrpc {
       return blockingServerStreamingCall(
           getChannel(), getGETBlockChainMethod(), getCallOptions(), request);
     }
+
+    /**
+     * <pre>
+     * send transaction to miners
+     * </pre>
+     */
+    public kademlia_public_ledger.BooleanSuccessResponse sendTransaction(kademlia_public_ledger.Transaction_ request) {
+      return blockingUnaryCall(
+          getChannel(), getSendTransactionMethod(), getCallOptions(), request);
+    }
   }
 
   /**
@@ -627,6 +696,17 @@ public final class P2PGrpc {
       return futureUnaryCall(
           getChannel().newCall(getJOINMethod(), getCallOptions()), request);
     }
+
+    /**
+     * <pre>
+     * send transaction to miners
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<kademlia_public_ledger.BooleanSuccessResponse> sendTransaction(
+        kademlia_public_ledger.Transaction_ request) {
+      return futureUnaryCall(
+          getChannel().newCall(getSendTransactionMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_PING = 0;
@@ -635,6 +715,7 @@ public final class P2PGrpc {
   private static final int METHODID_FIND_VALUE = 3;
   private static final int METHODID_JOIN = 4;
   private static final int METHODID_GETBLOCK_CHAIN = 5;
+  private static final int METHODID_SEND_TRANSACTION = 6;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -676,6 +757,10 @@ public final class P2PGrpc {
         case METHODID_GETBLOCK_CHAIN:
           serviceImpl.gETBlockChain((kademlia_public_ledger.NodeInfo) request,
               (io.grpc.stub.StreamObserver<kademlia_public_ledger.Block_>) responseObserver);
+          break;
+        case METHODID_SEND_TRANSACTION:
+          serviceImpl.sendTransaction((kademlia_public_ledger.Transaction_) request,
+              (io.grpc.stub.StreamObserver<kademlia_public_ledger.BooleanSuccessResponse>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -744,6 +829,7 @@ public final class P2PGrpc {
               .addMethod(getFINDVALUEMethod())
               .addMethod(getJOINMethod())
               .addMethod(getGETBlockChainMethod())
+              .addMethod(getSendTransactionMethod())
               .build();
         }
       }

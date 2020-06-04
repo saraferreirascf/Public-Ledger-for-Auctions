@@ -102,4 +102,19 @@ public interface Transaction_OrBuilder extends
    */
   kademlia_public_ledger.TransactionOutput_OrBuilder getOutputsOrBuilder(
       int index);
+
+  /**
+   * <code>.BasicNode senderNode = 8;</code>
+   * @return Whether the senderNode field is set.
+   */
+  boolean hasSenderNode();
+  /**
+   * <code>.BasicNode senderNode = 8;</code>
+   * @return The senderNode.
+   */
+  kademlia_public_ledger.BasicNode getSenderNode();
+  /**
+   * <code>.BasicNode senderNode = 8;</code>
+   */
+  kademlia_public_ledger.BasicNodeOrBuilder getSenderNodeOrBuilder();
 }

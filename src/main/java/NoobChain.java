@@ -78,11 +78,12 @@ public class NoobChain {
 
     public int difficulty = 3;
     public static float minimumTransaction = 0.1f;
-    //public Wallet wallet;
+    public Wallet wallet;
     //public Transaction genesisTransaction;
 
     NoobChain() {
         this.blockchain = new ArrayList<Block>();
+        this.wallet = new Wallet();
     }
 
     public void printChain() {

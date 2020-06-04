@@ -42,4 +42,22 @@ public interface BasicNodeOrBuilder extends
    */
   com.google.protobuf.ByteString
       getClientNameBytes();
+
+  /**
+   * <code>string publickey = 5;</code>
+   * @return The publickey.
+   */
+  java.lang.String getPublickey();
+  /**
+   * <code>string publickey = 5;</code>
+   * @return The bytes for publickey.
+   */
+  com.google.protobuf.ByteString
+      getPublickeyBytes();
+
+  /**
+   * <code>bool isMiner = 6;</code>
+   * @return The isMiner.
+   */
+  boolean getIsMiner();
 }
