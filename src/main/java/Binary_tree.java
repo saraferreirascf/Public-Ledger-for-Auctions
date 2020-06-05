@@ -80,10 +80,18 @@ public class Binary_tree {
         KBucket ikbucket = null;
         
         // find closest non-empty k-bucket
+        System.out.println("Size: " + kbuckets.size());
         for (int i=0; i<kbuckets.size(); i++) {
             KBucket tmpkbucket = kbuckets.get(i);
             Key tmpdistance = tmpkbucket.prefix.xor(key);
-            if (tmpdistance.compareTo(idistance) < 0 && tmpkbucket.nodes.size() != 0) {
+            System.out.println("idistance: " + idistance.kToBigInt());
+            System.out.println("bucket prefix: " + tmpkbucket.prefix.kToBigInt());
+            System.out.println("key: " + key.kToBigInt());
+            System.out.println("tmpdistance: " + tmpdistance.kToBigInt());
+            System.out.println("tmpdistance.compareTo(idistance) " + tmpdistance.compareTo(idistance));
+            System.out.println("Número de nós: " + tmpkbucket.nodes.size());
+
+            if (tmpdistance.compareTo(idistance) <= 0 && tmpkbucket.nodes.size() != 0) {
                 idistance = tmpdistance;
                 ikbucket = tmpkbucket;
             }
@@ -325,13 +333,8 @@ public class Binary_tree {
         }
 
         int compareTo(Key k) {
-            for (int i=0; i<nsize; i++) {
-                if (this.key[i] < k.key[i])
-                    return -1;
-                else if (this.key[i] > k.key[i])
-                    return 1;
-            }
-            return 0;
+
+            return new BigInteger(1, this.key).compareTo(new BigInteger(1, k.key));
         }
         String kToString(){
             return new String(this.key);
