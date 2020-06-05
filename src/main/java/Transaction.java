@@ -27,8 +27,8 @@ public class Transaction {
     }
 
     public Transaction(String tid, String from, String to, float value, byte[] s, ArrayList<TransactionInput> inputs, ArrayList<TransactionOutput> outputs) {
-        //this.sender = from;
-        //this.reciepient = to;
+        this.sender = StringUtil.getKeyFromString(from);
+        this.reciepient = StringUtil.getKeyFromString(to);
         this.transactionId = tid;
         this.value = value;
         this.signature = s;
@@ -83,15 +83,17 @@ public class Transaction {
         }
 
         //Gathers transaction inputs (Making sure they are unspent):
-        for(TransactionInput i : inputs) {
-            i.UTXO = NoobChain.UTXOs.get(i.transactionOutputId);
-        }
-
-        //Checks if transaction is valid:
-        if(getInputsValue() < NoobChain.minimumTransaction) {
-            System.out.println("Transaction Inputs too small: " + getInputsValue());
-            System.out.println("Please enter the amount greater than " + NoobChain.minimumTransaction);
-            return false;
+        if (inputs != null){
+            for(TransactionInput i : inputs) {
+                i.UTXO = NoobChain.UTXOs.get(i.transactionOutputId);
+            }
+        
+            //Checks if transaction is valid:
+            if(getInputsValue() < NoobChain.minimumTransaction) {
+                System.out.println("Transaction Inputs too small: " + getInputsValue());
+                System.out.println("Please enter the amount greater than " + NoobChain.minimumTransaction);
+                return false;
+            }
         }
 
         //Generate transaction outputs:
@@ -105,10 +107,12 @@ public class Transaction {
             NoobChain.UTXOs.put(o.id , o);
         }
 
-        //Remove transaction inputs from UTXO lists as spent:
-        for(TransactionInput i : inputs) {
-            if(i.UTXO == null) continue; //if Transaction can't be found skip it
-            NoobChain.UTXOs.remove(i.UTXO.id);
+        if (inputs != null) {
+            //Remove transaction inputs from UTXO lists as spent:
+            for(TransactionInput i : inputs) {
+                if(i.UTXO == null) continue; //if Transaction can't be found skip it
+                NoobChain.UTXOs.remove(i.UTXO.id);
+            }
         }
 
         return true;
@@ -116,9 +120,11 @@ public class Transaction {
 
     public float getInputsValue() {
         float total = 0;
-        for(TransactionInput i : inputs) {
-            if(i.UTXO == null) continue; //if Transaction can't be found skip it, This behavior may not be optimal.
-            total += i.UTXO.value;
+        if (inputs != null){
+            for(TransactionInput i : inputs) {
+                if(i.UTXO == null) continue; //if Transaction can't be found skip it, This behavior may not be optimal.
+                total += i.UTXO.value;
+            }
         }
         return total;
     }

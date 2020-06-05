@@ -72,11 +72,15 @@ public class StringUtil {
         return Base64.getEncoder().encodeToString(key.getEncoded());
     }
 
-    public static PublicKey getKeyFromString(String stored) throws java.security.NoSuchAlgorithmException, java.security.spec.InvalidKeySpecException, java.security.NoSuchProviderException {
-        byte[] data = Base64.getDecoder().decode((stored.getBytes()));
-        KeyFactory factory = KeyFactory.getInstance("ECDSA", "BC");
-        PublicKey ecPublicKey = factory.generatePublic(new X509EncodedKeySpec(data)); 
-        return ecPublicKey;
+    public static PublicKey getKeyFromString(String stored) {
+        try {
+            byte[] data = Base64.getDecoder().decode((stored.getBytes()));
+            KeyFactory factory = KeyFactory.getInstance("ECDSA", "BC");
+            PublicKey ecPublicKey = factory.generatePublic(new X509EncodedKeySpec(data)); 
+            return ecPublicKey;
+        } catch(Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static String getMerkleRoot(ArrayList<Transaction> transactions) {

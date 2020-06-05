@@ -5,8 +5,11 @@
     //FEITO - Lookup dos miners (têm na construcao da tree que o atributo isMiner é true)
     //FEITO - Mandar a esses nós o bloco
     //Feito - Fazer com que, quando eles recebam minem o bloco
-    //POR Implementar(ver na class P2PServer função sendTransaction) - Ver qual é o primeiro a minar (recebe dinheiro) e esse bloco é mandado a todos os users (incluindo ao master) para atualizarmos a blockchain
-    //Ver melhor a cena dos transation outputs e inputs, em ultimo caso pomos dinheiro nas carteiras manualmente.
+    //Feito - Ver qual é o primeiro a minar (recebe dinheiro) e esse bloco é mandado a todos os users (incluindo ao master) para atualizarmos a blockchain
+    // Ver melhor a cena dos transation outputs e inputs, em ultimo caso pomos dinheiro nas carteiras manualmente.
+    // Resolver 
+    // Sybils atacks
+    // Proof of sake
 
 
 import java.io.IOException;

@@ -74,6 +74,7 @@ public class Binary_tree {
         List<Key> listenKeys = new ArrayList<Key>();
         List<Node> closest = new ArrayList<Node>();
         List<Node> father = new ArrayList<Node>();
+
         Key idistance = new Key();
         idistance.MAX_KEY();
         KBucket ikbucket = null;
@@ -102,8 +103,8 @@ public class Binary_tree {
             });
 
             int sublsize = (ikbucket.nodes.size() < alpha) ? ikbucket.nodes.size(): alpha;
-            father = ikbucket.nodes.subList(0, sublsize);
-            closest = ikbucket.nodes.subList(0, sublsize);
+            father.addAll(ikbucket.nodes.subList(0, sublsize));
+            closest.addAll(ikbucket.nodes.subList(0, sublsize));
             logger.info("send alpha FIND NODES!!!");
             for (int i=0; i<sublsize; i++) {
                 // send alpha FIND NODES
@@ -128,7 +129,7 @@ public class Binary_tree {
                     Iterator<NodeInfo> round2 = client.FIND_NODE(node.toNodeID(key).build());
                     listenKeys.add(node.nodeID);
                     int counter = 0;
-                    while ( (round2 != null && round2.hasNext()) || counter == alpha){
+                    while ( (round2 != null && round2.hasNext() && counter <= alpha)){
                         NodeInfo info2 = round2.next();
                         Node node2 = new Node(info2.getNode());
                         inserts(node2);
@@ -154,8 +155,8 @@ public class Binary_tree {
                                     if (node3.nodeID.compareTo(idistance) < 0) {
                                         idistance = node3.nodeID;
                                         closest.add(node3);
-                                    if (BigInteger.valueOf(Integer.valueOf(closest.size())).compareTo(ikbucket.k) == 0)
-                                        return closest;
+                                        if (BigInteger.valueOf(Integer.valueOf(closest.size())).compareTo(ikbucket.k) == 0)
+                                            return closest;
                                     }
                                 }
                                 break;
@@ -201,8 +202,8 @@ public class Binary_tree {
             });
 
             int sublsize = (ikbucket.nodes.size() < alpha) ? ikbucket.nodes.size(): alpha;
-            father = ikbucket.nodes.subList(0, sublsize);
-            closest = ikbucket.nodes.subList(0, sublsize);
+            father.addAll(ikbucket.nodes.subList(0, sublsize));
+            closest.addAll(ikbucket.nodes.subList(0, sublsize));
             logger.info("send alpha FIND NODES!!!");
             for (int i=0; i<sublsize; i++) {
                 // send alpha FIND NODES
@@ -230,7 +231,7 @@ public class Binary_tree {
                     Iterator<NodeInfo> round2 = client.FIND_VALUE(node.toKey_Value(key, v, "").build());
                     listenKeys.add(node.nodeID);
                     int counter = 0;
-                    while ( (round2 != null && round2.hasNext()) || counter == alpha){
+                    while ( (round2 != null && round2.hasNext() && counter <= alpha)){
                         NodeInfo info2 = round2.next();
                         if (info2.getValue() != null) {
                             storeIn(closest, key, v, info2.getValue());
@@ -443,7 +444,7 @@ public class Binary_tree {
         public BooleanSuccessResponse SendBlock(Block_ request){
             BooleanSuccessResponse response = null;
             try {
-                // *****response = blockingStub.sendBlock(request);
+                response = blockingStub.sendBlock(request);
                 
             } catch (StatusRuntimeException e) {
                 logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
@@ -745,7 +746,7 @@ public class Binary_tree {
             }
 
             @Override
-            public void gETBlockChain(NodeInfo request, StreamObserver<Block_> responseObserver){
+            public void gETBlockChain(NodeInfo request, StreamObserver<Block_> responseObserver) {
                 //logger.info(new BigInteger("GetBlockChain: " + request.getSender().getNodeID().toByteArray()).toString() + " has connected");
                 
                 // when a kademlia node receives any message(request or reply) from another node,
@@ -1322,6 +1323,8 @@ public class Binary_tree {
 
 
         Transaction transaction = new Transaction(chain.wallet.publicKey, StringUtil.getKeyFromString(inode.publicKey), amount, null);
+        transaction.generateSignature(chain.wallet.privateKey);
+        transaction.processTransaction();
         List<Node> miners = getMiners();
         for (int j=0; j<miners.size(); j++){
             Node iminer = miners.get(j);
