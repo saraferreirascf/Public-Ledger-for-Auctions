@@ -152,12 +152,25 @@ public class Kademlia {
 
                             
                             String recipient =scan.nextLine();
+                            ArrayList<String> users=new ArrayList<String>();
+                            users=tree.testUnit.NodeExists();
+                            System.out.println(Arrays.toString(users.toArray()));
+                            while(!users.contains(recipient)){
+                                System.out.println("You don't have a connection with that user in the network;");
+                                users=tree.testUnit.NodeExists();
+                                System.out.println("Here you can see the list of available users:");
+                                System.out.println(Arrays.toString(users.toArray()));
+
+                                System.out.println("Please indicate the recipient of the transation");
+                                recipient =scan.nextLine();
+                            }
 
 
                             System.out.println("Please indicate the value of the transation");
                             int value =Integer.parseInt(scan.nextLine());
 
                             logger.info("Sending to miners transaction of "+ value +" to "+recipient);
+                           
                             tree.sendTransaction(recipient, value);
                         }
                     }

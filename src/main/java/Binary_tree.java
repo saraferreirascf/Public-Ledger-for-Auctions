@@ -485,6 +485,20 @@ public class Binary_tree {
             }
         }
 
+        public ArrayList<String> NodeExists(){
+            ArrayList<String> nodeList= new ArrayList<String>();
+            for (int i=0; i<kbuckets.size(); i++){
+                KBucket kb = kbuckets.get(i);
+                for( int j=0; j<kb.nodes.size(); j++){
+                    Node node = kb.nodes.get(j);
+                    nodeList.add(node.name);
+                }
+            }
+
+
+            return nodeList;
+        }
+
         public void insertNodes() throws InterruptedException, IOException {
             logger.info("Insert nodes test unit " + kbuckets.size());
             
@@ -1341,12 +1355,12 @@ public class Binary_tree {
             client.SendTransaction(Transaction.toTransaction_(transaction, current));
         }
 
-        if (!exist) {
+        /*if (!exist) {
             System.out.println("we did not find the recipient " + recipient);
             System.out.println("lista de utilizadores conhecidos:");
             printAllUsers();
             return;
-        }
+        }*/
         return;
     }
 }
