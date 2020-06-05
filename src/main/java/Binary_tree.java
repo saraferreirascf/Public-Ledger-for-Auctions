@@ -83,7 +83,7 @@ public class Binary_tree {
         for (int i=0; i<kbuckets.size(); i++) {
             KBucket tmpkbucket = kbuckets.get(i);
             Key tmpdistance = tmpkbucket.prefix.xor(key);
-            if (tmpdistance.compareTo(idistance) < 0) {
+            if (tmpdistance.compareTo(idistance) < 0 && tmpkbucket.nodes.size() != 0) {
                 idistance = tmpdistance;
                 ikbucket = tmpkbucket;
             }
@@ -94,7 +94,7 @@ public class Binary_tree {
         // Send Find Node to alpha(=3) closest nodes
         // sorte list
         if (ikbucket != null) {
-            //logger.info("lookup kbucket size: " + ikbucket.nodes.size());
+            System.out.println("lookup kbucket size: " + ikbucket.nodes.size());
             Collections.sort(ikbucket.nodes, new Comparator<Node>() {
                 @Override
                 public int compare(Node n1, Node n2) {
@@ -105,7 +105,7 @@ public class Binary_tree {
             int sublsize = (ikbucket.nodes.size() < alpha) ? ikbucket.nodes.size(): alpha;
             father.addAll(ikbucket.nodes.subList(0, sublsize));
             closest.addAll(ikbucket.nodes.subList(0, sublsize));
-            //logger.info("send alpha FIND NODES!!!");
+            System.out.println("send alpha FIND NODES!!! " + alpha );
             for (int i=0; i<sublsize; i++) {
                 // send alpha FIND NODES
                 Node inode = father.get(i);
@@ -165,6 +165,8 @@ public class Binary_tree {
                     }
                 }
             }
+        } else {
+            System.out.println("null");
         }
         logger.info("ended lookup");
         return closest;
