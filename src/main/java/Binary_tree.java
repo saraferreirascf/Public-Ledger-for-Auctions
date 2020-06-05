@@ -804,8 +804,13 @@ public class Binary_tree {
                 }
 
                 Transaction transaction = Transaction.copyFrom(request);
+
+                String block_data= "Transaction "+transaction.transactionId;
                 Block lblock = chain.blockchain.get(chain.blockchain.size()-1);
-                Block target = new Block(lblock.hash, "Bloco " + chain.blockchain.size());
+
+
+                //Block target = new Block(lblock.hash, "Bloco " + chain.blockchain.size());
+                Block target = new Block(lblock.hash, block_data);
                 
                 target.addTransaction(transaction);
                 target.mineBlock(chain.difficulty);
