@@ -139,6 +139,15 @@ public class Kademlia {
                             tree.getMinersFromMaster(master);
 
                             System.out.println("Waiting for transactions...");
+                            
+
+                            
+                        } else if (commands[0].equals("printallnodes")) {
+                            
+                            tree.testUnit.printallnodes();
+                        } else if (commands[0].equals("printallchain")) {
+                            tree.chain.printChain();
+                        } else if (commands[0].equals("sendTransaction")){
                             System.out.println("Please indicate the recipient of the transation");
 
                             
@@ -150,13 +159,6 @@ public class Kademlia {
 
                             logger.info("Sending to miners transaction of "+ value +" to "+recipient);
                             tree.sendTransaction(recipient, value);
-
-                            
-                        } else if (commands[0].equals("printallnodes")) {
-                            
-                            tree.testUnit.printallnodes();
-                        } else if (commands[0].equals("printallchain")) {
-                            tree.chain.printChain();
                         }
                     }
 

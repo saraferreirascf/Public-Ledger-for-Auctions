@@ -120,7 +120,7 @@ public class Binary_tree {
                     if (node.nodeID.compareTo(idistance) < 0) {
                         idistance = node.nodeID;
                         closest.add(node);
-                        if (BigInteger.valueOf(Integer.valueOf(closest.size())).compareTo(ikbucket.k) == 0)
+                        if ((!ikbucket.inRange(iaddress) && BigInteger.valueOf(Integer.valueOf(closest.size())).compareTo(ikbucket.k) == 0) || (ikbucket.inRange(iaddress) && closest.size() == 10))
                             return closest;
                     }
                     // round2 send findnode to k triples
@@ -136,7 +136,7 @@ public class Binary_tree {
                         if (node2.nodeID.compareTo(idistance) < 0) {
                             idistance = node2.nodeID;
                             closest.add(node2);
-                            if (BigInteger.valueOf(Integer.valueOf(closest.size())).compareTo(ikbucket.k) == 0)
+                            if ((!ikbucket.inRange(iaddress) && BigInteger.valueOf(Integer.valueOf(closest.size())).compareTo(ikbucket.k) == 0) || (ikbucket.inRange(iaddress) && closest.size() == 10))
                                 return closest;
                         }
                         for (int u=0; u<listenKeys.size(); u++){
@@ -155,7 +155,7 @@ public class Binary_tree {
                                     if (node3.nodeID.compareTo(idistance) < 0) {
                                         idistance = node3.nodeID;
                                         closest.add(node3);
-                                        if (BigInteger.valueOf(Integer.valueOf(closest.size())).compareTo(ikbucket.k) == 0)
+                                        if ((!ikbucket.inRange(iaddress) && BigInteger.valueOf(Integer.valueOf(closest.size())).compareTo(ikbucket.k) == 0) || (ikbucket.inRange(iaddress) && closest.size() == 10))
                                             return closest;
                                     }
                                 }
@@ -222,7 +222,7 @@ public class Binary_tree {
                     if (node.nodeID.compareTo(idistance) < 0) {
                         idistance = node.nodeID;
                         closest.add(node);
-                        if (BigInteger.valueOf(Integer.valueOf(closest.size())).compareTo(ikbucket.k) == 0)
+                        if ((!ikbucket.inRange(iaddress) && BigInteger.valueOf(Integer.valueOf(closest.size())).compareTo(ikbucket.k) == 0) || (ikbucket.inRange(iaddress) && closest.size() == 10))
                             return closest;
                     }
                     // round2 send findnode to k triples
@@ -241,7 +241,7 @@ public class Binary_tree {
                         if (node2.nodeID.compareTo(idistance) < 0) {
                             idistance = node2.nodeID;
                             closest.add(node2);
-                            if (BigInteger.valueOf(Integer.valueOf(closest.size())).compareTo(ikbucket.k) == 0)
+                            if ((!ikbucket.inRange(iaddress) && BigInteger.valueOf(Integer.valueOf(closest.size())).compareTo(ikbucket.k) == 0) || (ikbucket.inRange(iaddress) && closest.size() == 10))
                                 return closest;
                         }
                         for (int u=0; u<listenKeys.size(); u++){
@@ -263,7 +263,7 @@ public class Binary_tree {
                                     if (node3.nodeID.compareTo(idistance) < 0) {
                                         idistance = node3.nodeID;
                                         closest.add(node3);
-                                        if (BigInteger.valueOf(Integer.valueOf(closest.size())).compareTo(ikbucket.k) == 0)
+                                        if ((!ikbucket.inRange(iaddress) && BigInteger.valueOf(Integer.valueOf(closest.size())).compareTo(ikbucket.k) == 0) || (ikbucket.inRange(iaddress) && closest.size() == 10))
                                             return closest;
                                     }
                                 }
@@ -663,6 +663,10 @@ public class Binary_tree {
                 Collections.sort(kbuckets, new Comparator<KBucket>() {
                     @Override
                     public int compare(KBucket k1, KBucket k2) {
+                        if (k1.inRange(iaddress))
+                            return 1;
+                        if (k2.inRange(iaddress))
+                            return -1;
                         return k1.prefix.xor(key).compareTo(k2.prefix.xor(key));
                     }
                 });
@@ -712,6 +716,10 @@ public class Binary_tree {
                 Collections.sort(kbuckets, new Comparator<KBucket>() {
                     @Override
                     public int compare(KBucket k1, KBucket k2) {
+                        if (k1.inRange(iaddress))
+                            return 1;
+                        if (k2.inRange(iaddress))
+                            return -1;
                         return k1.prefix.xor(key).compareTo(k2.prefix.xor(key));
                     }
                 });
