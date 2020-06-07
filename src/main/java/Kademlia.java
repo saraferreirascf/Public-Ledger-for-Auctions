@@ -133,6 +133,8 @@ public class Kademlia {
                             // este nó conhece o hardcoded 127.0.0.1:50051
                             Binary_tree.Master_node master = tree.new Master_node(50051);
                             tree.inserts(master);
+                            
+                            tree.lookup(tree.current.nodeID);
                             //logger.info("Created master node");
                             //System.out.println("Tamanho closest: " + tree.lookup(tree.current.nodeID).size());
 
