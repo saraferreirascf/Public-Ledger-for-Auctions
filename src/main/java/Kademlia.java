@@ -112,6 +112,7 @@ public class Kademlia {
                             tree.testUnit.printallnodes();
                         }  else if (commands[0].equals("createuser")) {
                             tree = new Binary_tree(commands[1]);
+                            System.out.println();
                             System.out.println("Welcome to the network "+commands[1]);
                             Thread tserver = new Thread(new Runnable() { 
                                 @Override
@@ -147,31 +148,45 @@ public class Kademlia {
                             tree.testUnit.printallnodes();
                         } else if (commands[0].equals("printallchain")) {
                             tree.chain.printChain();
-                        } else if (commands[0].equals("sendTransaction")){
+                        } else if (commands[0].equals("sendtransaction")){
+                            System.out.println();
                             System.out.println("Please indicate the recipient of the transation");
 
                             
                             String recipient =scan.nextLine();
                             ArrayList<String> users=new ArrayList<String>();
                             users=tree.testUnit.NodeExists();
-                            System.out.println(Arrays.toString(users.toArray()));
+                            //System.out.println(Arrays.toString(users.toArray()));
                             while(!users.contains(recipient)){
+                                System.out.println("Sorry :(");
                                 System.out.println("You don't have a connection with that user in the network;");
                                 users=tree.testUnit.NodeExists();
+                                System.out.println();
                                 System.out.println("Here you can see the list of available users:");
+                                users.removeAll(Arrays.asList("", null));
+                                System.out.println();
                                 System.out.println(Arrays.toString(users.toArray()));
-
+                                System.out.println();
                                 System.out.println("Please indicate the recipient of the transation");
                                 recipient =scan.nextLine();
                             }
 
-
+                            System.out.println();
                             System.out.println("Please indicate the value of the transation");
                             int value =Integer.parseInt(scan.nextLine());
+                            while(value > 100){
+                                System.out.println();
+                                System.out.println("Sorry :(");
+                                System.out.println("The blockchain has less that amount... You cannot do a transaction of that amount");
+                                System.out.println();
+                                System.out.println("Please indicate the value of the transation");
+                                value =Integer.parseInt(scan.nextLine());
+                            }
 
                             logger.info("Sending to miners transaction of "+ value +" to "+recipient);
                            
                             tree.sendTransaction(recipient, value);
+
                         }
                     }
 
