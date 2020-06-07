@@ -770,6 +770,28 @@ public class Binary_tree {
                 responseObserver.onCompleted();
                // System.out.println("id:" + current.nodeID.kToBigInt() + "has completed find node for " + new BigInteger(request.getSender().getNodeID().toByteArray()).toString() + " has connected");
                 logger.info("find node -> server response completed");
+                //Menu();
+
+            }
+
+            public void Menu(){
+                System.out.println("************************************");
+                System.out.println("*              USER MENU           *");
+                System.out.println("************************************");
+                System.out.println();
+                System.out.println();
+                System.out.println("-------------------");
+                System.out.println("Available commands:");
+                System.out.println("-------------------");
+                System.out.println();
+                System.out.println("-SendTransaction");
+                System.out.println("-PrintAllNodes");
+                System.out.println("-PrintAllChain");
+                System.out.println("-quit");
+                System.out.println();
+                System.out.println();
+                System.out.print("Option: ");
+            
             }
 
             @Override

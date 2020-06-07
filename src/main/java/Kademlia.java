@@ -144,7 +144,7 @@ public class Kademlia {
 
                             System.out.println("Waiting for transactions...");
 
-                           // Menu();
+                            Menu();
                             
 
                             
