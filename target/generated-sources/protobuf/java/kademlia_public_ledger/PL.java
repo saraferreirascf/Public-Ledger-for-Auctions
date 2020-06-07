@@ -94,7 +94,7 @@ public final class PL {
       "tamp\030\006 \001(\003\022\r\n\005nonce\030\007 \001(\005\022\036\n\nsenderNode\030" +
       "\010 \001(\0132\n.BasicNode\"\325\001\n\014Transaction_\022\025\n\rtr" +
       "ansactionId\030\001 \001(\t\022\016\n\006sender\030\002 \001(\t\022\022\n\nrec" +
-      "iepient\030\003 \001(\t\022\r\n\005value\030\004 \001(\003\022\021\n\tsignatur" +
+      "iepient\030\003 \001(\t\022\r\n\005value\030\004 \001(\002\022\021\n\tsignatur" +
       "e\030\005 \001(\014\022\"\n\006inputs\030\006 \003(\0132\022.TransactionInp" +
       "ut_\022$\n\007outputs\030\007 \003(\0132\023.TransactionOutput" +
       "_\022\036\n\nsenderNode\030\010 \001(\0132\n.BasicNode\"S\n\021Tra" +

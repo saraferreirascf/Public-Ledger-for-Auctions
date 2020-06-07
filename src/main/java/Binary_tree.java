@@ -485,7 +485,7 @@ public class Binary_tree {
                 KBucket kb = kbuckets.get(i);
                 for( int j=0; j<kb.nodes.size(); j++){
                     Node node = kb.nodes.get(j);
-                    ////logger.info(node.name + " : " + iaddress.kToBigInt() + " : " + kb.plength + " : " +kb.prefix.kToBigInt() + " : " + node.nodeID.kToBigInt());
+                    logger.info(node.name + " : " + iaddress.kToBigInt() + " : " + kb.plength + " : " +kb.prefix.kToBigInt() + " : " + node.nodeID.kToBigInt());
                 }
             }
         }
@@ -802,13 +802,14 @@ public class Binary_tree {
                     Node snode = new Node(request.getSenderNode());
                     inserts(snode);
                 }
+                testUnit.printallnodes();
 
                 Transaction transaction = Transaction.copyFrom(request);
-                /*if(!transaction.processTransaction()){
+                if(!transaction.processTransaction()){
                     responseObserver.onNext(BooleanSuccessResponse.newBuilder().setSuccess(false).build());
                     responseObserver.onCompleted();
                     return;
-                } */
+                } 
 
                 String block_data= "Transaction "+transaction.transactionId;
                 Block lblock = chain.blockchain.get(chain.blockchain.size()-1);
@@ -843,10 +844,10 @@ public class Binary_tree {
                 
                 // when a kademlia node receives any message(request or reply) from another node,
                 // it updates the appropeiate k-bucket for the sender´s nodeID
-                if (request.getSenderNode() != null) {
+                /*if (request.getSenderNode() != null) {
                     Node snode = new Node(request.getSenderNode());
                     inserts(snode);
-                }
+                }*/
 
                 Block newblock = Block.copyFrom(request);
                 Block lblock = chain.blockchain.get(chain.blockchain.size()-1);
@@ -1363,7 +1364,25 @@ public class Binary_tree {
 
         Transaction transaction = new Transaction(chain.wallet.publicKey, StringUtil.getKeyFromString(inode.publicKey), amount, null);
         transaction.generateSignature(chain.wallet.privateKey);
-        transaction.processTransaction();
+
+
+        if (!transaction.processTransaction()) {
+            System.out.println();
+            System.out.println("Falha ao processar transaction");
+            System.out.println();
+            return;
+        }
+
+        Transaction_ transaction2 = Transaction.toTransaction_(transaction, null);
+        Transaction transaction3 = Transaction.copyFrom(transaction2);
+
+        if (!transaction3.processTransaction()) {
+            System.out.println();
+            System.out.println("Falha ao processar transaction 3");
+            System.out.println();
+            return;
+        }
+
         List<Node> miners = getMiners();
         for (int j=0; j<miners.size(); j++){
             Node iminer = miners.get(j);

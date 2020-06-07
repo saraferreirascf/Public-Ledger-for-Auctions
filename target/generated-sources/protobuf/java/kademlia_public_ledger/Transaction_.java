@@ -73,9 +73,9 @@ private static final long serialVersionUID = 0L;
             reciepient_ = s;
             break;
           }
-          case 32: {
+          case 37: {
 
-            value_ = input.readInt64();
+            value_ = input.readFloat();
             break;
           }
           case 42: {
@@ -261,12 +261,12 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int VALUE_FIELD_NUMBER = 4;
-  private long value_;
+  private float value_;
   /**
-   * <code>int64 value = 4;</code>
+   * <code>float value = 4;</code>
    * @return The value.
    */
-  public long getValue() {
+  public float getValue() {
     return value_;
   }
 
@@ -396,8 +396,8 @@ private static final long serialVersionUID = 0L;
     if (!getReciepientBytes().isEmpty()) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 3, reciepient_);
     }
-    if (value_ != 0L) {
-      output.writeInt64(4, value_);
+    if (value_ != 0F) {
+      output.writeFloat(4, value_);
     }
     if (!signature_.isEmpty()) {
       output.writeBytes(5, signature_);
@@ -429,9 +429,9 @@ private static final long serialVersionUID = 0L;
     if (!getReciepientBytes().isEmpty()) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, reciepient_);
     }
-    if (value_ != 0L) {
+    if (value_ != 0F) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt64Size(4, value_);
+        .computeFloatSize(4, value_);
     }
     if (!signature_.isEmpty()) {
       size += com.google.protobuf.CodedOutputStream
@@ -470,8 +470,9 @@ private static final long serialVersionUID = 0L;
         .equals(other.getSender())) return false;
     if (!getReciepient()
         .equals(other.getReciepient())) return false;
-    if (getValue()
-        != other.getValue()) return false;
+    if (java.lang.Float.floatToIntBits(getValue())
+        != java.lang.Float.floatToIntBits(
+            other.getValue())) return false;
     if (!getSignature()
         .equals(other.getSignature())) return false;
     if (!getInputsList()
@@ -501,7 +502,7 @@ private static final long serialVersionUID = 0L;
     hash = (37 * hash) + RECIEPIENT_FIELD_NUMBER;
     hash = (53 * hash) + getReciepient().hashCode();
     hash = (37 * hash) + VALUE_FIELD_NUMBER;
-    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+    hash = (53 * hash) + java.lang.Float.floatToIntBits(
         getValue());
     hash = (37 * hash) + SIGNATURE_FIELD_NUMBER;
     hash = (53 * hash) + getSignature().hashCode();
@@ -658,7 +659,7 @@ private static final long serialVersionUID = 0L;
 
       reciepient_ = "";
 
-      value_ = 0L;
+      value_ = 0F;
 
       signature_ = com.google.protobuf.ByteString.EMPTY;
 
@@ -795,7 +796,7 @@ private static final long serialVersionUID = 0L;
         reciepient_ = other.reciepient_;
         onChanged();
       }
-      if (other.getValue() != 0L) {
+      if (other.getValue() != 0F) {
         setValue(other.getValue());
       }
       if (other.getSignature() != com.google.protobuf.ByteString.EMPTY) {
@@ -1114,32 +1115,32 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private long value_ ;
+    private float value_ ;
     /**
-     * <code>int64 value = 4;</code>
+     * <code>float value = 4;</code>
      * @return The value.
      */
-    public long getValue() {
+    public float getValue() {
       return value_;
     }
     /**
-     * <code>int64 value = 4;</code>
+     * <code>float value = 4;</code>
      * @param value The value to set.
      * @return This builder for chaining.
      */
-    public Builder setValue(long value) {
+    public Builder setValue(float value) {
       
       value_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>int64 value = 4;</code>
+     * <code>float value = 4;</code>
      * @return This builder for chaining.
      */
     public Builder clearValue() {
       
-      value_ = 0L;
+      value_ = 0F;
       onChanged();
       return this;
     }

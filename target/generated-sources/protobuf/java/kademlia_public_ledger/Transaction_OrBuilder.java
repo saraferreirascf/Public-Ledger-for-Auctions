@@ -44,10 +44,10 @@ public interface Transaction_OrBuilder extends
       getReciepientBytes();
 
   /**
-   * <code>int64 value = 4;</code>
+   * <code>float value = 4;</code>
    * @return The value.
    */
-  long getValue();
+  float getValue();
 
   /**
    * <code>bytes signature = 5;</code>

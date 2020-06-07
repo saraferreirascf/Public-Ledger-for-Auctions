@@ -47,8 +47,8 @@ public class Transaction {
 
     public static Transaction_ toTransaction_ (Transaction transaction, Binary_tree.Node inode){
         if (inode != null)
-            return Transaction_.newBuilder().setSenderNode(inode.toBasicNode()).setTransactionId(transaction.transactionId).setSender(StringUtil.getStringFromKey(transaction.sender)).setReciepient(StringUtil.getStringFromKey(transaction.reciepient)).setValue((long)transaction.value).setSignature(ByteString.copyFrom(transaction.signature)).build();
-        return Transaction_.newBuilder().setTransactionId(transaction.transactionId).setSender(StringUtil.getStringFromKey(transaction.sender)).setReciepient(StringUtil.getStringFromKey(transaction.reciepient)).setValue((long)transaction.value).setSignature(ByteString.copyFrom(transaction.signature)).build();
+            return Transaction_.newBuilder().setSenderNode(inode.toBasicNode()).setTransactionId(transaction.transactionId).setSender(StringUtil.getStringFromKey(transaction.sender)).setReciepient(StringUtil.getStringFromKey(transaction.reciepient)).setValue((float)transaction.value).setSignature(ByteString.copyFrom(transaction.signature)).build();
+        return Transaction_.newBuilder().setTransactionId(transaction.transactionId).setSender(StringUtil.getStringFromKey(transaction.sender)).setReciepient(StringUtil.getStringFromKey(transaction.reciepient)).setValue((float)transaction.value).setSignature(ByteString.copyFrom(transaction.signature)).build();
     }
 
     public static <T> Iterable<T> 
@@ -83,7 +83,7 @@ public class Transaction {
         }
 
         //Gathers transaction inputs (Making sure they are unspent):
-        if (inputs != null){
+        /*if (inputs != null){
             for(TransactionInput i : inputs) {
                 i.UTXO = BlockChain.UTXOs.get(i.transactionOutputId);
             }
@@ -94,7 +94,7 @@ public class Transaction {
                 System.out.println("Please enter the amount greater than " + BlockChain.minimumTransaction);
                 return false;
             }
-        }
+        }*/
 
         //Generate transaction outputs:
         float leftOver = getInputsValue() - value; //get value of inputs then the left over change:
