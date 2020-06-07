@@ -804,11 +804,11 @@ public class Binary_tree {
                 }
 
                 Transaction transaction = Transaction.copyFrom(request);
-                if(!transaction.processTransaction()){
+                /*if(!transaction.processTransaction()){
                     responseObserver.onNext(BooleanSuccessResponse.newBuilder().setSuccess(false).build());
                     responseObserver.onCompleted();
                     return;
-                } 
+                } */
 
                 String block_data= "Transaction "+transaction.transactionId;
                 Block lblock = chain.blockchain.get(chain.blockchain.size()-1);
